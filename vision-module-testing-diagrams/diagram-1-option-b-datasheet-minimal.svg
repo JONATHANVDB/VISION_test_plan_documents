@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">Figure: Vision module verification levels</title>
+  <desc id="desc">Minimal monochrome figure: IC socket, PCB FT, module stack.</desc>
+  <defs>
+    <marker id="mk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#111111"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="640" fill="#ffffff"/>
+  <rect x="40" y="36" width="1120" height="1" fill="#111111"/>
+  <text x="40" y="28" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700">MAGICS TECHNOLOGIES</text>
+  <text x="1160" y="28" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="10" text-anchor="end">Vision Series</text>
+  <text x="600" y="72" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" text-anchor="middle">Figure 1. Vision module: verification by assembly level</text>
+  <text x="600" y="94" fill="#444444" font-family="Arial, Helvetica, sans-serif" font-size="11" text-anchor="middle">From socket-tested ICs to PCB functional test to integrated three-PCB module (MAG-VIS100xx-N).</text>
+  <rect x="40" y="118" width="360" height="460" fill="none" stroke="#111111" stroke-width="1"/>
+  <rect x="420" y="118" width="360" height="460" fill="none" stroke="#111111" stroke-width="1"/>
+  <rect x="800" y="118" width="360" height="460" fill="none" stroke="#111111" stroke-width="1"/>
+  <text x="220" y="148" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="middle">A. IC (socket)</text>
+  <text x="220" y="166" fill="#444444" font-family="Arial, Helvetica, sans-serif" font-size="10" text-anchor="middle">Characterization and FT</text>
+  <text x="600" y="148" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="middle">B. Assembled PCB</text>
+  <text x="600" y="166" fill="#444444" font-family="Arial, Helvetica, sans-serif" font-size="10" text-anchor="middle">Functional test</text>
+  <text x="980" y="148" fill="#111111" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" text-anchor="middle">C. Module (3-PCB stack)</text>
+  <text x="980" y="166" fill="#444444" font-family="Arial, Helvetica, sans-serif" font-size="10" text-anchor="middle">FT and characterization</text>
+  <line x1="402" y1="310" x2="416" y2="310" stroke="#111111" stroke-width="1.5" marker-end="url(#mk)"/>
+  <line x1="782" y1="310" x2="796" y2="310" stroke="#111111" stroke-width="1.5" marker-end="url(#mk)"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="56" y="188" width="328" height="68" fill="none" stroke="#111111"/>
+    <text x="68" y="208" fill="#111111" font-size="11" font-weight="700">Image sensor IC</text>
+    <text x="68" y="226" fill="#111111" font-size="12">MAG-IMG002x1-NC</text>
+    <text x="68" y="244" fill="#444444" font-size="10">Mono / color</text>
+    <rect x="56" y="266" width="328" height="56" fill="none" stroke="#111111"/>
+    <text x="68" y="286" fill="#111111" font-size="11" font-weight="700">DC/DC IC</text>
+    <text x="68" y="304" fill="#111111" font-size="12">MAG-PSU00001-NP</text>
+    <rect x="56" y="332" width="328" height="56" fill="none" stroke="#111111"/>
+    <text x="68" y="352" fill="#111111" font-size="11" font-weight="700">CoaXPress serializer IC</text>
+    <text x="68" y="370" fill="#111111" font-size="12">MAG-CXP00002-NP</text>
+    <text x="56" y="418" fill="#444444" font-size="10">Socket test under defined electrical / thermal conditions.</text>
+    <rect x="436" y="188" width="328" height="84" fill="none" stroke="#111111"/>
+    <text x="448" y="208" fill="#111111" font-size="11" font-weight="700">Imaging PCB</text>
+    <text x="448" y="226" fill="#111111" font-size="12">MAG-VIS4000x-N</text>
+    <text x="448" y="244" fill="#444444" font-size="10">MAG-IMG002x1-NC</text>
+    <rect x="436" y="282" width="328" height="84" fill="none" stroke="#111111"/>
+    <text x="448" y="302" fill="#111111" font-size="11" font-weight="700">Power PCB</text>
+    <text x="448" y="320" fill="#111111" font-size="12">MAG-VIS4001x-N</text>
+    <text x="448" y="338" fill="#444444" font-size="10">MAG-PSU00001-NP</text>
+    <rect x="436" y="376" width="328" height="84" fill="none" stroke="#111111"/>
+    <text x="448" y="396" fill="#111111" font-size="11" font-weight="700">Serializer PCB</text>
+    <text x="448" y="414" fill="#111111" font-size="12">MAG-VIS4003x-N</text>
+    <text x="448" y="432" fill="#444444" font-size="10">MAG-CXP00002-NP</text>
+    <text x="436" y="492" fill="#444444" font-size="10">Post-assembly PCB functional test.</text>
+    <rect x="816" y="220" width="328" height="200" fill="none" stroke="#111111"/>
+    <text x="828" y="248" fill="#111111" font-size="11" font-weight="700">Electronic camera module</text>
+    <text x="828" y="272" fill="#111111" font-size="13">MAG-VIS100xx-N</text>
+    <text x="828" y="298" fill="#444444" font-size="10">Three-board stack:</text>
+    <text x="828" y="316" fill="#444444" font-size="10">MAG-VIS4000x-N + MAG-VIS4001x-N + MAG-VIS4003x-N</text>
+    <line x1="828" y1="330" x2="1132" y2="330" stroke="#111111"/>
+    <text x="828" y="354" fill="#444444" font-size="10">Module-level FT and characterization.</text>
+  </g>
+  <text x="40" y="612" fill="#666666" font-family="Arial, Helvetica, sans-serif" font-size="9">x, xx: configuration suffix. For product descriptions see https://www.magics.tech/products-series/vision-series</text>
+</svg>

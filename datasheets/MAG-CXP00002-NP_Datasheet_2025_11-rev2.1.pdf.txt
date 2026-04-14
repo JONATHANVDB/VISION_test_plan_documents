@@ -1,0 +1,160 @@
+
+--- Extracting from VISION_test_plan_documents/datasheets/MAG-CXP00002-NP_Datasheet_2025_11-rev2.1.pdf ---
+Page 1:
+ Datasheet - MAG -CXP00002 -NP 
+2025/11 -rev2.1  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 1 
+ 
+ 
+Figure 1: MAG -CXP00002 -NP is packaged in a plastic QFN -64 
+package - including thermal pad . 
+1. Key performance parameters  
+• Core performance parameters  
+o Parallel -to-serializer interface  
+o CoaXPress  (CXP)  2.0 device side interface  
+o 1.25Gbps downlink communication  
+o 20Mbps uplink communication  
+• Additional features  
+o Programmable frame size and pixel depth  
+o Imager reset and trigger HW outputs  
+o 1.8V LDO output with up  to 10mA load 
+capa bility  (to supply  an imager)  
+o On-chip 1.2V LDOs  
+o GenICam  compliant  
+o 11 GPIOs  
+• Supplies and power consumption  
+o Single  3.3V supply operati on 
+o 272 mW typical power consumption  
+• Clocking options  
+o X-tal oscillator clock: 10-40MHz  
+o External reference clock : 10-40MHz  
+• Interfaces  
+o 12-bit parallel camera interface  (receiver)  
+o CoaXPress  (CXP) -compatible video interface  
+o 11 GPIOs for control/readback  
+▪ Built -in Master SPI functionality on  
+GPIO<10:7>  
+o Dedicated m aster SPI to control imager  
+• Operation temperature: -40 to 85 degC junction  
+• Radiation hardness:  
+o TID level: > 100Mrad  / 1MGy  (Si) 
+o SEL/SEU: >  60 MeV.cm²/mg * 
+* by design – not validated  
+• Package Info  
+o Plastic QFN -64 
+2. Applications  
+• CoaXPress  video streaming  
+• Machine vision / Surveillance  
+• Camera control  3. Description  
+The MAG -CXP00002 -NP is a camera interface ASIC that 
+support s harsh environment video transmission  over a 
+75-Ohm coax cable  for camera applications.  
+The MAG -CXP00002 -NP is a radiation -hardened  device -
+side CoaXPress  2.0 video transmission ASIC. The ASIC 
+supports downlink video streaming at 1.25Gbps  (CXP -1 
+mode)  and receives uplink control commands at 
+20.83Mbps , all over a single 75 -Ohm cable. In addition, 
+it also supports Power -over -Coax (PoC) and is 
+compatible with COTS CXP frame grabbers. For CXP 
+certified cables, the cable length can go above 100m in 
+the mode of operation  implemented (CXP -1). 
+The parallel input interface supports raw parallel pixel 
+data from an image sensor with up to 12b pixel depth 
+and is capable of interfacing different frame sizes and 
+frame rates.  
+MAG -CXP00002 -NP features a dedicated master SPI 
+interface to  communicate with an image sensor  chip , as 
+well as a secondary master SPI interface , allowing 
+communication to other  SPI slave devices, such as chips 
+from the Magics Motion Series . The serializer ASIC also 
+features imager control pins such as a RESET  signal  and 
+a TRIGGER  signal  and integrate s perfectly  with the 
+MAG -IMG001X1 -NC image sensor of Magics. The chip 
+set can form the heart of a camera system  and the 
+combination is fully GenICam  compliant.  From a user 
+point of view (e.g. CXP host) the chip set is seen as a 
+single device , because of the integrated register map 
+bootstrapping impleme nted in the serializer ASIC , 
+which holds a copy of the register map of the imager.  
+4. Simplified pinout diagram  
+Figure 2: Simplified pinout of MAG -CXP00002 -NP. 
+
+----------------------------------------
+Page 2:
+ Datasheet - MAG -CXP00002 -NP 
+2025/11 -rev2.1  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 2 
+ 
+A simplified pinout diagram of  MAG -CXP00002 -NP can be seen in  Figure 2 . The connection to the camera chip consists 
+of the 12 pins that receive data from the imager  chip (VIDEO_DATA<11:0>) and the synchronization signals  (i.e. 
+PIXEL_CLK_CAM, DATA_VALID_CAM, LINE_VALID_CAM  and FRAME_VALID_CAM). The serializer has a master SPI 
+dedicated for the imager , in addition to a reset signal RESET_CAM and trigger signal TRIGGER_CAM to control  the imager 
+chip. On the top row of the pins, there are 11 GPIOs pins that the user can  used  in different ways , such a s for a second 
+master SPI interface . The connection to the external clock crystal or the clock reference and the coaxial cable leading to 
+the frame grabber are on the right side  of the chip  (XTALP/N, REF_CLK, TRXP/N). A 1.8V regulated power supply 
+VDD1V8_CAM and a 1.2V reference voltage VREF_CAM can be used to  provide power and a voltage reference to the 
+imager , depending on the needs of the imager chip. Note that the VDD1V8_CAM pin cannot be used to drive the 1.8V 
+domain of the MAG -IMG001X1 -NC imager, as it cannot supply enough current.  
+The ASIC can be powered from a single 3.3V supply and power is given through multiple 3.3V pins. As there are several 
+on-chip LDOs, external decoupling is required to compensate the loop for these LDOs. Therefore, there are multiple 
+LDO pins on the chip as well.  
+5. Block Diagram  
+The block diagram in Figure 3  shows the main functional blocks of MAG -CXP00002 -NP. The VTOI, PTAT, VREF and IREF 
+form the biasing block, providing all other blocks with reference voltages and currents. The LDO_CAM and CAM_REF 
+provide a 1.8V power supply and a 1.2V reference voltage for the imager chip connected to MAG -CXP00002 -NP. The 
+clock reference block, containing an oscillator and buffer for an external clock reference form together with the PLL the 
+clock generation block, generating the required 125MHz and 1.25GHz on -chip clocks for the digital block and the 
+serializer. The serializer, low-voltage differential signalling  (LVDS ) driver and the hybrid block form the front -end block  
+which is  responsible for serializing the parallel data from the digital block and transmitting i t to a coaxial cable . In 
+addition, it takes care of receiving  the slow uplink communication data sent by the frame grabber to the serializer  via 
+the same  coax  cable. Finally, the digital block is responsible for deserializing the uplink communication, and the encoding 
+of the parallel data from the imager to be sent to the serializer. The digital block also hou ses SPI modules for slave and 
+master SPI interfaces , next to the GenICam  compliant register bank.  
+ 
+Figure 3: Top-level block diagram of MAG -CXP00002 -NP. 
+
+----------------------------------------
+Page 3:
+ Datasheet - MAG -CXP00002 -NP 
+2025/11 -rev2.1  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 3 
+ 
+6. Pin configurations and functions  
+ 
+Figure 4: Pinning diagram of MAG -CXP00002 -NP in a QFN -64 package  (top-view  with pins annotated  – dashed lines are at the 
+bottom side ). 
+The pin list and correspo nding place on the package is given in the table below and in the figure above, respectively. 
+Note that the picture is looked from at the top. The left upper pin of the QFN package is pin number 1. A proposal for 
+decoupling cap and external components is given in the last column of the table.  
+ 
+Table 1: Pin list, pin names and descriptions  
+PIN NAME  I/O Description  External components or connections  
+1 PIXEL_CLK_CAM  I Clock signal from imager   
+2 VIDEO_DATA_11  I Video data from imager   
+3 VIDEO_DATA_10  I Video data from imager   
+4 VIDEO_DATA_9  I Video data from imager   
+5 VIDEO_DATA_8  I Video data from imager   
+6 VIDEO_DATA_7  I Video data from imager   
+7 VIDEO_DATA_6  I Video data from imager   
+8 VSS Ground  Ground   
+9 VSS_DIG  Ground  Ground   
+10 VSS_DIG  Ground  Ground   
+11 VIDEO_DATA_5  I Video data from imager   
+12 VIDEO_DATA_4  I Video data from imager   
+13 VIDEO_DATA_3  I Video data from imager   
+14 VIDEO_DATA_2  I Video data from imager   
+15 VIDEO_DATA_1  I Video data from imager   
+16 VIDEO_DATA_0  I Video data from imager   
+17 MASTER_MISO_CAM  I Master SPI data input for 
+imager   
+18 MASTER_MOSI_CAM  O Master SPI data output for 
+imager   
+19 MASTER_SPI_CLK_CAM  O Master SPI clock output 
+for imager   
+20 MASTER_CSB_CAM  O Master SPI chip select 
+output for imager   
+
+----------------------------------------

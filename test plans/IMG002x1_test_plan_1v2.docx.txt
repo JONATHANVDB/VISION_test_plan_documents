@@ -1,0 +1,439 @@
+
+Heading 1 - no number: Revision history
+
+Heading 1 - no number: List of Figures
+Figure 1: MAG-IMG002x1-NC production test flow	14
+Figure 2: MAG-VIS4000x-N production test flow	15
+Figure 3: MAG-IMG002x1-NC characterization test flow	16
+Figure 4: MAG-IMG002x1-NC trim test flow	17
+Figure 5: MAG-IMG002x1-NC qualification test flow	18
+Figure 6: Measurement setup overview	26
+
+Heading 1 - no number: List of Tables
+Table 1: Supply voltage conditions	10
+Table 2: Test stages	10
+Table 3: Test sequence per test stage	19
+Table 4: Trimming sequence	20
+Table 5: Estimated Test Time (TT) per test stage	21
+Table 6: Measurement Equipment overview	22
+Table 7: Software bin table	23
+Table 8: Hardware bin table	23
+Table 9: Pin list vs equipment matrix	27
+Table 10: External components	28
+Table 11: Power supplies	30
+Table 12: Park state pin biasing	30
+Table 13: Park state registers	31
+Table 14: Standard register settings	31
+Table 15: test mux summary	32
+Table 16 DCF overview	41
+Table 17: Subsets of pins	42
+Table 18: T0001: Continuity overview	42
+Table 19: T0002: Power Short overview	44
+Table 20: T0003: Leakage overview	45
+Table 21: Input configuration table	46
+Table 22: T0004 : VIL/VIH overview	46
+Table 23: T0004 Settings	48
+Table 24: T0004 Pin measurement approach	48
+Table 25: T0005: VOL/VOH overview	49
+Table 26: T0005 configuration table	50
+Table 27: T0005 pin measurement approach	50
+Table 28: T0006: IOL/IOH overview	51
+Table 29: T0006 configuration settings	52
+Table 30: T0006 pin measurement approach	53
+Table 31: T0007: IDDD overview	53
+Table 32: T0008: Test buffer offset overview	54
+Table 33: T0009: Trim test overview	56
+Table 34: T0009 Measurement approach	57
+Table 35: T0010: Trim sweep overview	58
+Table 36: T0010 Measurement approach	58
+Table 37: T0011: Static signal test overview	59
+Table 38: T0011 Measurement approach	60
+Table 39: T0013: PLL lock overview	62
+Table 40: T0014: Row driver overview	63
+Table 41: T0015: S&H test overview	64
+Table 42: S&H light test word program	67
+Table 43: T0018: S&H sweep test overview	68
+Table 44: T0018 Measurement approach	68
+Table 45: T0012: PLL open-loop overview	69
+Table 46: T0019: Ramp gen trim overview	70
+Table 47: T0019 v_rmp reset level DC	71
+Table 48: T0039: Ramp gen test overview	73
+Table 49: T0021: Ramp gen sweep test overview	74
+Table 50: Word program v_rmp reset level	75
+Table 51: T0023: POR overview	76
+Table 52: T0024: Frame modes overview	77
+Table 53: T0025: Trigger mode overview	78
+Table 54: T0025 trigger table	80
+Table 55: T0026: Burst mode overview	80
+Table 56: T0026 Trigger table	81
+Table 57: T0027: Mirroring overview	81
+Table 58: T0028: Sub-sampling overview	82
+Table 59: T0029: Blackpixel readout overview	83
+Table 60: T0030: Testpattern generator	84
+Table 61: T0031: Software trigger overview	85
+Table 62: T0032: Serial interface overview	86
+
+Heading 1: Document purpose and scope
+This document is part of the MAG-IMG002X1 project and defines the test strategy, test setup and the detailed test procedures to perform electrical verification, functional verification and radiation testing on the product.
+This document also provides a detailed test schedule and lists test facilities. 
+All the information in this document is intended to describe the verification tests that will be done on the product mentioned above. Any major deviations from this plan will be discussed prior or at latest during the test readiness review (TRR) meeting with the customer. Major changes will be listed in the revision history. Major changes can be (list is not exclusive):
+Number of DUT’s 
+Test conditions
+Hardware/equipment changes
+Test facility changes
+Addition or removal of tests
+Any update to a test procedure that changes the test coverage or testing strategy 
+Minor changes are kept in the revision history but not explicitly informed to the customer. These changes are limited to:
+Small changes in a test procedure, e.g. additional SPI commands, increasing wait times
+Correction of typo’s 
+Any changes (major and minor) after the TRR meeting will be discussed with the customer. 
+
+Heading 1: Test strategy 
+This chapter describes the test methods used for the verification and validation of the MAG-IMG002X1 product. The test strategy aims at maximal test coverage of the product.
+Functional testing and electrical parametric testing of the test structures is used to verify the performance. Radiation tests will be performed to evaluate hardness against ionizing radiation.  
+
+Heading 2: Test conditions
+During functional verification and characterization testing the temperature and supply voltage of the DUT’s will be varied to validate the ASIC specifications over the defined operating conditions. The conditions listed in this section are the minimal set of conditions that will be tested. If additional test conditions are needed to validate certain parameters, then they are explicitly mentioned in the test procedure. 
+Temperature conditions are mentioned in this document with following codes:
+RT = room temperature = 25°C +/- 5°C
+CT = cold temperature = 0°C +/- 5°C
+HT = hot temperature = 85°C +/- 5°C
+Supply voltage conditions are defined in the table below:
+Table 1: Supply voltage conditions
+
+Heading 2: Test stages
+Table 2 outlines all the test stages required to validate the performance of the product, while section 2.3 details the sequence in which these test stages fit into the overall test flow.
+Table 2: Test stages
+The following sections provide further details on the different test stages.
+
+Heading 3: Visual inspection (VI)
+Visual inspection is an examination of the external surfaces, construction, marking, and workmanship of a finished packaged device. Since the lid of the product is of glass, bond pad corrosion, wire bonding and glass lid inspection is included. This stage helps identify any visible defects, such as cracks, issues with pins, delamination, or other mechanical damages that may have occurred during manufacturing, handling, or transportation. By conducting a thorough visual examination, potential issues can be detected early, preventing further testing on compromised components and ensuring the reliability of the test results. 
+Visual inspection is done on parts where the glass lid (Kapton) protector is removed. This test stage must be performed in a cleanroom or under a vertical laminar flow hood. JESD22 test method B101 is used as reference for the visual inspection. 
+
+Heading 3: Final testing (FT)
+The final test stage is intended to confirm that the product is compliance (functional and/or parametric) against the test limits that are defined for each of the test parameters in the test plan. The goal is to screen devices for manufacturing defects and remove mavericks.
+For flight models (FM) or production models (PROD) this test stage will be used for most of the electrical testing of the product. During this test stage the glass lid is protected by the Kapton tape and the light input is blocked towards the sensor. 
+In this setup configuration, the temperature of the DUT can be precisely controlled, enabling reliable acquisition of dark images. Optical test parameters like dark current and dark signal non-uniformity (DSNU) are measured during this test stage.
+
+Heading 3: Optical testing (OT)
+During optical testing, a light source provides input to the image sensor, and images are captured at different light intensity levels. Key optical parameters - such as responsivity, photo-response non-uniformity (PRNU), and temporal noise - are measured, and a pixel defect map is generated. Product differentiation (binning) is then performed based on the number of detected defect pixels, clusters, and column or row defects.
+Optical testing is done on parts where the glass lid (Kapton) protector is removed. This test stage must be performed in a cleanroom or under a vertical laminar flow hood.
+
+Heading 3: Camera PCB functional test (VIS)
+This test stage is intended to perform a functional verification of the IMG002x1 product after assembling on the PCB VIS4000x. This PCB is used in the camera module. During this test stage test patterns from the IMG002x1 are captured via the parallel interface and compared to the expected value.  
+
+Heading 3: Functional verification (VER)
+The functional verification stage is intended to confirm that the product is compliance (functional and/or parametric) against its documentation for normal use-case(s). This stage usually uses a selection of tests and test conditions from the characterization test stage.
+
+Heading 3: Electrical Characterization (CHAR)
+The characterization stage is intended to test the electrical requirements of the DUTs over the operating conditions (temperature and supply) as defined in section 2.1.  
+During the verification phase of the product development lifecycle the number of parts used in the analysis can be smaller compared to the number used in validation phase. The full characterization as part of the device validation phase should be performed on a number of parts that is statistically meaningful. The test coverage should be similar in both phases. If not, the rationally for changing test coverage must be addressed in the characterization report. 
+
+Heading 3: Optical characterization (CHAR_OT)
+During optical characterization, a light source provides input to the image sensor, and images are captured at different light intensity levels. Key optical parameters - such as responsivity, photo-response non-uniformity (PRNU), and temporal noise - are measured, and a pixel defect map is generated.
+Optical testing is done on parts where the glass lid (Kapton) protector is removed. This test stage must be performed in a cleanroom or under a vertical laminar flow hood.
+
+Heading 3: Trimming (TRIM)
+The trimming stage is intended obtain the best-fit trim codes for the building blocks. Since there is no on-chip non-volatile memory available, trimming is done per wafer lot on a set of at least 20 devices. Median values for each trim code is calculated in postprocessing and stored in a new revision of the camera configuration files.   
+
+Heading 3: TID radiation testing (TID)
+The Total Ionizing Dose (TID) test stage evaluates the effects of cumulative radiation exposure on the Devices Under Test (DUTs). Dose rates are chosen to be close to target applications of the product. 
+
+Heading 3: Annealing (ANNEAL)
+The annealing test stage at room temperature is conducted to observe any recovery effects in the Devices Under Test (DUTs) following radiation exposure. After the TID test, the DUTs are left at similar biasing conditions at ambient temperature for 24 hours to allow for potential charge redistribution and partial recovery of radiation-induced degradation. This stage helps assess the transient and permanent effects of radiation damage, providing insights into the behaviour of the DUTs.
+
+Heading 3: Aging (AGING)
+The aging test stage at 100°C for 168 hours evaluates the long-term stability of the DUTs. By subjecting the devices to an extended period of elevated temperature, this test simulates accelerated aging conditions, helping to identify potential degradation mechanisms such as drift in electrical parameters, leakage currents, or shifts in threshold voltage. This stage is particularly useful for assessing how radiation-induced defects evolve over time when exposed to heat. DUTs are placed in a controlled temperature chamber, with their biasing conditions based on prior test stages. 
+
+Heading 3: Light power calibration (CAL)
+The light power generated by the light source in the optical test setup requires to be calibrated on a periodical base. This information is required for the test parameters that are calculated back to the number of photons, like the responsivity of the imager. This test stage requires a dedicated setup where a interface board connects the photodiode to the measurement board.
+
+Heading 2: Test flows
+This section defines the test flow that every part will follow. For the production testing of the imager chip (MAG-IMG002x1-NC) itself the test flow is given in Figure 1. The test flow for the VIS PCB is given in Figure 2.
+Figure 3 shows the test flow of the imager chip (MAG-IMG002x1-NC) that needs to be followed during characterization of the product. The trimming test flow is predicted in Figure 4.  Figure 5 shows the test flow for the qualification testing of the imager chip (MAG-IMG002x1-NC).
+Figure 1: MAG-IMG002x1-NC production test flow
+Figure 2: MAG-VIS4000x-N production test flow
+Figure 3: MAG-IMG002x1-NC characterization test flow
+Figure 4: MAG-IMG002x1-NC trim test flow
+Figure 5: MAG-IMG002x1-NC qualification test flow
+
+Heading 2: Test sequence
+Table 3 provides an overview of the various tests conducted at each test stage and outlines the correct test sequence, which should be followed from top to bottom.
+Table 3: Test sequence per test stage
+
+Heading 2: Trimming sequence
+In order to start tuning all trim settings it is necessary to respect the block level hierarchy of the DUT. To first trim top level blocks and after that to trim blocks that depend on other blocks. Therefore a specific trimming sequence is written down in Table 4.
+Table 4: Trimming sequence
+
+Heading 2: Test time
+Test times in the table below are valid for one temperature and 1 supply level
+Table 5: Estimated Test Time (TT) per test stage
+
+Heading 2: Test equipment
+All test equipment outlined in the hardware overview Test hardware is listed in Table 6 and Error! Reference source not found.. These tables provide recommendations for the required instruments during the different test, indicate their availability based on the test schedule, and specify whether the equipment remains calibrated throughout the various test phases. 
+Table 6: Measurement Equipment overview
+
+Heading 2: Test limits 
+Test limits are defined in the excel file under post-processing and are valid for FT, OT, TRIM and VIS test stages.
+
+Heading 2: Statistical analysis
+
+Heading 3: Bin groups
+Following table gives an overview of the bin groups. Bin 1 is always the PASS bin. Bin groups  between 2 and 99 are reserved for PASS with limited performance, groups between 100 and 199 are FAIL but can be retested. Groups starting from 200 are FAILS and should be scrapped.
+Table 7: Software bin table
+Table 8: Hardware bin table
+
+Heading 3: Dynamic test limits
+This section list all parameters that fall under DPAT control. 
+Currently, no parameters are under DPAT control.
+
+Heading 2: QC test stages
+The TRIM test stage needs a QC version that:
+Trim tests are executed but the best fit code will not be used in the rest of the test program
+The other test stages don’t need a QC version.
+During the QC runs the specification limits will be used as acceptance criteria. 
+
+Heading 1: Measurement test setup
+This chapter explains how to collect measurement data from individual DUTs while working with a limited amount of lab equipment. It also details the instruments used in the test setup, along with all hardware-related requirements. Additionally, the section covers the software used to control the test setup, including software-specific details.
+
+Heading 2: Test hardware
+
+Heading 3: Overview
+Error! Reference source not found. provides an overview of the complete test setup used for most tests outlined in the test procedures (Chapter 0). As shown in the diagram, the Devices Under Test (DUTs) are placed within a temperature-controlled environment, which may be maintained using a thermostreamer or temperature chamber to ensure stable and controlled test conditions. The DUTs are connected to various measurement instruments via a connection matrix, allowing flexible signal routing.
+To enable automated test execution, all instruments are connected through Ethernet and centrally controlled by a test PC. This setup ensures efficient data acquisition, measurement synchronization, and automated execution of the defined test procedures.
+Figure 6: Measurement setup overview
+
+Heading 3: DUT information
+To limit the use of equipment channels, the DUTs are measured using a time-multiplexed approach, ensuring that only one device is tested at a time (single-site test setup).
+The DUT pin configuration can be found in the datasheet MAG-IMG002X1-NC_Datasheet_2025_04-rev1.1. Table 9 provides a detailed overview of all DUT pins and specifies the corresponding test equipment required for each pin to execute the defined test procedures. 
+For debugging purposes, additional connections to the test equipment may be beneficial. These optional connections are marked with the postfix "∗" in the table. The following codes are used in the matrix:
+HI_F: Forced voltage or current at the pin
+HI_S, LO_S: Sensed voltage or current at the pin
+LO_F: Return path
+HI_IN: Sensed voltage or current at the pin connects to HI input of DMM or scope
+LO_IN: Sensed voltage or current at the pin connects to LO input of DMM 
+CHx: Input of oscilloscope with x in range [1 to 4] or output of function generator with x in range [1 to 2].
+Table 9: Pin list vs equipment matrix
+
+Heading 3: Pin load requirements
+During the hardware development attention needs to be given to following items: 
+Load cap specs
+Should be limited to 100pF for digital outputs. 
+Low-ohmic connections 
+For ground and power connections.
+Shielded/guarded signals
+All connections between the function generator, scope, SMU and the pins of the ASIC should be done with coax or triax cables. Pay attention to the shielding of these signals.  
+Impedance matched signals
+Make sure the SPI lines are length matched as well as the video signals. The video signals should also have an impedance of 50 Ohm.
+
+Heading 3: Daughter board and external components 
+A dedicated daughter board will be designed to serve as an interface between the DUT and the measurement board. Make sure the SPI lines are length matched as well as the video signals. The video signals should also have an impedance. The impedance of the video lines on the daughterboard should not be impedance matched at 50 Ohm because a Ron measurement on these pin would be disturbed by this impedance matching. The impedance match will be foreseen on the measurement board with relays and 50 Ohm resistors. No testpoints are added on the socket PCB.
+Each daughter board will have a unique serial number for identification.
+In Table 10 the external components for each daughter board are listed. Decoupling/stabilization capacitors should be placed as close to the pin as possible to reduce ESR. 
+Table 10: External components
+
+Heading 3: Measurement board
+The measurement board will serve as an interface between the daughter board and the connection matrix, power supplies, FPGA, and other required equipment. These connections will be made using a combination of flat cables, SMA connectors, and power connectors. Additionally, the measurement board will function as a load board.
+The design will support connections for a single daughter board (single-site testing). To ensure compatibility with different test environments, the measurement board be designed for use with a thermostreamer.
+Each measurement board will be assigned a unique serial number for identification. 
+All supply domains will be individually accessible on this board.
+The measurement board will contain relays and muxes to perform onboard muxing. Every video signal/SPI pin as well as the reset and trigger pin can be connected to either the communication board (CL/CXP) or to the measurement equipment. For the videolines, a path to the communication board (CL/CXP) can be made via relays and through 50Ohm resistors to have impedance matched lines. A 20 MHz clock will be generated onboard as well. For the test busses, a unity gain buffer can be used if needed for dynamic signals. An RC filter circuit will be foreseen on the measurement board on the reset pin as well. Debug connectors will be foreseen for the video lines and SPI lines. The relays and muxes will be steered by a microcontroller that communicates, via a different SPI bus than the imager uses, with the communication board (CL/CXP) in order to set the relays and muxes in the correct way. The 20 MHz clock, microcontroller, relays and muxes will be powered by another supply in order be able to monitor the current consumption of the imager correctly. For both the analog and digital test busses, a possibility is created to use an extra external buffer for voltages. While testing with these buffers, these buffers showed clipping outputs to supply rails when the common mode input signal exceeds 2.8V. For this reason, the decision was made to not use these buffers while measuring analog signals.
+
+Heading 3: Power supplies 
+Power is supplied to the DUT using bench Power Supply Units (PSUs). All DUT supply channels are listed in Table 11Table 11, where the "default connected" column indicates whether a channel is connected by default during testing unless otherwise specified in the test procedure. The supply can either be directly connected to the pin, via a relays or via an DMMI for most accurate supply current measurements. The PSU channels can be split over different bench equipment depending on availability and sourcing/measurement requirements. 
+The power-up and power-down sequence for default-connected supplies is detailed in Section 3.2.3. To prevent voltage overshoot, it is strongly recommended to use power sources with a controllable soft ramp.
+Table 11: Power supplies
+
+Heading 2: Test software
+
+Heading 3: Overview
+The software test suite is an in-house build environment using Python scripts to control following:
+settings measurement equipment,
+connectivity between the DUTs and the equipment,
+supply and temperature control,
+Communication board for e.g. serial interfacing with the DUT,
+logging of measurement data and meta data to a database and
+settings for the load board.
+
+Heading 3: Park state routine
+Before each test procedure starts the DUT and the test setup is brought to a known default state (park state). This includes driving following IO pins to:
+Table 12: Park state pin biasing 
+All onboard relays and muxes towards the test equipment are set to non-conducting state. In the park state routine, the default register settings mentioned in Table 13 are set.
+Table 13: Park state registers
+From earlier stage testing, certain register were default used in another setting. These settings, mentioned in the table below, are set at the end of the park state.
+Table 14: Standard register settings
+
+Heading 3: Power cycle routines
+Power-up sequence:
+Disconnect all measurement equipment
+Apply VDDIO = VDDA = VD_RST = VDDD = 0V
+Wait 10ms
+Set IO’s as defined in the park state routine (section 3.2.2)
+Ramp up VDDIO to its defined operating condition 3.3V in 100μs or slower
+Ramp up VDDA to its defined operating condition 3.3V in 100μs or slower
+Ramp up VD_RST to its defined operating condition 3.3V in 100μs or slower
+Ramp up VDDD to its defined operating condition 1.8V in 100μs or slower
+Power-down sequence:
+Disconnect all measurement equipment
+Ramp down VDDD to 0V in 100μs or slower
+Ramp down VD_RST to 0V in 100μs or slower
+Ramp down VDDA to 0V in 100μs or slower
+Ramp down VDDIO to 0V in 100μs or slower
+
+Heading 3: Design for test (DfT) features
+Table 15 lists all internal test signals that are available via one of the test mux pins. The test mux is controlled via the register map of the ASIC. A lot of these signals will be accessed during the tests described in this test procedure. Inside Megacam, a series of two buffers can be used to measure signals via the analog test busses. The first buffer in this series of two cannot be compensated for, so these one are only used when the measurement will be unstable when this one is not used. This will be mentioned in the tests needing this buffer in section Test procedures. The buffers used for each voltage measurement can be set via the tstmux_buf_en register parameter where the LSB enables the buffer for ATB<0> and the MSB  enables the buffer for ATB<1>.
+Table 15: test mux summary
+
+Heading 1: Optical test setup
+
+Heading 3: 
+
+Heading 3: Optical test settings
+Optical test settings is an object in Python that contains settings required to perform optoelectrical measurements. This object is required as an input for all optical test procedures (T0034-T0038). An input configuration file is required to generate this object. The defined settings are for example: 
+Initial set of exposure times used in the PTC/DC sequence. As a starting point, minimum exposure time used is 80us, and maximum is 20ms and 1.4s, for PTC and DC sequence, respectively. However, T0034 will dynamically determine the set of exposure times used by each sample to get the most suitable raw images for PTC/DC analysis. This set is saved in an initialization file.
+For each LED color, LED intensities  (whose values are between 0-65535), wavelength, and last measured light irradiance at the sample (in uW/cm2). Light irradiance measurement. The light irradiance number (E) then calibrates the number of photons (µp) in PTC analysis of T0038, according to this formula 
+For PTC analysis using white, the RGB LED intensities are set such that all color channels saturate at similar exposure time.
+Optical setup condition is a combination of LED configuration and selected color channels to be analysed. The selected optical setup conditions for each type of sample are listed below:
+How many raw images to take for each analysis, which are explained further on each test
+On which ROI the analysis is performed. For DC per pixel analysis, ROI is limited to 400x400 pixels located at the center of an image. This is to limit the amount of processing time, as the analysis is done per pixel. Other analysis uses ROI of full FHD frame.
+Where the linear fitting is performed on these curves: PTC (to calculate K), mean bright value vs exposure times (to calculate R), and mean dark value vs exposure times (to calculate DC). This needs to be done since we need to exclude the nonlinear part of the curve for fitting for better repeatability.
+Thresholds used to classify pixel defects, which are explained further in section .
+
+Heading 3: 
+
+Heading 3: Extracted parameters
+The optoelectrical parameters are extracted from the raw images taken at specific exposure times, in the test T0035-T0038. Here, the raw images are assumed to have the 12-bit format, even though by default we use 10-bit ADC. Consequently, all parameters in DN are reported in 12-bit. The extracted optoelectrical parameters are listed in here.
+The processing steps are described below. In case the parameter values are unusually different than previously reported, the scheme below can be used to trace back the source of error.
+
+Heading 3: Optical test analysis software
+All the analysis, especially PTC and SN, are performed using modified version of EMVA1288 toolbox, located in f_post_processing folder. The original emva1288 Python package does not need to be included in the software environment. Inside that folder, these files can be found:
+optical_test_constants.yaml: the template of the config file that lists all the constants for optical test settings object creation
+optical_test_constants_no_light_tower.yaml: like above, but suitable for test sequence without light tower (excluding PTC analysis)
+optical_test_settings.py: where the optical test settings object is defined
+optical_list_params.py: where the optoelectrical parameters are defined
+folder process_emva1288: modified version of EMVA1288 Python toolbox
+optical_pixel_dc_process.py: functions for DC per pixel analysis
+optical_result.py: functions to combine the results from all analysis included in the test sequence
+optical_common_functions.py: common functions such as save/read raw image, split color channels, plotting, etc.
+optical_access_db.py: to access Experimate database and generate Excel file output that contains averaged parameter values from all optical setup conditions and repetitions
+
+Heading 1: Calibration setup
+Todo
+
+Heading 1: Device operating mode and configuration
+This chapter contains an overview of all the tests included in the test sequence(s). In the overview items as high-level description, test configuration, test conditions, detailed test procedure and acceptance criteria are discussed. 
+Some tests require to load a video mode in the DUT. Especially functional tests will use so-called DCF’s (Digitizer Configuration Files). The table below shows a short overview of each used DCF as well as a small comparison between them.
+Table 16 DCF overview
+
+Heading 1: Test procedures
+This chapter contains an overview of all the tests included in the test sequence(s). In the overview items as high-level description, test configuration, test conditions, detailed test procedure and acceptance criteria are discussed. 
+Some tests are repeated on multiple pins. To avoid listing all pins every time such test is described, sometimes a subset of pins described in Table 9 is referenced. These subsets are summarized in Table 17.
+Table 17: Subsets of pins
+
+Heading 2: T0001: Continuity
+Table 18: T0001: Continuity overview
+
+Heading 2: T0002: Power Short
+Table 19: T0002: Power Short overview
+
+Heading 2: T0003: Leakage
+Table 20: T0003: Leakage overview
+
+Heading 2: T0004: VIL/VIH
+Table 22: T0004 : VIL/VIH overview
+
+Heading 2: T0005: VOL/VOH
+Table 25: T0005: VOL/VOH overview
+
+Heading 2: T0006: IOL/IOH
+Table 28: T0006: IOL/IOH overview
+
+Heading 2: T0007: IDDD
+Table 31: T0007: IDDD overview
+
+Heading 2: T0008: Test buffer offset
+Table 32: T0008: Test buffer offset overview
+
+Heading 2: T0009: Trim test
+Table 33: T0009: Trim test overview
+
+Heading 2: T0010: Trim sweep
+Table 35: T0010: Trim sweep overview
+
+Heading 2: T0011: Static signal test
+Table 37: T0011: Static signal test overview
+
+Heading 2: T0013: PLL lock
+Table 39: T0013: PLL lock overview
+
+Heading 2: T0014: Row driver
+Table 40: T0014: Row driver overview
+
+Heading 2: T0015: S&H test
+Table 41: T0015: S&H test overview
+
+Heading 2: T0018: S&H sweep test
+Table 43: T0018: S&H sweep test overview
+
+Heading 2: T0012: PLL open-loop
+Table 45: T0012: PLL open-loop overview
+
+Heading 2: T0019: Ramp gen trim
+Table 46: T0019: Ramp gen trim overview
+
+Heading 2: T0039: Ramp gen test 
+Table 48: T0039: Ramp gen test overview
+
+Heading 2: T0021: Ramp gen sweep test 
+Table 49: T0021: Ramp gen sweep test overview
+
+Heading 2: T0023: POR
+Table 51: T0023: POR overview
+
+Heading 2: T0024: Frame modes
+Table 52: T0024: Frame modes overview
+
+Heading 2: T0025: Trigger mode
+Table 53: T0025: Trigger mode overview
+
+Heading 2: T0026: Burst mode
+Table 55: T0026: Burst mode overview
+
+Heading 2: T0027: Mirroring
+Table 57: T0027: Mirroring overview
+
+Heading 2: T0028: Sub-sampling
+Table 58: T0028: Sub-sampling overview
+
+Heading 2: T0029: Blackpixel readout
+Table 59: T0029: Blackpixel readout overview
+
+Heading 2: T0030: Testpattern generator
+Table 60: T0030: Testpattern generator
+
+Heading 2: T0031: Software trigger
+Table 61: T0031: Software trigger overview
+
+Heading 2: T0032: Serial interface
+Table 62: T0032: Serial interface overview
+
+Heading 2: 
+
+Heading 2: T0034: Optical init
+
+Heading 2: T0035: Optical defect map
+
+Heading 2: T0036: Optical PTC capture
+
+Heading 2: T0037: Optical DC capture
+
+Heading 2: T0038: Optical test processing
+
+Heading 2: T0040: Optical power calibration
+
+Heading 2: T0041: IDD VIS 
+T0041: IDD VIS overview
+
+Heading 2: 
+
+Heading 1 - no number: List of Acronyms

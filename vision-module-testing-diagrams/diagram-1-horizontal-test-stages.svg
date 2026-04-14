@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">Vision module: product test stages</title>
+  <desc id="desc">Three-stage test flow from IC in socket through PCB functional test to assembled module.</desc>
+  <defs>
+    <linearGradient id="hdr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#152a45"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrowEnd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e3a5f"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="640" fill="#f7f8fa"/>
+  <rect x="40" y="28" width="1120" height="56" rx="6" fill="url(#hdr)"/>
+  <text x="60" y="66" fill="#ffffff" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="600">Vision module product verification</text>
+  <text x="1140" y="66" fill="#a8c4e8" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="13" text-anchor="end">Customer overview</text>
+  <rect x="40" y="108" width="360" height="480" rx="8" fill="#ffffff" stroke="#d9dee6" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="420" y="108" width="360" height="480" rx="8" fill="#ffffff" stroke="#d9dee6" stroke-width="1" filter="url(#shadow)"/>
+  <rect x="800" y="108" width="360" height="480" rx="8" fill="#ffffff" stroke="#d9dee6" stroke-width="1" filter="url(#shadow)"/>
+  <text x="220" y="142" fill="#1e3a5f" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="700" text-anchor="middle">1. IC (socket)</text>
+  <text x="220" y="162" fill="#5c6570" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="12" text-anchor="middle">Characterization and functional test</text>
+  <text x="600" y="142" fill="#1e3a5f" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="700" text-anchor="middle">2. Assembled PCB</text>
+  <text x="600" y="162" fill="#5c6570" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="12" text-anchor="middle">Functional test</text>
+  <text x="980" y="142" fill="#1e3a5f" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="15" font-weight="700" text-anchor="middle">3. Module</text>
+  <text x="980" y="162" fill="#5c6570" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="12" text-anchor="middle">Stack: FT and characterization</text>
+  <line x1="402" y1="305" x2="416" y2="305" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrowEnd)"/>
+  <line x1="782" y1="305" x2="796" y2="305" stroke="#1e3a5f" stroke-width="2.5" marker-end="url(#arrowEnd)"/>
+  <g font-family="Segoe UI, Helvetica Neue, Arial, sans-serif">
+    <rect x="60" y="188" width="320" height="72" rx="6" fill="#eef3f9" stroke="#c5d4e8"/>
+    <text x="80" y="212" fill="#1e3a5f" font-size="12" font-weight="700">Image sensor IC</text>
+    <text x="80" y="232" fill="#2d3748" font-size="13">MAG-IMG002x1-NC</text>
+    <text x="80" y="250" fill="#5c6570" font-size="11">Mono / color variants</text>
+    <rect x="60" y="272" width="320" height="72" rx="6" fill="#eef3f9" stroke="#c5d4e8"/>
+    <text x="80" y="296" fill="#1e3a5f" font-size="12" font-weight="700">Power (DCDC) IC</text>
+    <text x="80" y="316" fill="#2d3748" font-size="13">MAG-PSU00001-NP</text>
+    <rect x="60" y="356" width="320" height="72" rx="6" fill="#eef3f9" stroke="#c5d4e8"/>
+    <text x="80" y="380" fill="#1e3a5f" font-size="12" font-weight="700">CoaXPress interface IC</text>
+    <text x="80" y="400" fill="#2d3748" font-size="13">MAG-CXP00002-NP</text>
+    <text x="60" y="452" fill="#5c6570" font-size="11">Tested in socket under defined electrical and thermal conditions.</text>
+  </g>
+  <g font-family="Segoe UI, Helvetica Neue, Arial, sans-serif">
+    <rect x="440" y="188" width="320" height="88" rx="6" fill="#f0f7f4" stroke="#b8d9c9"/>
+    <text x="460" y="212" fill="#1e3a5f" font-size="12" font-weight="700">Sensor PCB</text>
+    <text x="460" y="232" fill="#2d3748" font-size="13">MAG-VIS4000x-N</text>
+    <text x="460" y="252" fill="#5c6570" font-size="11">Hosts MAG-IMG002x1-NC</text>
+    <rect x="440" y="288" width="320" height="88" rx="6" fill="#f0f7f4" stroke="#b8d9c9"/>
+    <text x="460" y="312" fill="#1e3a5f" font-size="12" font-weight="700">Power PCB</text>
+    <text x="460" y="332" fill="#2d3748" font-size="13">MAG-VIS4001x-N</text>
+    <text x="460" y="352" fill="#5c6570" font-size="11">Hosts MAG-PSU00001-NP</text>
+    <rect x="440" y="388" width="320" height="88" rx="6" fill="#f0f7f4" stroke="#b8d9c9"/>
+    <text x="460" y="412" fill="#1e3a5f" font-size="12" font-weight="700">CoaXPress PCB</text>
+    <text x="460" y="432" fill="#2d3748" font-size="13">MAG-VIS4003x-N</text>
+    <text x="460" y="452" fill="#5c6570" font-size="11">Hosts MAG-CXP00002-NP</text>
+    <text x="440" y="510" fill="#5c6570" font-size="11">PCB-level functional verification after assembly.</text>
+  </g>
+  <g font-family="Segoe UI, Helvetica Neue, Arial, sans-serif">
+    <rect x="820" y="220" width="320" height="200" rx="8" fill="#faf6f0" stroke="#e0c9a6"/>
+    <text x="840" y="256" fill="#1e3a5f" font-size="13" font-weight="700">Integrated vision module</text>
+    <text x="840" y="282" fill="#2d3748" font-size="15">MAG-VIS100xx-N</text>
+    <text x="840" y="308" fill="#5c6570" font-size="12">Three-board stack comprising</text>
+    <text x="840" y="328" fill="#5c6570" font-size="12">MAG-VIS4000x + MAG-VIS4001x + MAG-VIS4003x</text>
+    <line x1="840" y1="342" x2="1100" y2="342" stroke="#e0c9a6"/>
+    <text x="840" y="368" fill="#5c6570" font-size="11">Module-level FT and characterization</text>
+    <text x="840" y="388" fill="#5c6570" font-size="11">across agreed operating conditions.</text>
+  </g>
+  <text x="60" y="612" fill="#8a9299" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="10">The letter x denotes product family or configuration suffix. Edit in Inkscape, Affinity Designer, or draw.io (import SVG).</text>
+</svg>

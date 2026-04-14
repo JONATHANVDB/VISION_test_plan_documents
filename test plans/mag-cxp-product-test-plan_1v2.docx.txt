@@ -1,0 +1,348 @@
+
+Heading 1 - no number: Revision history
+
+Heading 1 - no number: List of Figures
+Figure 1: MAG-CXP00002-NP production test flow	11
+Figure 2: MAG-VIS4003x-N production test flow	12
+Figure 3: MAG-CXP00002-NP characterization test flow	13
+Figure : MAG-CXP00002-NP qualification test flow	14
+Figure : Measurement setup overview	21
+Figure : RF network	25
+
+Heading 1 - no number: List of Tables
+Table 1: Supply voltage conditions	9
+Table 2: Test stages	9
+Table 3: Test sequence per test stage	14
+Table 4: Trimming sequence	16
+Table : Estimated Test Time (TT) per test stage	16
+Table : Measurement Equipment overview	17
+Table : Software bin table	18
+Table : Pin list vs equipment matrix	22
+Table : External components	24
+Table : RF network component summary	25
+Table : Power supplies	26
+Table 12: FPGA IO supply state	26
+Table : Park state pin biasing	27
+Table : Additional register settings after reset of DUT.	29
+Table : Trim registers	29
+Table : test mux summary	30
+Table 17: Subsets of pins	32
+Table : T0001: Continuity Test Overview	33
+Table : T0002: Power Short Test Overview	34
+Table : T0003: Pin Leakage Test Overview	35
+Table : T0004: VIL VIH Test Overview	38
+Table : T0005: VOH VOL Test Overview	41
+Table : T0006: IOL IOH Test Overview	44
+Table : T0007: IDDD Test Overview	45
+Table : T0008: Test Buffer Offset Test Overview	47
+Table : T0009: Block Trimming Test Overview	49
+Table : T0010: Block Sweep Test Overview	51
+Table : T0011: Static Signal Test Overview	53
+Table : T0012 Regulators Test Overview	56
+Table :  T0013: Oscillator Test Overview	58
+Table : T0014: PLL Open Loop Test Overview	59
+Table : T0015: PLL Lock Test Overview	61
+Table : T0016: IO SPI Slave Test Overview	62
+Table : T0017: IO SPI Master CAM Test Overview	63
+Table : T0018: IO SPI Master GPIO Test Overview	63
+Table : T0020: CXP Uplink Receiver Sensitivity Test Overview	65
+Table : T0021: CXP Uplink Receiver Sensitivity Sweep Test Overview	66
+Table : T0022: Internal Test Patterns Test Overview	67
+Table : T0023: Camera Test Overview	69
+Table : T0024: OTP Write Test Overview	70
+Table : T0025: OTP Data Retention Test Overview	72
+Table : T0026: VIS VDD3V3_DCDC Test Overview	72
+
+Heading 1: Document purpose and scope
+This document is part of the MAG-CXP Product Testing project and defines the test strategy, test setup and the detailed test procedures to perform electrical verification, functional verification and radiation testing on the product.
+This document also provides a detailed test schedule and lists test facilities. 
+All the information in this document is intended to describe the verification tests that will be done on the product mentioned above. Any major deviations from this plan will be discussed prior or at latest during the test readiness review (TRR) meeting with the customer. Major changes will be listed in the revision history. Major changes can be (list is not exclusive):
+Number of DUT’s 
+Test conditions
+Hardware/equipment changes
+Test facility changes
+Addition or removal of tests
+Any update to a test procedure that changes the test coverage or testing strategy 
+Minor changes are kept in the revision history but not explicitly informed to the customer. These changes are limited to:
+Small changes in a test procedure, e.g. additional SPI commands, increasing wait times
+Correction of typo’s 
+Any changes (major and minor) after the TRR meeting will be discussed with the customer. 
+
+Heading 1: Test strategy 
+This chapter describes the test methods used for the verification and validation of the MAG_CXP00002_NP product. The test strategy aims at maximal test coverage of the product.
+
+Heading 2: Test conditions
+During functional verification and characterization testing the temperature and supply voltage of the DUT’s will be varied to validate the ASIC specifications over the defined operating conditions. The conditions listed in this section are the minimal set of conditions that will be tested. If additional test conditions are needed to validate certain parameters, then they are explicitly mentioned in the test procedure. 
+Temperature conditions are mentioned in this document with following codes:
+RT = room temperature = 25°C +/- 5°C
+CT = cold temperature = -40°C +/- 5°C
+HT = hot temperature = 85°C +/- 5°C
+Supply voltage conditions are defined in the table below:
+Table 1: Supply voltage conditions
+
+Heading 2: Test stages
+Table 2 outlines all the test stages required to validate the performance of the test vehicle, while section 2.2.2 details the sequence in which these test stages fit into the overall test flow.
+Table 2: Test stages
+The following sections provide further details on the different test stages.
+
+Heading 3: Characterization (CHAR)
+The characterization stage is intended to test the electrical requirements of the DUTs over the operating conditions (temperature and supply) as defined in section 2.1.  
+During the verification phase of the product development lifecycle the number of parts used in the analysis can be smaller compared to the number used in validation phase. The full characterization as part of the device validation phase should be performed on a number of parts that is statistically meaningful. The test coverage should be similar in both phases. If not, the rationally for changing test coverage must be addressed in the characterization report. 
+
+Heading 3: Trimming test (TRIM)
+The trimming stage is intended obtain the best-fit trim codes for the building blocks. These code are programmed in the NVM memory at the end of this test stage. 
+
+Heading 3: Final Test (FT)
+The final test stage is intended to verify that the chip is within specifications. This is a reduced test compared to the characterization (CHAR). Where the CHAR test does a high resolution sweep over parameters to confirm the performance of the IC, the FT stage is more focussed on detecting bad parts. 
+
+Heading 3: Vision CXP sub-board testing (VIS)
+The Vision sub-board test stage is performed on the CXP sub-board of the MAG-VIS400xx PCBs,  in order to verify the functionality of the board. An external pattern is applied to the video input pins, mimicking the output of a imager. If the captured image from the CXP interface has no pixel errors, the test functionality of the board is considered to be proven. One additional test in the test stage is to measure the output voltage of the DCDC that is located on the same PCB. Note: this needs a manual change to the test setup.
+
+Heading 2: Test flow
+This section defines the test flow that every part will follow. For the production testing of the serializer chip (MAG-CXP00002-NP) itself the test flow is given in Figure 1. The test flow for the VIS PCB is given in Figure 2.
+Figure 3 shows the test flow of the chip (MAG-CXP00002-NP) that needs to be followed during characterization of the product.  Figure 4 shows the test flow for the qualification testing of the chip (MAG-CXP00002-NP).
+Figure 1: MAG-CXP00002-NP production test flow
+Figure 2: MAG-VIS4003x-N production test flow
+Figure 3: MAG-CXP00002-NP characterization test flow
+Figure 4: MAG-CXP00002-NP qualification test flow
+
+Heading 2: Test sequence
+Table 3 provides an overview of the various tests conducted at each test stage and outlines the correct test sequence, which should be followed from top to bottom.
+Table 3: Test sequence per test stage
+
+Heading 2: Trimming sequence
+In order to start tuning all trim settings it is necessary to respect the block level hierarchy of the DUT. To first trim top level blocks and after that to trim blocks that depend on other blocks. Therefore a specific trimming sequence is written down in Table 4.
+Table 4: Trimming sequence
+
+Heading 2: Test time
+Test times in the table below are valid for one temperature and 1 supply level.
+Table 5: Estimated Test Time (TT) per test stage
+
+Heading 2: Test equipment
+All test equipment outlined in the hardware overview is listed in Table 6. These tables provide recommendations for the required instruments during the different test, indicate their availability based on the test schedule, and specify whether the equipment remains calibrated throughout the various test phases. 
+Table 6: Measurement Equipment overview
+As listed in Table 6,custom equipment and boards are required to test the DUT. The measurement board is described in section 3.1.5. The daughter board is described in section 3.1.4. The module is part of the larger vision stack, which utilizes the daughter board and is pin compatible. This makes it possible to also utilize the setup to test assembled the MAG CXP on assembled MAG-VIS40031-N modules. For more information about the modules refer to  
+
+Heading 2: Statistical analysis
+
+Heading 3: Test limits 
+Test limits are defined in the excel file under post-processing and are valid for FT, TRIM and VIS test stages
+
+Heading 3: Bin groups
+Following table gives an overview of the bin groups. Bin 1 is always the PASS bin. Bin groups  between 2 and 99 are reserved for PASS with limited performance, groups between 100 and 199 are FAIL but can be retested. Groups starting from 200 are FAILS and should be scrapped. 
+Table 7: Software bin table
+The hardware bins are simply: one pass and one fail bin. 
+
+Heading 3: Dynamic test limits
+This section list all parameters that fall under DPAT control. 
+Currently, no parameters are under DPAT control.
+
+Heading 2: QC test stages
+The TRIM test stage needs a QC version that:
+Prevents the OTP to be written during the QC stage
+Trim tests are executed but the best fit code will not be used in the rest of the test program
+The other test stages don’t need a QC version.
+During the QC runs the specification limits will be used as acceptance criteria. 
+
+Heading 1: Measurement test setup
+This chapter explains how to collect measurement data from individual DUTs while working with a limited amount of lab equipment. It also details the instruments used in the test setup, along with all hardware-related requirements. Additionally, the section covers the software used to control the test setup, including software-specific details.
+
+Heading 2: Test hardware
+
+Heading 3: Overview
+Figure 5 provides an overview of the complete test setup used for most tests outlined in the test procedures (Chapter 4). As shown in the diagram, the Devices Under Test (DUTs) are placed within a temperature-controlled environment, which may be maintained using a thermostreamer or temperature chamber to ensure stable and controlled test conditions. The DUTs are connected to various measurement instruments via a connection matrix, allowing flexible signal routing.
+To enable automated test execution, all instruments are connected through Ethernet and centrally controlled by a test PC. This setup ensures efficient data acquisition, measurement synchronization, and automated execution of the defined test procedures.
+Figure 5: Measurement setup overview
+
+Heading 3: DUT information
+To limit the use of equipment channels, the DUTs are measured using a time-multiplexed approach, ensuring that only one device is tested at a time (single-site test setup). 
+The DUT pin configuration can be found in the datasheet . Table 8 provides a detailed overview of all DUT pins and specifies the corresponding test equipment required for each pin to execute the defined test procedures. 
+For debugging purposes, additional connections to the test equipment may be beneficial. These optional connections are marked with the postfix "∗" in the table. The following codes are used in the matrix:
+HI_F: Forced voltage or current at the pin
+HI_S, LO_S: Sensed voltage or current at the pin
+LO_F: Return path
+HI_IN: Sensed voltage or current at the pin connects to HI input of DMM or scope
+LO_IN: Sensed voltage or current at the pin connects to LO input of DMM
+HI_FS, LO_FS: Forced and sensed voltage at pin
+CHx: Input of oscilloscope with x in range [1 to 4]
+The SMU matrix output pin can also be connected to SCOPE channel 2. This scope channel has no separate switch matrix structure, the connection goes via the SMU switch matrix.
+Table 8: Pin list vs equipment matrix
+
+Heading 3: Pin load requirements
+During the hardware development attention needs to be given to following items: 
+Load cap specs
+Should be limited to 100pF for digital IO’s. 
+Low-ohmic connections 
+For ground and power connections. 
+Shielded/guarded signals
+All connections between the function generator, scope, SMU and the pins of the ASIC should be done with coax or triax cables. Pay attention to the shielding of these signals. 
+Impedance matched signals
+TRXP/TRXN: The TRXN pin is connected to a Coax transmission line leading to the frame grabber, while the TRXP pin is terminated on the substrate board. Matching must adhere to the 75Ω transmission line standard.
+
+
+Heading 3: Daughter board and external components 
+A dedicated daughter board will be designed to serve as an interface between the DUT and the measurement board. 
+The socket should have sufficient performance for high frequency signals, mainly for the TRXP,TRXN output signals. This signal should also be impedance matched on the daughter board to 75 Ohms.
+Due to simplicity of the daughter board which holds the socket, no additional special test points will be added to the board.
+Each daughter board will have a unique serial number for identification.
+
+Heading 4: External components
+In Table 9 the external components for each daughter board are listed. Decoupling/stabilization capacitors should be placed as close to the pin as possible to reduce ESR. 
+Table 9: External components
+Figure 6 depicts the RF network in use, this network is also placed on the daughter board. Positioned on the left side is the Serializer ASIC, featuring down-link driver pins TRXN and TRXP. As CoaXPress operates in a single-ended fashion, the TRXP pin is connected to ac-ground, presenting the same impedance (R3) as the TRXN pin experiences through the transmission line. Given the absence of on-chip resistors in the Serializer ASIC to convert the current from the LVDS driver to voltage, external resistors (R1 and R2) are employed. These external resistors (R1 and R2) serve the dual purpose of converting current to voltage in parallel to the transmission line impedance and acting as termination resistance for the uplink signal. In Table 10 all components are summarized.
+Figure 6: RF network
+Table 10: RF network component summary
+
+Heading 3: Measurement board
+The measurement board will serve as an interface between the daughter board and the connection matrix, power supplies, FPGA, and other required equipment. These connections will be made using a combination of flat cables, SMA connectors, and power connectors. Additionally, the measurement board will function as a load board.
+The design will support connections for a single daughter board (single-site testing). To ensure compatibility with different test environments, the measurement board will be designed for use with a thermostreamer.
+Each measurement board will be assigned a unique serial number for identification. 
+All supply domains will be individually accessible on this board.
+The measurement has the following requirements:
+Respect the pin requirements which are already described in section 3.1.3.
+Implement the sufficient muxing capabilities on the measurement board itself. 
+Simplifies wiring of the setup compared to using MaTeR MUX AC/DC cards.
+Use solid state switches as much as possible to reduce area required for the board.
+The required muxing capabilities are described in section 3.1.2.
+Test points should be foreseen for each signal pin of the DUT, to ease up debugging.
+An FPGA should be placed on the measurement board itself, to ensure signal integrity of the high speed video interface. The FPGA can also be used to control the muxes on the measurement board.
+A dedicated mux for the TRX signal:
+Matched to 75 Ohms.
+Use RF relays for minimal insertion loss.
+Add LEDs to all switch and relay controls to aid in debugging.
+
+Heading 3: Power supplies 
+Power is supplied to the DUT using bench Power Supply Units (PSUs). All DUT supply channels are listed in Table 11, where the "default connected" column indicates whether a channel is connected by default during testing unless otherwise specified in the test procedure. The supply can either be directly connected to the pin, via a relay or via an DMMI for most accurate supply current measurements. The PSU channels can be split over different bench equipment depending on availability and sourcing/measurement requirements. 
+The power-up and power-down sequence for default-connected supplies is detailed in Section 3.2.3. To prevent voltage overshoot, it is strongly recommended to use power sources with a controllable soft ramp.
+Table 11: Power supplies
+The supply for the FPGA’s IO bank which interfaces with the DUT can be selected from the options given in Table 12. This ensures that maximum flexibility for different kinds of tests, to minimize the influence of the FPGA for the different types of tests. Note that only the supply connection to the FPGA’s IO bank can be altered, the ground connection of the FPGA’s IO supply is always connected.
+Table 12: FPGA IO supply state
+
+Heading 2: Test software
+
+Heading 3: Overview
+The software test suite is an in-house build environment using Python scripts to control following:
+settings for MaTeR and measurement equipment,
+connectivity between the DUTs and the equipment,
+supply and temperature control,
+FPGA for e.g. serial interfacing with the DUT,
+logging of measurement data and meta data to a database and
+settings for the load board.
+
+Heading 3: Park state routine
+Before each test procedure starts the DUT and the test setup is brought to a known default state (park state). This includes driving following IO pins to:
+Table 13: Park state pin biasing 
+First all relays towards the test equipment are set to non-conducting state.
+Secondly, pin RESETN is connected to the FPGA and asserted, after this the reset is released. This reset will clear all register settings to default.
+Then, the debug SPI slave interface is connected to the FPGA and the frame grabber is connected to the CXP interface. 
+Followed by the additional configuration listed in Table 14. 
+Table 14: Additional register settings after reset of DUT.
+During the trim flow, when the OTP is not yet written, each execution of the park state also reloads the trim settings which were measured so far. All trim related settings which can be configured during park state are summarized in Table 15. When a trim setting is not yet measured, the default setting will not be altered in the DUT’s register map.
+Table 15: Trim registers
+
+Heading 3: Power cycle routines
+Power-up sequence:
+Disconnect all measurement equipment
+Disconnect all digital signals coming from the FPGA
+Connect RESETN pin to FPGA and drive to 0V
+Switch FPGA IO Voltage to VDD3V3_DIG.
+Turn on supply VDD3V3_DIG to 3.3V current limit: 100mA 
+Turn on supply VDD3V3_ANA to 3.3V current limit: 100mA 
+Turn on supply VDD3V3_CAM to 3.3V current limit: 100mA
+Set IO’s as defined in the park state routine (section 3.2.2)
+Power-down sequence:
+Disconnect all measurement equipment
+Disconnect all digital signals coming from the FPGA
+Turn off supply VDD3V3_CAM
+Turn off supply VDD3V3_ANA
+Turn off supply VDD3V3_DIG
+
+Heading 3: Design for test (DfT) features
+Table 16 Lists all internal test signals that are available via one of the test mux pins. The test mux is controlled via the register map of the ASIC. A lot of these signals will be accessed during the tests described in this test procedure. Although some signals could be accessed via external pads directly it is better to use the TMUX during automated testing because attaching cables to all pads and routing it to multiplexers can introduce wrong loading of LDOs and noise injection through these cables.
+Table 16: test mux summary
+On chip test buffers are used when measuring internal voltages without sufficient drive strength. The test buffer is automatically enabled when selecting these voltages via the test mux. In the tests the offset of the buffers is compensated before the value of the internal voltages is reported.
+
+Heading 1: Test procedures
+This chapter contains an overview of all the tests included in the test sequence(s). In the overview items as high-level description, test configuration, test conditions, detailed test procedure and acceptance criteria are discussed. 
+Some tests are repeated on multiple pins. To avoid listing all pins every time such test is described, sometimes a subset of pins described in Table 8 is referenced. These subsets are summarized in Table 17.
+Table 17: Subsets of pins
+
+Heading 2: T0001: Continuity Test
+Table 18: T0001: Continuity Test Overview 
+
+Heading 2: T0002: Power Short Test
+Table 19: T0002: Power Short Test Overview 
+
+Heading 2: T0003: Pin leakage Test
+Table 20: T0003: Pin Leakage Test Overview
+
+Heading 2: T0004: VIL VIH Test
+Table 21: T0004: VIL VIH Test Overview 
+
+Heading 2: T0005: VOH VOL Test
+Table 22: T0005: VOH VOL Test Overview
+
+Heading 2: T0006: IOL IOH Test
+Table 23: T0006: IOL IOH Test Overview 
+
+Heading 2: T0007: IDDD Test
+Table 24: T0007: IDDD Test Overview
+
+Heading 2: T0008: Test Buffer Offset Test
+Table 25: T0008: Test Buffer Offset Test Overview
+
+Heading 2: T0009: Block Trimming Test
+Table 26: T0009: Block Trimming Test Overview
+
+Heading 2: T0010: Block Sweep Test
+Table 27: T0010: Block Sweep Test Overview
+
+Heading 2: T0011: Static Signal Test
+Table 28: T0011: Static Signal Test Overview
+
+Heading 2: T0012: Regulators Test
+Table 29: T0012 Regulators Test Overview
+
+Heading 2: T0013: Oscillator Test
+Table 30:  T0013: Oscillator Test Overview
+
+Heading 2: T0014: PLL Open Loop Test
+Table 31: T0014: PLL Open Loop Test Overview
+
+Heading 2: T0015: PLL Lock Test
+Table 32: T0015: PLL Lock Test Overview
+
+Heading 2: T0016: IO SPI Slave Test
+Table 33: T0016: IO SPI Slave Test Overview
+
+Heading 2: T0017: IO SPI Master CAM Test
+Table 34: T0017: IO SPI Master CAM Test Overview
+
+Heading 2: T0018: IO SPI Master GPIO Test
+Table 35: T0018: IO SPI Master GPIO Test Overview
+
+Heading 2: T0019: Eye Diagram Test
+TODO
+
+Heading 2: T0020: CXP Uplink Receiver Sensitivity Test
+Table 36: T0020: CXP Uplink Receiver Sensitivity Test Overview
+
+Heading 2: T0021: CXP Uplink Receiver Sensitivity Sweep Test
+Table 37: T0021: CXP Uplink Receiver Sensitivity Sweep Test Overview 
+
+Heading 2: T0022: Internal Test Patterns Test
+Table 38: T0022: Internal Test Patterns Test Overview
+
+Heading 2: T0023: Camera Test
+Table 39: T0023: Camera Test Overview
+
+Heading 2: T0024: OTP Write Test
+Table 40: T0024: OTP Write Test Overview
+
+Heading 2: T0025: OTP Data Retention Test
+Table 41: T0025: OTP Data Retention Test Overview
+
+Heading 2: T0026: VIS VDD3V3_DCDC test
+Table 42: T0026: VIS VDD3V3_DCDC Test Overview
+
+Heading 1 - no number: List of Acronyms

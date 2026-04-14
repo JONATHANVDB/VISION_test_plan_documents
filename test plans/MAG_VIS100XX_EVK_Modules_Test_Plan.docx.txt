@@ -1,0 +1,226 @@
+
+Heading 1 - no number: Revision history
+
+Heading 1 - no number: List of Figures
+Figure 1: MAG VIS EVK Module production test flow diagram	10
+Figure 2: Measurement setup overview	12
+Figure 3: MAG-VIS1000X Measurement setup overview	13
+Figure 4: MAG-VIS1002X Measurement setup overview	13
+
+Heading 1 - no number: List of Tables
+Table 1: Supply voltage conditions	8
+Table 2: Imager modes	8
+Table 3: Test stages	8
+Table 4: Test sequence per test stage	10
+Table 5: Measurement Equipment overview	11
+Table 6: Bin table	11
+Table 7: Pin list vs equipment matrix	14
+Table 8: Power supplies	15
+Table 9: Park state pin biasing	15
+Table 10: Visual inspection overview	17
+Table 11: Power consumption overview	18
+Table 12: CXP Core functionality and video data check overview	19
+Table 13: IMG Core functionality and video data check overview	21
+Table 14: IMG Trigger mode overview	22
+Table 15: MAG-DRV Capabilities overview	24
+Table 16: MAG-DRV Motor drive capabilities overview	26
+
+Heading 1: Document purpose and scope
+This document is part of MAG-VIS Modules project and defines the test strategy, test setup and the detailed test procedures to perform electrical and functional verification. Radiation testing is out of scope of this test plan, these test are not done on individual modules.
+All the information in this document is intended to describe the verification tests that will be done on the product mentioned above. Any major deviations from this plan will be discussed prior or at latest during the test readiness review (TRR) meeting with the customer. Major changes will be listed in the revision history. Major changes can be (list is not exclusive):
+Number of DUT’s 
+Test conditions
+Hardware/equipment changes
+Test facility changes
+Addition or removal of tests
+Any update to a test procedure that changes the test coverage or testing strategy 
+Minor changes are kept in the revision history but not explicitly informed to the customer. These changes are limited to:
+Small changes in a test procedure, e.g. additional SPI commands, increasing wait times
+Correction of typo’s 
+Any changes (major and minor) after the TRR meeting will be discussed with the customer. 
+
+Heading 1: Test strategy 
+This chapter describes the test methods used for the verification and validation of the MAGVIS modules. The test strategy aims at maximal test coverage of the product.
+Functional testing and electrical parametric testing of the test structures is used to verify the performance. 
+
+Heading 2: Test conditions
+During functional verification testing the temperature and supply voltage of the DUTs will be varied to validate the module specifications over the defined operating conditions. The conditions listed in this section are the minimal set of conditions that will be tested. If additional test conditions are needed to validate certain parameters, then they are explicitly mentioned in the test procedure. 
+Temperature conditions are mentioned in this document with following codes:
+RT = room temperature = 25°C +/- 5°C
+CT = cold temperature = 0°C +/- 5°C
+HT = hot temperature = 55°C +/- 5°C
+Supply voltage conditions are defined in the table below:
+Table 1: Supply voltage conditions
+The different imager modes are defined in the table below. The default imager mode is FHD10 unless otherwise specified.
+Table 2: Imager modes
+
+Heading 2: Test stages
+Table 3 outlines all the test stages required to validate the performance of the test vehicle, while section 2.3 details the sequence in which these test stages fit into the overall test flow.
+Table 3: Test stages
+The following sections provide further details on the different test stages.
+
+Heading 3: Visual inspection (VI)
+The purpose of the external visual inspection test stage is to assess the physical condition of the Device Under Test (DUT) before testing. This stage helps identify any visible defects, such as cracks, issues with pins, delamination, or other mechanical damages that may have occurred during handling, or transportation. By conducting a thorough visual examination, potential issues can be detected early, preventing further testing on compromised components and ensuring the reliability of the test results.
+
+Heading 3: Functional verification (VER)
+The functional verification stage is intended to confirm that the product is compliance (functional and/or parametric) against its documentation for normal use-case(s). 
+
+Heading 2: Test flow
+This section defines the test flow that every part will follow. 
+Approved devices are defined as PCBs that have undergone and successfully passed all required verifications outlined in their dedicated, product-specific test plan. PCBs achieving this status are formally designated as fit for inclusion within an EVK assembly.
+The removal of the glass protection is performed only when the assembly includes a dedicated housing and mounted lens (see Figure 1, left flow). This step is omitted if the housing is not included (see Figure 1, right flow).
+Figure 1: MAG VIS EVK Module production test flow diagram
+
+Heading 2: Test sequence
+Table 4 provides an overview of the various tests conducted at each test stage and outlines the correct test sequence, which should be followed from top to bottom.
+Table 4: Test sequence per test stage
+
+Heading 2: Test equipment
+All test equipment is listed in Table 5. This table provide recommendations for the required instruments during the different test, indicate their availability based on the test schedule, and specify whether the equipment remains calibrated throughout the various test phases. 
+Table 5: Measurement Equipment overview
+
+Heading 2: Statistical analysis
+
+Heading 3: Bin groups
+Following table gives an overview of the bin groups. Bin 1 is always the PASS bin. Bin groups  between 2 and 99 are reserved for PASS with limited performance. Groups starting from 200 are FAILS and should be scrapped. 
+Table 6: Bin table
+
+Heading 1: Measurement test setup
+This chapter explains how to collect measurement data from individual DUTs while working with a limited amount of lab equipment. It also details the instruments used in the test setup, along with all hardware-related requirements. Additionally, the section covers the software used to control the test setup, including software-specific details.
+
+Heading 2: Test hardware
+
+Heading 3: Overview
+Figure 2 provides an overview of the complete test setup used for most tests outlined in the test procedures (Chapter 4). As shown in the diagram, the Devices Under Test (DUTs) are placed within a temperature-controlled environment, which may be maintained using a thermostreamer or temperature chamber to ensure stable and controlled test conditions. 
+To enable automated test execution, all instruments are connected through Ethernet and centrally controlled by a test PC. This setup ensures efficient data acquisition, measurement synchronization, and automated execution of the defined test procedures.
+Figure 2: Measurement setup overview 
+The MAG-VIS100xx modules require an adapted measurement configuration to facilitate the functionality of the MAG-DRV IC. The adapted setup incorporates the following additional equipment:
+Oscilloscope: Required for waveform capture and timing analysis. This verifies the operation of the MAG-DRV IC, including successful generation of ON/OFF output signals and the generation of PWM signals.
+Magics MUX Card: A multiplexer card is integrated to multiplex the outputs of the MAG-DRV IC to the oscilloscope.
+Power resistors: These resistors are added to limit the current flow trough the drivers of MAG-DRV IC.
+The measurement setup overview diagram for the MAG-VIS1000x will be constrained to highlight only the new, module-specific test equipment. The core system components (Frame Grabber, PSU, and Control Software) are mandatory elements of the EVK test platform and will be intentionally omitted from the specific diagram to maintain clarity and avoid unnecessary clutter.
+Figure 3: MAG-VIS1000X Measurement setup overview
+The MAG-VIS1002x modules require an adapted measurement configuration to facilitate the functionality of the MAG-DRV IC to drive motors of a lens. The core system components (Frame Grabber, PSU, and Control Software) are mandatory elements of the EVK test platform and will be intentionally omitted from the specific diagram to maintain clarity and avoid unnecessary clutter.
+Figure 4: MAG-VIS1002X Measurement setup overview
+
+Heading 3: DUT information
+To limit the use of equipment channels, the DUTs are measured using a time-multiplexed approach, ensuring that only one device is tested at a time (single-site test setup). 
+Table 7 provides a detailed overview of all DUT pins and specifies the corresponding test equipment required for each pin to execute the defined test procedures. 
+For debugging purposes, additional connections to the test equipment may be beneficial. These optional connections are marked with the postfix "∗" in the table. The following codes are used in the matrix:
+HI_F: Forced voltage or current at the pin
+HI_S, LO_S: Sensed voltage or current at the pin
+LO_F: Return path
+HI_IN: Sensed voltage or current at the pin connects to HI input of DMM or scope
+LO_IN: Sensed voltage or current at the pin connects to LO input of DMM 
+CHx: Input of oscilloscope with x in range [1 to 4]
+Table 7: Pin list vs equipment matrix
+*(1) Only applicable for the MAG-VIS1000X modules.
+
+Heading 3: Pin load requirements
+During the hardware development attention needs to be given to following items: 
+Low-ohmic connections 
+For ground and power connections.
+Impedance matched signals
+TRXP/TRXN: The TRXN pin is connected to a Coax transmission line leading to the frame grabber, while the TRXP pin is terminated on the substrate board. Matching must adhere to the 75Ω transmission line standard. 
+
+Heading 3: Power supplies 
+Power is supplied to the DUT using bench Power Supply Units (PSUs). All DUT supply channels are listed in Table 8, where the "default connected" column indicates whether a channel is connected by default during testing unless otherwise specified in the test procedure. The supply can either be directly connected to the pin, via a relays or via an DMMI for most accurate supply current measurements. The PSU channels can be split over different bench equipment depending on availability and sourcing/measurement requirements. 
+The power-up and power-down sequence for default-connected supplies is detailed in Section 3.2.3. To prevent voltage overshoot, it is strongly recommended to use power sources with a controllable soft ramp.
+Table 8: Power supplies
+
+Heading 2: Test software
+
+Heading 3: Overview
+The software test suite is an in-house build environment using Python scripts to control following:
+settings for MaTeR and measurement equipment,
+connectivity between the DUTs and the equipment,
+supply and temperature control,
+FPGA for e.g. serial interfacing with the DUT,
+logging of measurement data and meta data to a database and
+settings for the load board.
+
+Heading 3: Park state routine
+Before each test procedure starts the DUT and the test setup is brought to a known default state (park state). This includes driving following IO pins to:
+Table 9: Park state pin biasing 
+
+Heading 3: Power cycle routines
+Power-up sequence:
+Disconnect all measurement equipment
+Apply PSU-9V  = VDD_IN  = 0V
+Wait 10ms
+Ramp up VDD_IN  to its defined operating condition 9V in 10ms or slower
+Power-down sequence:
+Ramp down VDD_IN  to 0V in 10ms or slower
+Disconnect all measurement equipment
+
+Heading 1: Test procedures
+This chapter contains an overview of all the tests included in the test sequence(s). In the overview items as high-level description, test configuration, test conditions, detailed test procedure and acceptance criteria are discussed. 
+
+Heading 2: T0001: Visual inspection (VI)
+Table 10: Visual inspection overview
+
+Heading 2: T0002: Power consumption
+Table 11: Power consumption overview
+
+Heading 2: T0003: CXP Core functionality and video data check
+Table 12: CXP Core functionality and video data check overview
+
+Heading 2: T0004: IMG Core functionality and video data check
+Table 13: IMG Core functionality and video data check overview
+
+Heading 2: T0005: IMG Trigger mode
+Table 14: IMG Trigger mode overview
+
+Heading 2: T0006: MAG-DRV Capabilities (only for MAG-VIS1000x modules)
+Table 15: MAG-DRV Capabilities overview
+
+Heading 2: T0007: MAG-DRV Motor drive capabilities (only for MAG-VIS1002x modules)
+Table 16: MAG-DRV Motor drive capabilities overview
+
+Heading 1 - no number: List of Acronyms
+MAG-CXP IC Iniatilze SPI and Clock code snippet
+ 1. # region configure the spi block
+ 2. self.set_digitizer_feature("PROX_VendorUniqueSPIGPIO_spi_enable", 1)  # enable spi block
+ 3. self.set_digitizer_feature("PROX_VendorUniqueSPIGPIO_divider", 62)  # divide 62.5MHz to 1MHz
+ 4. self.set_digitizer_feature("PROX_VendorUniqueSPIGPIO_transaction_size", 15)  # 16bit (15+1)
+ 5. self.set_digitizer_feature("PROX_VendorUniqueSPIGPIO_ssel", 0)  # slave select on gpio 0
+ 6. # endregion
+ 7.  
+ 8. # region configure gpio pins
+ 9. # miso gpio 10, mosi gpio 9, sclk gpio 8, cs gpio 0
+10. self.set_digitizer_feature("PROX_IOLineModeAll_Value", 0b01111111111)  # 1 - output, 0 - input
+11.  
+12. # selects the I/O line to handle
+13. self.set_digitizer_feature("PROX_IOLineSelector_Value", 7)
+14. # selects which source signals to connect I/O line: 32 = internal spi
+15. self.set_digitizer_feature("PROX_IOLineSource_Value", 32)
+16.  
+17. self.set_digitizer_feature("PROX_IOLineSelector_Value", 8)
+18. self.set_digitizer_feature("PROX_IOLineSource_Value", 32)
+19.  
+20. self.set_digitizer_feature("PROX_IOLineSelector_Value", 9)
+21. self.set_digitizer_feature("PROX_IOLineSource_Value", 32)
+22.  
+23. self.set_digitizer_feature("PROX_IOLineSelector_Value", 0)
+24. self.set_digitizer_feature("PROX_IOLineSource_Value", 32)
+25. # endregion
+26.  
+27. self._spi_initialized = True
+28.  
+MAG-DRV IC Reset and clear all
+ 1. self.spi_write_reg_name(name='reset_ocd', data=0b11111111)
+ 2. time.sleep(time_to_wait)
+ 3. self.spi_write_reg_name(name='reset_ocd_start', data=0b1)
+ 4. time.sleep(time_to_wait)
+ 5. # clear ocd flags
+ 6. self.spi_write_reg_name(name='ocd', data=0b11111111)
+ 7. time.sleep(time_to_wait)
+ 8. self.spi_write_reg_name(name='reset_ocd_done', data=0b1)
+ 9. time.sleep(time_to_wait)
+10. # clear bist flags
+11. self.spi_write_reg_name(name='bist', data=0b11111111)
+12. time.sleep(time_to_wait)
+13. self.spi_write_reg_name(name='tied_high', data=0b1)
+14. time.sleep(time_to_wait)
+15. self.spi_write_reg_name(name='tied_low', data=0b1)
+16. time.sleep(time_to_wait)

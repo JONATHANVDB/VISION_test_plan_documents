@@ -1,0 +1,156 @@
+
+--- Extracting from VISION_test_plan_documents/datasheets/MAG-VIS100xx-N_Datasheet_2025_11-rev1.1.pdf ---
+Page 1:
+ Datasheet - MAG -VIS100xx -N 
+2025/11 -rev1.1  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV / Confidential information   | 1 
+ 
+ 
+Figure 1: Electronic Vision Module (MAG -VIS10014 -N) – 
+comprising Magics’ ICs MAG -IMG00251 -NC, MAG -CXP0002 -
+NP and  2x MAG -PSU00001 -NP. 
+1. Description  
+The Magics’ Vision Series portfolio contains products 
+which are to be used as core building blocks of a 
+radiation -hardened camera. Next to the standalone ICs 
+in the Vision Series, Magics also offers full -blown 
+electronic Vision modules, containing all ICs from the 
+Vision Series, integrated in the form of a three -PCB 
+stack up. The modules are the electronic heart of a 
+radiation -hardened camera and contain at minimum 
+the following Magics’ ICs from the Vision Series:  
+• MAG -IMG002X1 -NC: Full HD CMOS rad -hard 
+image sensor  
+• MAG -PSU00001 -NP: rad -hard DC/DC 
+converter controller  
+• MAG -CXP00002 -NP: CoaXPress serializer IC  
+Different variants with different features are offered as 
+an end product (overview of product variants can be 
+found in section 7), of which some also contain ICs from 
+the Magics’ Motion Series. By incorporating the Motion 
+Series ICs, additional functionality, such as motorized 
+lens control, can be added to the module.  
+Next to the Magics’ ICs all the supporting electronics, as 
+described in the application diagrams in the respective 
+IC datasheets, are integrated into the module. These 
+components include passives, such as resistors, inductors and capacitors, as well as a XTAL oscillator for 
+clock reference input. In addition, there is a connector 
+to supply power (9V) and a HD -BNC connector to 
+interface a 75 -Ohm coaxial cable for video transmission 
+(downlink) and configuration data (up link).  
+2. Key features  
+• Modular design consisting of three PCBs 
+containing Magics’ ICs and supporting 
+components.  
+o Electronic module can be integrated as is in 
+a rad -hard camera. No additional electronic 
+components required!  
+• Full HD (1920x1080) CMOS image sensor  
+o >2Mpixel  
+o Up to 30 FPS in Full HD mode  
+o Electronic rolling shutter  
+o > 60dB dynamic range  
+o Available in monochrome and color version  
+▪ RGGB Bayer pattern for color version  
+• Features  
+o Image flipping  
+o Dark pixel readout option  
+o Programmable integration time  
+o Configurable window modes (FHD, HD, VGA , 
+etc.)  
+• Configurable operating mode  
+o Triggered, burst and continuous  mode  
+• CoaXPress video interface: 1.25Gbps single line 
+CXP 2.0 device side  interface  
+o 1.25Gbps downlink communication  
+o 20Mbps uplink communication  
+o 75-Ohm coax cable – up to >150m depending 
+on the quality of the cable  
+o GenICam compliant  
+• On-board X -TAL clock of 20 MHz  
+• Single supply operation : 9V input voltage  
+o Internally 3.3V and 1.8V supply voltages are 
+generated  
+• Operating temperature: 0 to 50 degC ambient  
+• Different flavors with different functions 
+available.  
+o E.g. integrated motorized lens control.  
+• Radiation hardness:  
+o > 1MGy TID (Si)  
+o Single -event tolerance by design  
+  
+
+----------------------------------------
+Page 2:
+ Datasheet - MAG -VIS100xx -N 
+2025/ 11-rev1. 1 
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 2 
+ 
+3. MAG -VIS modules and block diagrams  
+The core products of Magics Technologies are ICs and they form the base for all of our derived products. The ICs in the 
+Vision Series are already listed above and are depicted in Figure 2. 
+ 
+Figure 2: Three main ICs as part of the Magics' Vision Series. Note: MAG -IMG001X1 -NC (JLCC -68 package) has become obsolete.  
+3.1 MAG -VIS modules overview  
+Magics offers MAG -VIS modules in the form of a three -PCB stack, of which each PCB has his own function and 
+components. Below the three PCBs in the stack of the MAG -VIS modules are listed:  
+- PCB1 : this PCB contains the MAG -IMG002x1 -NC FULL HD image sensor  
+- PCB2 : this PCB contains a MAG -PSU00001 -NP controller to generate the 1.8V supply for the imager (PCB1) and 
+optionally additional functions are added to this PCB as well.  
+o Different versions available, for example with a MAG -DRV00002 -NP added to the design. See Table 2. 
+- PCB3 : this PCB contains the MAG -CXP00002 -NP CoaXPress -compatible serializer chip, and a MAG -PSU00001 -
+NP to generate the 3.3V supply to supply the imager and the serializer.  
+To date, Magics offers three different variants of the MAG -VIS modules  (six if differentiated between mono and color) , 
+and these modules are depicted in Figure 3. 
+ 
+ 
+Figure 3: MAG -VIS modules - three different variants.  
+The six different MAG -VIS product codes are listed in the next table ( Table 1), together with a listing of the corresponding 
+PCBs integrated in the stack. Each of the modules contain different PCBs, each with a unique product code. These PCBs 
+with product codes are visualized in Figure 4 and are listed in Table 2. 
+For the corresponding block diagrams of each of the modules, it is referred to section 3.3. 
+  
+
+----------------------------------------
+Page 3:
+ Datasheet - MAG -VIS100xx -N 
+2025/ 11-rev1. 1 
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 3 
+ 
+Table 1: Overview of the offered MAG -VIS modules.  
+MAG -VIS module  PCB1  PCB2  PCB3  Description  
+MAG -VIS10003 -N MAG -VIS40003 -N MAG -VIS40011 -N MAG -VIS400 31-N MAG -VIS m odule as in  MAG -
+CAM10003 -N – mono imager  
+MAG -VIS10004 -N MAG -VIS4000 4-N MAG -VIS40011 -N MAG -VIS400 31-N MAG -VIS m odule as in  MAG -
+CAM1000 4-N – color imager  
+MAG -VIS10013 -N MAG -VIS40003 -N MAG -VIS4001 2-N MAG -VIS400 31-N MAG -VIS module without MAG -
+DRV00002 -NP and 14 -pin 
+connector on PCB2 – mono 
+imager  
+MAG -VIS10014 -N MAG -VIS4000 4-N MAG -VIS4001 2-N MAG -VIS400 31-N MAG -VIS module without MAG -
+DRV00002 -NP and 14 -pin 
+connector on PCB2 – color 
+imager  
+MAG -VIS10023 -N MAG -VIS40003 -N MAG -VIS400 21-N MAG -VIS400 31-N MAG -VIS module with 
+motorized lens control 
+capability – mono imager  
+MAG -VIS10024 -N MAG -VIS4000 4-N MAG -VIS400 21-N MAG -VIS400 31-N MAG -VIS module with 
+motorized lens control 
+capability – color imager  
+ 
+3.2 MAG -VIS PCB overview  
+Each PCB within the MAG -VIS module stack has its own unique product code and is also available for individual purchase. 
+Customers interested in this option are encouraged to contact sales@magics.tech . While detailed information regarding 
+the interfaces and pinouts of the individual PCBs is beyond the scope of this datasheet, it can be provided upon request. 
+The primary focus of this document is on the complete MAG -VIS module assemblies (section 3.1). 
+Each of the offered standalone PCBs of the MAG -VIS modules are depicted in Figure 1 with their corresponding product 
+code. The complete list with additional details is listed in Table 2. 
+ 
+ 
+Figure 4: MAG -VIS PCBs which are used in the MAG -VIS modules.  
+ 
+
+----------------------------------------

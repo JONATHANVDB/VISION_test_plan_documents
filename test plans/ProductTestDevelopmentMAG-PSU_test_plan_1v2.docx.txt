@@ -1,0 +1,278 @@
+
+Heading 1 - no number: Revision history
+
+Heading 1 - no number: List of Figures
+Figure 1: test flow	10
+Figure 3: Measurement setup overview	14
+Figure 4: Detailed setup	15
+
+Heading 1 - no number: List of Tables
+Table 1: Supply voltage conditions	8
+Table 2: Test stages	8
+Table 3: Test sequence per test stage	11
+Table 4: Measurement Equipment overview	12
+Table 5: Software bin table	13
+Table 6: Pin list vs equipment matrix	15
+Table 7: Socket board probe-points	16
+Table 8: Power supplies	17
+Table 9: Park state pin biasing	17
+Table 10: Power-down state pin biasing	18
+Table 11: Test Mux chip connections	19
+Table 12: Test Mux Load terminal settings	20
+Table 13: microcontroller pin settings	20
+Table 14: Power Short overview	21
+Table 14: Load Short overview	21
+Table 15: PSU calibration overview	22
+Table 15: SMU calibration overview	22
+Table 16: Leakage test overview	23
+Table 17: Input threshold overview	24
+Table 18: Output drive-strength overview	25
+Table 19: On-chip regulator overview	25
+Table 20: Under Voltage Lock Out overview	26
+Table 21: Output voltage monitor overview	27
+Table 22: Over Temperature Protection overview	28
+Table 23: Startup behaviour overview	29
+Table 24: Inv_Enable functionality overview	30
+Table 25: Line regulation overview	31
+Table 26: Load regulation overview	31
+Table 27: Efficiency overview	32
+
+Heading 1: Document purpose and scope
+This document is part of PSU00001 product and defines the test strategy, test setup and the detailed test procedures to perform electrical characterisation and production test on the product. 
+All the information in this document is intended to describe the verification tests that will be done on the product mentioned above. Any major deviations from this plan will be discussed prior or at latest during the test readiness review (TRR) meeting. Major changes will be listed in the revision history. Major changes can be (list is not exclusive):
+Number of DUT’s 
+Test conditions
+Hardware/equipment changes
+Test facility changes
+Addition or removal of tests
+Any update to a test procedure that changes the test coverage or testing strategy 
+Minor changes are kept in the revision history but not explicitly informed to the rest of the team. These changes are limited to:
+Small changes in a test procedure, e.g. additional SPI commands, increasing wait times
+Correction of typo’s 
+Any changes (major and minor) after the TRR meeting will be communicated via email towards the team and if needed discussed during a meeting. 
+
+Heading 1: Test strategy 
+This chapter describes the test methods used for the verification and validation of the MAG-PSU00001 product. The test strategy aims at maximal test coverage of the product.
+Functional testing and electrical parametric testing of the test structures is used to verify the performance. 
+
+Heading 2: Test conditions
+During functional verification and characterization testing the temperature and supply voltage of the DUT’s will be varied to validate the ASIC specifications over the defined operating conditions. The conditions listed in this section are the minimal set of conditions that will be tested. If additional test conditions are needed to validate certain parameters, then they are explicitly mentioned in the test procedure. 
+Temperature conditions are mentioned in this document with following codes:
+RT = room temperature = 25°C +/- 5°C
+CT = cold temperature = -40°C +/- 5°C
+HT = hot temperature = 85°C +/- 5°C
+Supply voltage conditions are defined in the table below:
+Table 1: Supply voltage conditions
+
+Heading 2: Test stages
+Table 2 outlines all the test stages required to validate the performance of the test vehicle, while section 2.2.5 details the sequence in which these test stages fit into the overall test flow.
+Table 2: Test stages
+The following sections provide further details on the different test stages.
+
+Heading 3: Connectivity test (CONN)
+The connectivity test is the initial stage of any other test. It checks for shorts on the DUT interface. DUTs need to successfully pass this test-stage in order to be tested further. The CONN tests are designed to reduce the risk of destructive errors damaging the DUT or setup.
+
+Heading 3: Characterization (CHAR)
+The characterization stage is intended to test the electrical requirements of the DUTs over the operating conditions (temperature, load-current and supply-level) as defined in section 2.1.  
+During the verification phase of the product development lifecycle the number of parts used in the analysis can be smaller compared to the number used in validation phase. The full characterization as part of the device validation phase should be performed on a number of parts that is statistically meaningful. The test coverage should be similar in both phases. If not, the reason for changing test coverage must be addressed in the characterization report. 
+
+Heading 3: Characterization of the OTP block (CHAR_OTP)
+Special test stage where only the behaviour of the OTP block is characterized, since this block reacts on temperature changes, a temperature sweep is needed and this is not compatible with the CHAR test stage since test time will explode. 
+
+Heading 3: Final Test (FT)
+The final test stage is intended to verify that the chip is within specifications. This is a reduced test compared to the characterization (CHAR). Where the CHAR test does a high resolution sweep over parameters, the FT only checks if the minima and maxima are within spec. 
+
+Heading 3: DCDC-Module testing (MODULE)
+The DCDC-Module test stage is performed on MAG-PSU10XX1 assemblies. Here the efficiency and voltage-ripple are important. Tests like line-regulation and load-regulation are performed as well. When these parameters are within test limits, the module is considered good.
+
+Heading 3: Vision DCDC sub-board testing (VIS)
+The Vision sub-board test stage is performed on the DCDC sub-board of the MAG-VIS400xx PCBs,  in order to verify the functionality of the board. An expected load-profile, mimicking that of the other boards in the stack, can be applied. If the voltage-level and ripple are within test limits, the board is considered functional verified.
+
+Heading 3: Calibration (CAL)
+The calibration step contains a couple test procedures that are performed on an empty socket or empty base-board configuration. They are meant to be used to characterize the setup itself. This includes the measurement equipment but also the fixed pull-up or pull-down resistors in the setup. This will allow for more accurate analysis of the actual Device Under Test (DUT) in the other test stages.
+
+Heading 2: Test flow
+This section defines the test flow that every MAG-PSU00001-NP part will follow. It is either tested as a stand-alone part or it is used as a part in a module or camera module. 
+Figure 1: test flow
+
+Heading 2: Test sequence
+Table 3 provides an overview of the various tests conducted at each test stage and outlines the correct test sequence, which should be followed from top to bottom.
+Table 3: Test sequence per test stage
+
+Heading 2: Test time
+
+Heading 2: Test equipment
+All test equipment outlined in the hardware overview is listed in Table 5 and Table 6. These tables provide recommendations for the required instruments during the different test, indicate their availability based on the test schedule, and specify whether the equipment remains calibrated throughout the various test phases. 
+Table 4: Measurement Equipment overview
+
+Heading 2: Statistical analysis
+
+Heading 3: Test limits 
+Test limits are defined in the excel file under post-processing and are valid for FT, MODULE and VIS test stages. 
+
+Heading 3: Bin groups
+Following table gives an overview of the bin groups. Bin 1 is always the PASS bin. Bin groups between 2 and 99 are reserved for PASS with limited performance, groups between 100 and 199 are FAIL but can be retested. Groups starting from 200 are FAILS and should be scrapped. 
+Table 5: Software in table
+The hardware bins are simply: one pass and one fail bin. 
+
+Heading 3: Dynamic test limits
+This section list all parameters that fall under DPAT control. 
+Currently, no parameters are under DPAT control.
+
+Heading 2: QC test stages
+No dedicated test programs for running QC version need to be implemented since:
+No NVM on this product
+No trim tests exist
+No stress tests that need to be skipped
+During the QC runs the specification limits will be used as acceptance criteria. 
+
+Heading 1: Measurement test setup
+This chapter explains how to collect measurement data from individual DUTs while working with a limited amount of lab equipment. It also details the instruments used in the test setup, along with all hardware-related requirements. Additionally, the section covers the software used to control the test setup, including software-specific details.
+
+Heading 2: Test hardware
+
+Heading 3: Overview
+Figure 3 provides an overview of the complete test setup used for most tests outlined in the test procedures (Chapter 5). As shown in the diagram, the Devices Under Test (DUTs) are placed within a temperature-controlled environment, which may be maintained using a thermostreamer to ensure stable and controlled test conditions. The DUTs are connected to various measurement instruments via a connection matrix, allowing flexible signal routing.
+To enable automated test execution, all instruments are connected through Ethernet and centrally controlled by a test PC. This setup ensures efficient data acquisition, measurement synchronization, and automated execution of the defined test procedures.
+Figure 3: Measurement setup overview
+Figure 4: Detailed setup
+
+Heading 3: DUT information
+The DUT pin configuration can be found in the datasheet MAG-PSU00001-NP. Table 6 provides a detailed overview of all DUT pins and specifies the corresponding test equipment required for each pin to execute the defined test procedures. 
+For debugging purposes, additional connections to the test equipment may be beneficial. These optional connections are marked with the postfix "∗" in the table. The following codes are used in the matrix:
+HI_F: Forced voltage or current at the pin
+HI_S, LO_S: Sensed voltage or current at the pin
+LO_F: Return path
+HI_IN: Sensed voltage or current at the pin connects to HI input of DMM or scope
+LO_IN: Sensed voltage or current at the pin connects to LO input of DMM 
+CHx: Input of oscilloscope with x in range [1 to 4]
+Table 6: Pin list vs equipment matrix
+
+Heading 3: Pin load requirements
+During the hardware development attention needs to be given to following items: 
+Load cap specs
+In order to ensure minimal coupling to sensitive nodes (Rf and Vi), the mux is partially implemented on the socket-board.
+Load res specs
+The sink-current of Pgood is limited to 50μA
+Low-ohmic connections 
+Main power connection to the DUT needs to be able to drive 4A 10W
+Secondary power connection to VIS module needs to be able to drive 500mA
+Kelvin connections
+Muxed Kelvin connection on EXT_S
+On the Power input and output terminals (after filter)
+On the Power ground
+
+Heading 3: Daughter board and external components 
+A dedicated daughter board will be designed to serve as an interface between the DUT and the measurement board. 
+Most signals can be probed on test-board terminal EXT_S or V_TEST. These terminals are in this setup connected to an SMU and DMM respectively. Alternatively, the daughter board also has probe-points as defined in Table 7.
+Table 7: Socket board probe-points
+Each daughter board will have a unique serial number for identification.
+
+Heading 3: Measurement board
+The measurement board will serve as an interface between the daughter board and the power supplies, microcontroller, and other required equipment. These connections will be made using a combination of banana-connectors and SMA connectors. Additionally, the measurement board will function as a load board.
+The design will support connections for a single daughter board (single-site testing). To ensure compatibility with different test environments, the measurement board will be designed for use with a thermostreamer.
+Each measurement board will be assigned a unique serial number for identification. 
+All supply domains will be individually accessible on this board.
+
+Heading 3: Power supplies 
+Power is supplied to the DUT using bench Power Supply Units (PSUs). The setup contains two power domains. One main power-supply (VDD), that powers the DUT, and the other a 3.3V power-domain for the microcontroller and integrated mux.
+The power-up and power-down sequence for default-connected supplies is detailed in Section 3.2.3. To prevent voltage overshoot, it is strongly recommended to use power sources with a controllable soft ramp.
+Table 8: Power supplies
+
+Heading 2: Test software
+
+Heading 3: Overview
+The software test suite is an in-house build environment using Python scripts to control following:
+settings for MaTeR and measurement equipment,
+connectivity between the DUTs and the equipment,
+supply and temperature control,
+microcontroller for e.g. interfacing with the DUT,
+logging of measurement data and meta data to a database and
+settings for the load board.
+
+Heading 3: Park state routine
+Before each test procedure starts, the DUT and the test setup is brought to a known default state (park state). This includes driving following IO pins to:
+Table 9: Park state pin biasing 
+
+Heading 3: Power-down state routine
+During  testing, the initial state is different from the park state. This Power-down state is a more conservative state. Here the 3v3 power-domain of the mux and micro-controller is powered on, but the main power-supply connected to Vin/Pvin isn’t. All terminals of the DUT are either high-Z or grounded.
+Table 10: Power-down state pin biasing
+
+Heading 3: Power cycle routines
+Power-up sequence:
+Disconnect all measurement equipment
+Apply PSU-3v3 = PSU-supply = 0V
+Wait 10ms
+Ramp up PSU-3v3 to its defined operating condition 3.3V in 10ms or slower
+Wait 10ms
+Set IO’s as defined in the park state routine (section 3.2.2)
+Ramp up PSU-supply to its defined operating condition 5V-11V in 10ms or slower
+Power-down sequence:
+Ramp down PSU-supply to 0V in 10ms or slower
+Ramp down PSU-3v3 to 0V in 10ms or slower
+Disconnect all measurement equipment
+
+Heading 3: Design for test (DfT) features
+The DUT doesn’t have a build-in testmux or other DfT features. The following tables contain the configurations of the mux integrated in the setup. Here the chip-terminals are connected to measurement equipment via specific mux settings
+Table 11: Test Mux chip connections
+Table 12: Test Mux Load terminal settings
+Table 13: microcontroller pin settings
+
+Heading 1: Test procedures
+This chapter contains an overview of all the tests included in the test sequence(s). In the overview items as high-level description, test configuration, test conditions, detailed test procedure and acceptance criteria are discussed. 
+
+Heading 2: T0001: Power Short
+Table 14: Power Short overview
+
+Heading 2: T0002: Load Short
+Table 14: Load Short overview
+
+Heading 2: T0003: PSU calibration
+Table 15: PSU calibration overview
+
+Heading 2: T0004: SMU calibration
+Table 15: SMU calibration overview
+
+Heading 2: T0005: Leakage test
+Table 16: Leakage test overview
+
+Heading 2: T0006: Input threshold
+Table 17: Input threshold overview
+
+Heading 2: T0007: Output drive-strength
+Table 18: Output drive-strength overview
+
+Heading 2: T0008: On-chip regulator
+Table 19: On-chip regulator overview
+
+Heading 2: T0009: Under Voltage Lock Out
+Table 20: Under Voltage Lock Out overview
+
+Heading 2: T0010: Output voltage monitor
+Table 21: Output voltage monitor overview
+
+Heading 2: T0011: Over Temperature Protection
+Table 22: Over Temperature Protection overview
+
+Heading 2: T0012: Startup behaviour
+Table 23: Startup behaviour overview
+
+Heading 2: T0013: Inv_Enable functionality
+Table 24: Inv_Enable functionality overview
+
+Heading 2: T0014: Line regulation
+Table 25: Line regulation overview
+
+Heading 2: T0015: Load regulation
+Table 26: Load regulation overview
+
+Heading 2: T0016: Efficiency
+Table 27: Efficiency overview
+
+Heading 2: T0017: Output voltage ripple
+
+Heading 2: T0018: VIS module test
+
+Heading 2: T0019: Transient load
+
+Heading 1 - no number: List of Acronyms

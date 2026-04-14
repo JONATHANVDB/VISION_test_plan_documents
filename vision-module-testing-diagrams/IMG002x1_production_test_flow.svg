@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="830" viewBox="0 0 800 830" style="display:block;width:800px;height:830px">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2f3f5c" />
+    </marker>
+  </defs>
+  <rect width="800" height="830" fill="#fafbfc" />
+  <text x="400" y="38" style="font-weight:600;font-size:24px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#1a2332">MAG-IMG002x1-NC Production Test Flow</text>
+
+  <!-- Progress bar background -->
+  <rect x="55" y="80" width="8" height="660" rx="4" fill="#e2e8f0" />
+  <rect x="55" y="80" width="8" height="660" rx="4" fill="#2f3f5c" opacity="0.15" />
+
+  <!-- ── Sub-header: ASSEMBLY ── -->
+  <rect x="85" y="62" width="650" height="22" rx="4" fill="#e2e8f0" opacity="0.5" />
+  <text x="410" y="78" style="font-weight:600;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#64748b;letter-spacing:0.15em">ASSEMBLY</text>
+
+  <!-- Step 1 -->
+  <circle cx="59" cy="110" r="12" fill="#2f3f5c" />
+  <text x="59" y="115" style="font-weight:700;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#fff">1</text>
+  <rect x="90" y="88" width="340" height="48" rx="24" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="2" />
+  <text x="260" y="117" style="font-weight:700;font-size:14px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#2f3f5c">Device assembly and Serializing</text>
+  <text x="455" y="117" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#94a3b8">Wire bonding, die attach, serialize</text>
+  <line x1="260" y1="136" x2="260" y2="168" stroke="#2f3f5c" stroke-width="2" marker-end="url(#a)" />
+
+  <!-- ── Sub-header: ELECTRICAL TEST ── -->
+  <rect x="85" y="148" width="650" height="22" rx="4" fill="#e2e8f0" opacity="0.5" />
+  <text x="410" y="164" style="font-weight:600;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#64748b;letter-spacing:0.15em">ELECTRICAL TEST</text>
+
+  <!-- Step 2 -->
+  <circle cx="59" cy="198" r="12" fill="#2f3f5c" />
+  <text x="59" y="203" style="font-weight:700;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#fff">2</text>
+  <rect x="90" y="176" width="340" height="48" rx="10" fill="#fffbeb" stroke="#fcd34d" stroke-width="2" />
+  <text x="260" y="205" style="font-weight:700;font-size:14px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#2f3f5c">FT</text>
+  <text x="455" y="205" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#94a3b8">Electrical parametric verification</text>
+  <line x1="260" y1="224" x2="260" y2="256" stroke="#2f3f5c" stroke-width="2" marker-end="url(#a)" />
+
+  <!-- ── Sub-header: OPTICAL INSPECTION ── -->
+  <rect x="85" y="236" width="650" height="22" rx="4" fill="#e2e8f0" opacity="0.5" />
+  <text x="410" y="252" style="font-weight:600;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#64748b;letter-spacing:0.15em">OPTICAL INSPECTION</text>
+
+  <!-- Step 3 -->
+  <circle cx="59" cy="286" r="12" fill="#2f3f5c" />
+  <text x="59" y="291" style="font-weight:700;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#fff">3</text>
+  <rect x="90" y="264" width="340" height="48" rx="24" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="2" />
+  <text x="260" y="293" style="font-weight:700;font-size:14px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#2f3f5c">Remove glass protection</text>
+  <text x="455" y="293" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#94a3b8">Expose image sensor surface</text>
+  <line x1="260" y1="312" x2="260" y2="342" stroke="#2f3f5c" stroke-width="2" marker-end="url(#a)" />
+
+  <!-- Step 4 -->
+  <circle cx="59" cy="368" r="12" fill="#2f3f5c" />
+  <text x="59" y="373" style="font-weight:700;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#fff">4</text>
+  <rect x="90" y="346" width="340" height="48" rx="10" fill="#fffbeb" stroke="#fcd34d" stroke-width="2" />
+  <text x="260" y="375" style="font-weight:700;font-size:14px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#2f3f5c">VI</text>
+  <text x="455" y="375" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#94a3b8">Visual inspection of surfaces &amp; bonds</text>
+  <line x1="260" y1="394" x2="260" y2="424" stroke="#2f3f5c" stroke-width="2" marker-end="url(#a)" />
+
+  <!-- Step 5 -->
+  <circle cx="59" cy="450" r="12" fill="#2f3f5c" />
+  <text x="59" y="455" style="font-weight:700;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#fff">5</text>
+  <rect x="90" y="428" width="340" height="48" rx="10" fill="#fffbeb" stroke="#fcd34d" stroke-width="2" />
+  <text x="260" y="457" style="font-weight:700;font-size:14px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#2f3f5c">OT</text>
+  <text x="455" y="457" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#94a3b8">Optical verification</text>
+  <line x1="260" y1="476" x2="260" y2="508" stroke="#2f3f5c" stroke-width="2" marker-end="url(#a)" />
+
+  <!-- ── Sub-header: CLASSIFICATION & SHIPMENT ── -->
+  <rect x="85" y="488" width="650" height="22" rx="4" fill="#e2e8f0" opacity="0.5" />
+  <text x="410" y="504" style="font-weight:600;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#64748b;letter-spacing:0.15em">CLASSIFICATION &amp; SHIPMENT</text>
+
+  <!-- Step 6 -->
+  <circle cx="59" cy="538" r="12" fill="#2f3f5c" />
+  <text x="59" y="543" style="font-weight:700;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#fff">6</text>
+  <rect x="90" y="516" width="340" height="48" rx="10" fill="#fef2f2" stroke="#fca5a5" stroke-width="2" />
+  <text x="260" y="545" style="font-weight:700;font-size:14px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#2f3f5c">binning</text>
+  <text x="455" y="545" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#94a3b8">Sort by pass / grade / fail</text>
+  <line x1="260" y1="564" x2="260" y2="594" stroke="#2f3f5c" stroke-width="2" marker-end="url(#a)" />
+
+  <!-- Step 7 -->
+  <circle cx="59" cy="620" r="12" fill="#2f3f5c" />
+  <text x="59" y="625" style="font-weight:700;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#fff">7</text>
+  <rect x="90" y="598" width="340" height="48" rx="24" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="2" />
+  <text x="260" y="627" style="font-weight:700;font-size:14px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#2f3f5c">New glass protection</text>
+  <text x="455" y="627" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#94a3b8">Re-protect sensor glass surface</text>
+  <line x1="260" y1="646" x2="260" y2="676" stroke="#2f3f5c" stroke-width="2" marker-end="url(#a)" />
+
+  <!-- Step 8 -->
+  <circle cx="59" cy="702" r="12" fill="#2f3f5c" />
+  <text x="59" y="707" style="font-weight:700;font-size:11px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#fff">8</text>
+  <rect x="90" y="680" width="340" height="48" rx="24" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="2" />
+  <text x="260" y="709" style="font-weight:700;font-size:14px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;text-anchor:middle;fill:#2f3f5c">Packing and Shipment</text>
+  <text x="455" y="709" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#94a3b8">Final packaging &amp; dispatch</text>
+
+  <!-- ── Color legend ── -->
+  <rect x="90" y="770" width="20" height="14" rx="7" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="1.5" />
+  <text x="120" y="782" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#6b7280">Process / Handling</text>
+  <rect x="280" y="770" width="20" height="14" rx="4" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5" />
+  <text x="310" y="782" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#6b7280">Test stage</text>
+  <rect x="430" y="770" width="20" height="14" rx="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5" />
+  <text x="460" y="782" style="font-size:12px;font-family:'Segoe UI', 'Helvetica Neue', Arial, sans-serif;fill:#6b7280">Classification</text>
+</svg>
