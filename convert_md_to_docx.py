@@ -10,25 +10,30 @@ from docx.oxml import OxmlElement
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MD_FILE = os.path.join(BASE_DIR, "Vision_Series_Test_Plan.md")
 OUT_FILE = os.path.join(BASE_DIR, "Vision_Series_Test_Plan.docx")
+TEMPLATE_FILE = os.path.join(BASE_DIR, "templates", "word_document_template.docx")
 
-doc = Document()
+doc = Document(TEMPLATE_FILE)
 
-style = doc.styles['Normal']
-font = style.font
-font.name = 'Calibri'
-font.size = Pt(11)
-font.color.rgb = RGBColor(0x1a, 0x23, 0x32)
+# Strip template placeholder content, keep cover-page section intact
+body = doc.element.body
+_cover_end = None
+for _el in body:
+    if _el.tag == qn('w:p'):
+        _pPr = _el.find(qn('w:pPr'))
+        if _pPr is not None and _pPr.find(qn('w:sectPr')) is not None:
+            _cover_end = _el
+            break
 
-for level in range(1, 5):
-    hs = doc.styles[f'Heading {level}']
-    hs.font.name = 'Calibri'
-    hs.font.color.rgb = RGBColor(0x1a, 0x23, 0x32)
-
-section = doc.sections[0]
-section.top_margin = Cm(2.5)
-section.bottom_margin = Cm(2.5)
-section.left_margin = Cm(2.5)
-section.right_margin = Cm(2.5)
+_to_remove = []
+_past_cover = False
+for _el in body:
+    if _el == _cover_end:
+        _past_cover = True
+        continue
+    if _past_cover and _el.tag != qn('w:sectPr'):
+        _to_remove.append(_el)
+for _el in _to_remove:
+    body.remove(_el)
 
 with open(MD_FILE, "r", encoding="utf-8") as f:
     lines = f.readlines()
@@ -57,20 +62,52 @@ def add_image(path_rel, caption=None):
 STAGE_COL_NAMES = {"FT", "TRIM", "OT", "VIS", "VI", "VER", "CONN"}
 STAGE_COL_WIDTH = Cm(1.1)
 TEST_PROC_COL_WIDTH = Cm(3.0)
-PAGE_CONTENT_WIDTH = Cm(16)  # 21cm A4 minus 2 × 2.5cm margins
+CONDITIONS_COL_WIDTH = Cm(2.5)
+PAGE_CONTENT_WIDTH = Cm(17)  # 21cm A4 minus 2 × 2.0cm template margins
+
+SPEC_TABLE_WIDTHS = {
+    "Name": Cm(3.5),
+    "Unit": Cm(1.5),
+    "LSL": Cm(1.5),
+    "USL": Cm(1.5),
+}
 
 def add_table(header_line, rows):
     cols = [c.strip() for c in header_line.strip().strip("|").split("|")]
     clean_cols = [c.replace("**", "") for c in cols]
     num_cols = len(cols)
-    table = doc.add_table(rows=1, cols=num_cols, style='Light Grid Accent 1')
+    table = doc.add_table(rows=1, cols=num_cols, style='Grid Table 4 Accent 3')
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
 
-    is_test_proc_table = "Description" in clean_cols
+    is_test_proc_table = "Description" in clean_cols and "Test procedure" in clean_cols
+    is_spec_table = "Name" in clean_cols and "Description" in clean_cols and "LSL" in clean_cols
     col_widths = None
     stage_col_indices = set()
 
-    if is_test_proc_table:
+    if is_spec_table:
+        table.autofit = False
+        tbl_pr = table._tbl.tblPr
+        layout_el = OxmlElement('w:tblLayout')
+        layout_el.set(qn('w:type'), 'fixed')
+        tbl_pr.append(layout_el)
+
+        col_widths = []
+        fixed_total = Cm(0)
+        flex_count = 0
+        for ci, name in enumerate(clean_cols):
+            if name in SPEC_TABLE_WIDTHS:
+                w = SPEC_TABLE_WIDTHS[name]
+                col_widths.append(w)
+                fixed_total += w
+            else:
+                col_widths.append(None)
+                flex_count += 1
+        remaining = PAGE_CONTENT_WIDTH - fixed_total
+        if flex_count > 0:
+            each = int(remaining) // flex_count
+            col_widths = [w if w is not None else each for w in col_widths]
+
+    elif is_test_proc_table:
         table.autofit = False
         tbl_pr = table._tbl.tblPr
         layout_el = OxmlElement('w:tblLayout')
@@ -88,6 +125,9 @@ def add_table(header_line, rows):
             elif name == "Test procedure":
                 col_widths.append(TEST_PROC_COL_WIDTH)
                 fixed_total += TEST_PROC_COL_WIDTH
+            elif name == "Conditions":
+                col_widths.append(CONDITIONS_COL_WIDTH)
+                fixed_total += CONDITIONS_COL_WIDTH
             else:
                 col_widths.append(None)
                 flex_count += 1
@@ -111,19 +151,41 @@ def add_table(header_line, rows):
     for row_text in rows:
         cells_text = [c.strip() for c in row_text.strip().strip("|").split("|")]
         row = table.add_row()
-        for i, ct in enumerate(cells_text):
-            if i < num_cols:
-                clean = ct.replace("**", "")
-                row.cells[i].text = clean
-                if col_widths:
-                    row.cells[i].width = col_widths[i]
-                for para in row.cells[i].paragraphs:
-                    for run in para.runs:
-                        run.font.size = Pt(10)
-                        run.font.name = 'Calibri'
-                if i in stage_col_indices:
+
+        # Detect section header rows: first cell bold, all others empty
+        first_raw = cells_text[0] if cells_text else ""
+        is_section_header = (
+            first_raw.startswith("**") and first_raw.endswith("**")
+            and all(c.strip() == "" for c in cells_text[1:num_cols])
+        )
+
+        if is_section_header and num_cols > 1:
+            merged = row.cells[0].merge(row.cells[num_cols - 1])
+            merged.text = ""
+            run = merged.paragraphs[0].add_run(first_raw.replace("**", ""))
+            run.bold = True
+            run.font.size = Pt(10)
+            run.font.name = 'Calibri'
+            shading = OxmlElement('w:shd')
+            shading.set(qn('w:fill'), 'D9E2F3')
+            shading.set(qn('w:val'), 'clear')
+            merged.paragraphs[0].runs[0]  # ensure paragraph exists
+            tc_pr = merged._tc.get_or_add_tcPr()
+            tc_pr.append(shading)
+        else:
+            for i, ct in enumerate(cells_text):
+                if i < num_cols:
+                    clean = ct.replace("**", "")
+                    row.cells[i].text = clean
+                    if col_widths:
+                        row.cells[i].width = col_widths[i]
                     for para in row.cells[i].paragraphs:
-                        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                        for run in para.runs:
+                            run.font.size = Pt(10)
+                            run.font.name = 'Calibri'
+                    if i in stage_col_indices:
+                        for para in row.cells[i].paragraphs:
+                            para.alignment = WD_ALIGN_PARAGRAPH.CENTER
     doc.add_paragraph()
 
 def parse_inline(text):
@@ -225,7 +287,7 @@ while i < len(lines):
 
     if line.startswith("- **") or line.startswith("- *"):
         content = line[2:].strip()
-        p = doc.add_paragraph(style='List Bullet')
+        p = doc.add_paragraph(style='List Paragraph')
         for text, bold, italic in parse_inline(content):
             run = p.add_run(text)
             run.bold = bold
@@ -236,7 +298,7 @@ while i < len(lines):
 
     if line.startswith("- "):
         content = line[2:].strip()
-        p = doc.add_paragraph(style='List Bullet')
+        p = doc.add_paragraph(style='List Paragraph')
         for text, bold, italic in parse_inline(content):
             run = p.add_run(text)
             run.bold = bold
