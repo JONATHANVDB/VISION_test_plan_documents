@@ -29,9 +29,9 @@
 
 ## 4. Introduction & Scope
 
-This document outlines the verification for the Magics Technologies Vision Series products to ensure suitability for nuclear environments. The Vision Series includes standalone radiation-hardened ICs (Image Sensor, Serializer, DC/DC Converter) and fully integrated electronic Vision Modules.
+This document outlines the verification for the Magics Technologies Vision Series products to ensure the quality targets. The Vision Series includes standalone radiation-hardened ICs (Image Sensor, Serializer, DC/DC Converter) and fully integrated electronic Vision Modules.
 
-This test plan details the test conditions, test flows, test stages, and the production and trimming tests required to guarantee the reliability and performance of the products.
+This test plan details the test flows, test conditions, test stages, and the production and trimming test procedures required to guarantee the reliability and performance of the products.
 
 ---
 
@@ -43,11 +43,11 @@ The verification and testing of the Vision Series products follow a three-step h
 *Figure 1: Vision Series: three-step verification rail*
 
 ### 5.1 Level 1: Component verification
-- **Focus**: IC products are tested in test sockets across multiple conditions as specified in their individual test plans. These production tests focus on maximizing test coverage to ensure the early detection of any manufacturing defects. 
+- **Focus**: IC products are tested in test sockets across test conditions as specified in their individual test plans. These production tests focus on maximizing test coverage to ensure the early detection of any manufacturing defects. 
 - **Products**: MAG-IMG002x1-NC, MAG-PSU00001-NP, MAG-CXP00002-NP.
-- **Description**: This level covers Trimming and Final Test (FT) of the individual integrated circuits. Electro-optical and image sensor array defect testing is done for the MAG-IMG002x1-NC. Testing procedures include continuity checks, I/O pin tests, interface tests, and parametric testing (including optional trimming). Functional verification and application-specific testing are also performed in addition to tests specific for the product family.
+- **Description**: This level covers Trimming and Final Test (FT) of the individual integrated circuits. Electro-optical and image sensor array defect testing is included for the MAG-IMG002x1-NC. Testing procedures include continuity checks, I/O pin tests, interface tests, and parametric testing (including optional trimming). Functional verification and application-specific testing are also performed in addition to tests specific for the product family.
 
-### 5.2 Level 2: PCBs verification
+### 5.2 Level 2: PCB verification
 - **Focus**: Functional verification of assembled PCB products
 - **Products**: MAG-VIS4000x-N (Imager PCB), MAG-VIS4001x-N (Power PCB), MAG-VIS4003x-N (Serializer PCB).
 - **Description**: This level covers the functional testing of post-assembly boards prior to stack integration. Verifies that the soldering and board-level interconnects are reliable and that the individual sub-systems function correctly.
@@ -61,7 +61,7 @@ The verification and testing of the Vision Series products follow a three-step h
 
 ## 6. Test specifications
 
-While the previous chapter outlined the high-level verification progression of the Vision Series products along the horizontal process rail, this chapter provides the detailed test specifications for each product, organized by product level test.
+While the previous chapter outlined the high-level verification of the Vision Series products along the horizontal process rail, this chapter provides the detailed test specifications for each product, organized by product level test.
 
 Note that the test procedures listed in this chapter measure significantly more parameters than those published in the product datasheets. The additional data collection serves Magics internal process monitoring: it enables detailed analysis of block and function-level performance on each IC, tracking of parametric drift over production lots, and early detection of process shifts. All internal parameters carry defined limits and are actively monitored during production. To keep this report concise, only the parameters that are specified in the product datasheets are discussed in the acceptance criteria of Chapter 7.
 
@@ -73,7 +73,7 @@ This section covers the production and trimming tests for the individual integra
 
 ##### Test flow
 
-The production and trimming test flows for the image sensor are depicted below. The production flow covers electrical verification, visual inspection, and optical testing. A separate trim flow is used to calibrate internal references and timing settings.
+The production and trimming test flows for the image sensor are depicted below. The production flow covers electrical verification, visual inspection, and optical testing. A separate trim flow is used to calibrate internal references and timing settings. This trim flow is performed on a subset of each wafer batch, from this subset the best fit values for the batch are calculated and the DCF files are generated. 
 
 ![MAG-IMG002x1-NC Production Test Flow](vision-module-testing-diagrams/IMG002x1_production_test_flow.png)
 *Figure 2: MAG-IMG002x1-NC Production Test Flow*
@@ -83,7 +83,7 @@ The production and trimming test flows for the image sensor are depicted below. 
 
 ##### Test conditions
 
-The tables below define the temperature and supply voltage test conditions used across the IMG002x1 electrical and electro-optical test stages. Each test stage references a subset of these conditions (Min, Nom, and/or Max). The different supply domains are coupled, meaning that, for example, if the Max supply condition is chosen for a certain test stage, all supply domains will be set to their Max values; cross-coupled settings such as Analog at Vnom and Digital at Vmax are not allowed.
+The tables below define the temperature and supply voltage test conditions used across the IMG002x1 electrical and electro-optical test stages. Each test stage references a subset of these conditions (Min, Nom, and/or Max). The different supply domains are coupled, meaning that, for example, if the Max supply condition is chosen for a certain test stage, all supply domains will be set to their Max values. Cross-coupled settings such as Analog at Vnom and Digital at Vmax are not allowed.
 
 | Condition | Symbol | Min | Nom | Max | Unit |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -96,13 +96,13 @@ The tables below define the temperature and supply voltage test conditions used 
 | IO supply voltage | VDDIO | 3.135 | 3.3 | 3.63 | V |
 | Pixel reset voltage | VD_RST | 3.135 | 3.3 | 3.63 | V |
 
-In the test stage section below, the default test conditions for each stage are listed. Sometimes there is a need to include or exclude specific conditions for a particular test procedure; this will be noted in the test procedure section. If the Conditions field is empty, the default test conditions apply.
+In the test stage section below, the default test conditions for each stage are listed. Sometimes there is a need to include or exclude specific conditions for a particular test procedure, this will be noted in the test procedure section. If the Conditions field is empty, the default test conditions apply.
 
 ##### Test stages
 *Production test stages:*
-- **FT (Final Test):** Confirms that the product is compliant against test limits. This stage performs full electrical parametric verification of the image sensor, including continuity, power supply integrity, I/O thresholds, output drive strength, and power consumption measurements. Test conditions are: RT and Vnom, FHD10 mode is used, dark current related parameters are calculated from a ROI of 400 x 400 pixels in the center of the array.
+- **FT (Final Test):** Confirms that the product is compliant against test limits. This stage performs full electrical parametric verification of the image sensor, including continuity, power supply integrity, I/O thresholds, output drive strength, and power consumption measurements. Test conditions are: RT and Vnom, FHD10 mode, dark current related parameters are calculated from a ROI of 400 x 400 pixels in the center of the array. The sensor array is covered from any light input.
 - **VI (Visual Inspection):** Examination of external surfaces, glass lid, and wire bonding. This inspection identifies visible defects such as cracks, delamination, contamination, or bond wire anomalies before the device proceeds to optical testing.
-- **OT (Optical Test):** Verification of the optical performance of the image sensor. This stage validates dynamic range, pixel response uniformity, dark current, and other electro-optical parameters. The pixel array is also tested for defects in pixels, rows, and columns. Test conditions are: RT (ambient) and Vnom, FHD10 mode is used, dark current related parameters are calculated from a ROI of 400 x 400 pixels in the center of the array.
+- **OT (Optical Test):** Verification of the optical performance of the image sensor. This stage validates dynamic range, pixel response uniformity, dark current, and other electro-optical parameters. The pixel array is also tested for defects in pixels, rows, and columns. Test conditions are: RT (ambient) and Vnom, FHD10 mode, dark current related parameters are calculated from a ROI of 400 x 400 pixels in the center of the array.
 
 *Trim test stages:*
 - **TRIM @ RT:** Trimming at room temperature. Internal references are calibrated to their target values by applying and verifying trim codes at room temperature. Test conditions are: RT and Vnom.
@@ -110,7 +110,7 @@ In the test stage section below, the default test conditions for each stage are 
 
 ##### Test procedures
 
-The table below lists all test procedures applicable to the MAG-IMG002x1-NC and indicates in which test stage each procedure is executed. The FT stage provides full electrical parametric coverage, while TRIM focuses on calibrating internal references. The OT stage validates optical performance under controlled illumination. The Conditions column notes any deviation from the default corners for that test stage; an empty cell means the default listed under Test stages applies.
+The table below lists all test procedures applicable to the MAG-IMG002x1-NC and indicates in which test stage each procedure is executed. The FT stage provides full electrical parametric coverage, while TRIM focuses on calibrating internal references. The OT stage validates optical performance under controlled illumination. The Conditions column notes any deviation from the default test conditions for that test stage, an empty cell means the default conditions listed under Test stages section applies.
 
 | Test procedure | Description | Conditions | FT | TRIM | OT |
 | :--- | :--- | :--- | :---: | :---: | :---: |
@@ -120,7 +120,7 @@ The table below lists all test procedures applicable to the MAG-IMG002x1-NC and 
 | VIL/VIH | Checks the input hysteresis of all digital input pins by sweeping the input voltage and observing the digital state transition. | | X | | |
 | VOL/VOH | Measures the low and high voltage of digital outputs at 1 mA load. | | X | | |
 | IOL/IOH | Measures the low and high level output current of digital outputs. | | X | | |
-| IDDD | Measures the current consumption of the DUT in multiple states, video modes, frame rates and test patterns. | | X | X | |
+| IDDD | Measures the current consumption of the DUT in multiple states, video modes, frame rates and test patterns. | FHD10/HD40/VGA50 | X | X | |
 | Test buffer offset | Measures the offset of both test buffers on the test mux. | | X | X | |
 | Static signal test | Measures the voltage/current of certain internal signals. | | X | | |
 | PLL open-loop | Measures the open-loop frequency of the VCO while forcing the VCO voltage. | | X | | |
@@ -132,8 +132,8 @@ The table below lists all test procedures applicable to the MAG-IMG002x1-NC and 
 | Serial interface | Validates the SPI serial interface functionality. | | X | X | X |
 | Trim test | Trims each internal block (voltage reference, current reference) by sweeping trim codes and selecting the best-fit value. | | | X | |
 | Ramp gen trim | Trims the ramp generator circuitry to target voltage and slope values. | | | X | |
-| Frame modes | Validates the different video modes by capturing and verifying images. | Vnom/Vmin/Vmax | | | X |
-| Blackpixel readout | Tests the black reference pixel readout. | Vnom/Vmin/Vmax | | | X |
+| Frame modes | Validates the different video modes by capturing and verifying images. | FHD10/HD40/VGA50 | | | X |
+| Blackpixel readout | Tests the black reference pixel readout. | | | | X |
 | Optical init | Defines the exposure time range required for correct linear fitting in DC and PTC analysis, and measures light nonuniformity. | | | | X |
 | Optical defect map | Captures raw images to map bright/dead pixels, rows and columns. | | | | X |
 | Optical PTC capture | Captures raw images necessary for Photon Transfer Curve (PTC) and spatial nonuniformity (SN) analysis. | | | | X |
@@ -142,29 +142,29 @@ The table below lists all test procedures applicable to the MAG-IMG002x1-NC and 
 
 **Parameter traceability: MAG-IMG002X1-NC**
 
-The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name.
+The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
 
-| Test procedure | Parameters measured |
-| :--- | :--- |
-| T0004 | TRIG_IN input threshold low, TRIG_IN input threshold high, TRIG_IN input hysteresis, RSTB input threshold (no hysteresis), SPI input threshold low, SPI input threshold high, SPI input hysteresis |
-| T0005 | SPI MISO output voltage (no load), VOH (no resistive load), VOL (no resistive load) |
-| T0007 | VDDD current (active, FHD25 10-bit), VDDA+VDDIO+VD_RST current (active, FHD25 10-bit) |
-| T0010 | Bandgap reference voltage (VDD12BG) |
-| T0024 | Pixel output clock speed, Data output line speed |
-| T0038 | Conversion gain, Responsivity, Temporal noise, Dynamic range, SNR_MAX, Dark current (DC), Dark current non uniformity (DCNU), Dark signal non uniformity (DSNU), Photo response non uniformity (PRNU) |
+| Test procedure | Test ID | Parameters measured |
+| :--- | :--- | :--- |
+| VIL/VIH | T0004 | TRIG_IN input threshold low, TRIG_IN input threshold high, TRIG_IN input hysteresis, RSTB input threshold (no hysteresis), SPI input threshold low, SPI input threshold high, SPI input hysteresis |
+| VOL/VOH | T0005 | SPI MISO output voltage (no load), VOH (no resistive load), VOL (no resistive load) |
+| IDDD | T0007 | VDDD current (active, FHD25 10-bit), VDDA+VDDIO+VD_RST current (active, FHD25 10-bit) |
+| Static signal test | T0010 | Bandgap reference voltage (VDD12BG) |
+| Frame modes | T0024 | Pixel output clock speed, Data output line speed |
+| Optical test processing | T0038 | Conversion gain, Responsivity, Temporal noise, Dynamic range, SNR_MAX, Dark current (DC), Dark current non uniformity (DCNU), Dark signal non uniformity (DSNU), Photo response non uniformity (PRNU) |
 
 #### 6.1.2 MAG-CXP00002-NP (CXP Interface IC)
 
 ##### Test flow
 
-The production test flow for the serializer IC is depicted below. After device assembly, the chip undergoes trimming and OTP programming, followed by a comprehensive final test.
+The production test flow for the serializer IC is depicted below. After device assembly, the chip undergoes trimming and OTP programming, followed by a comprehensive final test (FT). Trimming is done per part. 
 
 ![MAG-CXP00002-NP Production Test Flow](vision-module-testing-diagrams/CXP00002_production_test_flow.png)
 *Figure 4: MAG-CXP00002-NP Production Test Flow*
 
 ##### Test conditions
 
-The tables below define the temperature and supply voltage test conditions used across the CXP00002 test stages. Each test stage references a subset of these conditions (Min, Nom, and/or Max). The CXP00002 has a single 3.3 V supply domain.
+The tables below define the temperature and supply voltage test conditions used across the CXP00002 test stages. Each test stage references a subset of these conditions (Min, Nom, and/or Max). The CXP00002 has a single 3.3 V supply level that is shared over all the domains (Digital, PLL and Analog).
 
 | Condition | Symbol | Min | Nom | Max | Unit |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -174,19 +174,19 @@ The tables below define the temperature and supply voltage test conditions used 
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Supply voltage | VDD3V3 | 2.97 | 3.3 | 3.63 | V |
 
-In the test stage section below, the default test conditions for each stage are listed. Sometimes there is a need to include or exclude specific conditions for a particular test procedure; this will be noted in the test procedure section. If the Conditions field is empty, the default test conditions apply.
+In the test stage section below, the default test conditions for each stage are listed. Sometimes there is a need to include or exclude specific conditions for a particular test procedure, this will be noted in the test procedure section. If the Conditions field is empty, the default test conditions apply.
 
 ##### Test stages
 
 *Production test stages:*
-- **FT (Final Test):** Confirms functional and parametric compliance of the serializer. Verifies electrical parameters against specification limits after trimming to ensure the device operates within its intended performance envelope. Test conditions are: CT/RT/HT and Vmin/Vnom/Vmax.
+- **FT (Final Test):** Confirms functional and parametric compliance of the serializer. Verifies electrical parameters against specification limits after trimming. Test conditions are: CT/RT/HT and Vmin/Vnom/Vmax at the time of writing. Worst-case conditions will be set when sufficient characterization data is acquired.
 
 *Trim test stages:*
-- **TRIM @ RT, Vnom + write OTP:** Trimming at room temperature and nominal voltage. Internal references and biasing are calibrated, and one-time programmable memory is written with the final trim configuration. Test conditions are: RT and Vnom.
+- **TRIM @ RT, Vnom + write OTP:** Trimming at room temperature and nominal voltage. Internal references are calibrated, and one-time programmable memory is written with the final trim configuration. Test conditions are: RT and Vnom.
 
 ##### Test procedures
 
-The table below lists all test procedures applicable to the MAG-CXP00002-NP and indicates in which test stage each procedure is executed. The TRIM stage calibrates internal LDOs and references and programs the OTP memory, after which the FT stage verifies the full parametric and functional performance of the serializer, including its high-speed CXP interface and SPI communication channels. The Conditions column notes any deviation from the default corners for that test stage; an empty cell means the default listed under Test stages applies.
+The table below lists all test procedures applicable to the MAG-CXP00002-NP and indicates in which test stage each procedure is executed. The TRIM stage calibrates internal LDOs and references and programs the OTP memory, after which the FT stage verifies the full parametric and functional performance of the serializer, including its high-speed CXP interface and SPI communication channels. The Conditions column notes any deviation from the default test conditions for that test stage, an empty cell means the default conditions listed under Test stages section applies.
 
 | Test procedure | Description | Conditions | FT | TRIM |
 | :--- | :--- | :--- | :---: | :---: |
@@ -196,10 +196,10 @@ The table below lists all test procedures applicable to the MAG-CXP00002-NP and 
 | VIL/VIH | Checks the input hysteresis of all digital input pins by performing high-to-low and low-to-high voltage sweeps. | | X | |
 | VOH/VOL | Measures the low and high voltage of digital outputs under a load current of 1 mA. | | X | |
 | IOL/IOH | Measures the low and high level output current of digital outputs. | | X | |
-| IDDD | Measures the current consumption of the DUT in multiple states, video modes, frame rates and test patterns. | | X | X |
+| IDDD | Measures the current consumption of the DUT in multiple states, video modes, frame rates. | FHD/HD/VGA, 10fps/25fps | X | X |
 | Test Buffer Offset | Measures the offset of both test buffers on the test mux by creating a loop through GPIO pins and sweeping the input voltage. | | X | X |
 | Static Signal Test | Measures all static signals available on the test mux and stores results in the database. | | X | |
-| Regulators | Performs a load test on the LDOs with external decoupling by sweeping load currents and measuring the internal output voltage through the test mux. | | X | |
+| Regulators | Performs a load test on the LDOs with external decoupling by sweeping load currents and measuring the internal output voltage through the test mux. | Vmin/Vmax | X | |
 | Oscillator | Checks the reference clock circuits of the DUT. | | X | |
 | PLL Open Loop | Checks the PLL open loop behaviour by opening the loop and measuring the v_tune voltage range. | | X | |
 | PLL Lock | Checks the PLL closed loop behaviour by observing key parameters of the locked PLL. | | X | |
@@ -207,30 +207,30 @@ The table below lists all test procedures applicable to the MAG-CXP00002-NP and 
 | IO SPI Master CAM | Validates the camera SPI master interface by reading and writing a register in the FPGA acting as SPI slave. | | X | |
 | IO SPI Master GPIO | Validates the GPIO SPI master interface by reading and writing a register in the FPGA acting as generic SPI slave. | | X | |
 | CXP Uplink Receiver Sensitivity | Checks receiver sensitivity using a function generator to send CXP sequences at varying amplitudes, performing a binary search for the sensitivity threshold. | | X | |
-| Internal Test Patterns | Validates the internal test pattern generator by looping over test patterns and capturing them with the frame grabber. | | X | |
-| Camera Test | Sends and captures test patterns from an external camera (FPGA pattern generator) and compares raw pixel values with a reference. | | X | |
+| Internal Test Patterns | Validates the internal test pattern generator by looping over test patterns and capturing them with the frame grabber. | FHD/HD/VGA, 8b/10b/12b, 13 test patterns | X | |
+| Camera Test | Sends and captures test patterns from an external camera (FPGA pattern generator) and compares raw pixel values with a reference. | FHD/HD/VGA, 8b/10b/12b | X | |
 | OTP Data Retention | Reads data from OTP and verifies that no bits are flipped. | | X | X |
-| Block Trimming | Trims each block (LDO, voltage reference, current reference) by performing a sweep and selecting the trim setting closest to the target value. | RT, Vnom | | X |
-| OTP Write | Writes the final trim configuration data into the OTP cells and verifies successful programming. | RT, Vnom | | X |
+| Block Trimming | Trims each block (LDO, voltage reference, current reference) by performing a sweep and selecting the trim setting closest to the target value. | | | X |
+| OTP Write | Writes the final trim configuration data into the OTP cells and verifies successful programming. | | | X |
 
 **Parameter traceability: MAG-CXP00002-NP**
 
-The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name.
+The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
 
-| Test procedure | Parameters measured |
-| :--- | :--- |
-| T0004 | VIL (GPIO input low threshold), VIH (GPIO input high threshold), Hysteresis (GPIO), VIL (Video input low threshold), VIH (Video input high threshold), Hysteresis (Video) |
-| T0007 | 3.3V total supply current (average), 3.3V digital supply current (average), 3.3V analog supply current (average), 3.3V PLL supply current (average), Total power consumption |
-| T0011 | VDD1V2_CAM reference voltage |
-| T0012 | VDD1V8_CAM supply voltage |
-| T0013 | Crystal frequency |
-| T0023 | Parallel video data rate |
+| Test procedure | Test ID | Parameters measured |
+| :--- | :--- | :--- |
+| VIL/VIH | T0004 | VIL (GPIO input low threshold), VIH (GPIO input high threshold), Hysteresis (GPIO), VIL (Video input low threshold), VIH (Video input high threshold), Hysteresis (Video) |
+| IDDD | T0007 | 3.3V total supply current (average), 3.3V digital supply current (average), 3.3V analog supply current (average), 3.3V PLL supply current (average), Total power consumption |
+| Regulators | T0011 | VDD1V2_CAM reference voltage |
+| Regulators | T0012 | VDD1V8_CAM supply voltage |
+| Oscillator | T0013 | Crystal frequency |
+| Camera Test | T0023 | Parallel video data rate |
 
 #### 6.1.3 MAG-PSU00001-NP (Power Management IC)
 
 ##### Test flow
 
-The production test flow for the DC/DC converter IC is depicted below. The IC undergoes connectivity and parametric testing after assembly.
+The production test flow for the DC/DC converter IC is depicted below. The IC undergoes connectivity (CONN) and final test (FT) after device assembly.
 
 ![MAG-PSU00001-NP Production Test Flow](vision-module-testing-diagrams/PSU00001_production_test_flow.png)
 *Figure 5: MAG-PSU00001-NP Production Test Flow*
@@ -253,44 +253,43 @@ In the test stage section below, the default test conditions for each stage are 
 
 *Production test stages:*
 - **CONN (Connectivity Test):** Checks for shorts on the DUT interface. DUTs must pass this stage before proceeding to ensure the test socket contact is reliable and no assembly defects are present. Test conditions are: RT and Vnom.
-- **FT (Final Test):** Verifies the chip is within specifications. Checks all electrical parameters (voltage levels, thresholds, regulation, efficiency) against defined minimum and maximum spec limits. Test conditions are: CT/RT/HT and Vmin/Vnom/Vmax.
+- **FT (Final Test):** Verifies the chip is within specifications. Checks all electrical parameters (voltage levels, thresholds, regulation, efficiency) against defined minimum and maximum spec limits. Test conditions are: CT/RT/HT and Vmin/Vnom/Vmax at the time of writing. Worst-case conditions will be set when sufficient characterization data is acquired.
 
 ##### Test procedures
 
-The table below lists all test procedures applicable to the MAG-PSU00001-NP. All procedures are executed during the FT stage. The PSU00001 does not include trimming or NVM programming; the CONN connectivity check is performed as a gate before the FT procedures listed here. The Conditions column notes any deviation from the default corners for that test stage; an empty cell means the default listed under Test stages applies.
+The table below lists all test procedures applicable to the MAG-PSU00001-NP. The PSU00001 does not include trimming or NVM programming. The CONN connectivity check is performed as a gate before the FT procedures listed here. The Conditions column notes any deviation from the default test conditions for that test stage, an empty cell means the default conditions listed under Test stages section applies.
 
-| Test procedure | Description | Conditions | FT |
-| :--- | :--- | :--- | :---: |
-| Power Short | Verifies that there is no short to ground on the power terminals of the chip. | | X |
-| Load Short | Verifies that there is no short to ground or power on the load terminals of the chip. | | X |
-| Leakage | Measures the input leakage current of all accessible input pins. | | X |
-| Input threshold | Finds both the high and low threshold voltages (VIL/VIH) for the Enable pin. | | X |
-| Output drive-strength | Measures the current that can be sunk by the power-good output. | | X |
-| On-chip regulator | Measures the regulator voltage and performs a load regulation test on the internal regulator. | | X |
-| Under Voltage Lock Out | Finds the threshold voltages where the chip enters and exits UVLO. | | X |
-| Output voltage monitor | Checks the +/-6.5% output voltage limits of the control loop by forcing the internal sense voltage. | | X |
-| Over Temperature Protection | Checks the over-temperature protection via the power-good flag and PTAT voltage. | Extended temperature sweep to 120°C | X |
-| Startup behaviour | Measures the start-up behaviour of the output voltage and checks the level/time where the power-good flag goes high. | | X |
-| Inv_Enable functionality | Checks that the functionality of the Enable pin can be inverted using the Inv_Enable configuration. | | X |
-| Line regulation | Measures the input voltage dependency of the output voltage. | | X |
-| Load regulation | Measures the load current dependency of the output voltage. | | X |
-| Efficiency | Measures efficiency over different loads and input/output voltage conditions. | | X |
+| Test procedure | Description | Conditions | CONN | FT |
+| :--- | :--- | :--- | :---: | :---: |
+| Power Short | Verifies that there is no short to ground on the power terminals of the chip. | | X | |
+| Load Short | Verifies that there is no short to ground or power on the load terminals of the chip. | | X | |
+| Leakage | Measures the input leakage current of all accessible input pins. | | | X |
+| Input threshold | Finds both the high and low threshold voltages (VIL/VIH) for the Enable pin. | | | X |
+| Output drive-strength | Measures the current that can be sunk by the power-good output. | | | X |
+| On-chip regulator | Measures the regulator voltage and performs a load regulation test on the internal regulator. | | | X |
+| Under Voltage Lock Out | Finds the threshold voltages where the chip enters and exits UVLO. | | | X |
+| Output voltage monitor | Checks the +/-6.5% output voltage limits of the control loop by forcing the internal sense voltage. | | | X |
+| Over Temperature Protection | Checks the over-temperature protection via the power-good flag and PTAT voltage. In FT test stage only the PTAT voltage is monitored. | | | X |
+| Startup behaviour | Measures the start-up behaviour of the output voltage and checks the level/time where the power-good flag goes high. | Rload: 10Ω/50Ω/270Ω | | X |
+| Inv_Enable functionality | Checks that the functionality of the Enable pin can be inverted using the Inv_Enable configuration. | | | X |
+| Line regulation | Measures the input voltage dependency of the output voltage. | Vout:0.9V/1.2V/1.5V/1.8V/2.0V/2.5V/3.3V, Vmin/Vmax | | X |
+| Load regulation | Measures the load current dependency of the output voltage. | Vout:0.9V/1.2V/1.5V/1.8V/2.0V/2.5V/3.3V, Vmin/Vmax, Iload: 0.1A/0.3A/0.5A/0.7A/0.9A/1.1A | | X |
+| Efficiency | Measures efficiency over different loads and input/output voltage conditions. | Vout:0.9V/1.2V/1.5V/1.8V/2.0V/2.5V/3.3V, Vmin/Vmax, Iload: 0.5A/0.8A/1.0A, Halfsw:ON/OFF| | X |
 
 **Parameter traceability: MAG-PSU00001-NP**
 
-The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name.
+The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
 
-| Test procedure | Parameters measured |
-| :--- | :--- |
-| T0006 | Enable start threshold, Enable stop threshold |
-| T0009 | Vin start threshold, Vin stop threshold |
-| T0010 | Output Over Voltage PGood threshold, Output Under Voltage PGood threshold |
-| T0012 | Soft Start duration |
+| Test procedure | Test ID | Parameters measured |
+| :--- | :--- | :--- |
+| Input threshold | T0006 | Enable start threshold, Enable stop threshold |
+| Under Voltage Lock Out | T0009 | Vin start threshold, Vin stop threshold |
+| Output voltage monitor | T0010 | Output Over Voltage PGood threshold, Output Under Voltage PGood threshold |
+| Startup behaviour | T0012 | Soft Start duration |
 
 ### 6.2 Level 2: PCB Test Specifications
 
-This section covers the functional testing of the three post-assembly sub-boards (Imager, Serializer, and Power PCBs) prior to stack integration. Each PCB is assembled with 1 or more pre-tested IC components from level 1. 
-All three boards share a common test philosophy: an initial "Approved device" input gate verifies that only pre-tested level 1 components are used, followed by board-level assembly and a Vision (VIS) functional test stage that validates the sub-system operates correctly at the PCB level. The VIS test stage consists of a collection of test procedures from the component level with optional deticated tests to increase test coverge.  
+This section covers the functional testing of the three post-assembly sub-boards (Imager, Serializer, and Power PCBs) prior to stack integration. Each PCB is assembled with one or more pre-tested IC components from level 1. All three boards share a common test philosophy: an initial "Approved device" input gate verifies that only pre-tested level 1 components are used, followed by board-level assembly and a Vision (VIS) functional test stage that validates the sub-system operates correctly at the PCB level. The VIS test stage consists of a collection of test procedures from the component level with optional dedicated tests to increase test coverage.
 
 #### 6.2.1 Test flows
 
@@ -311,16 +310,22 @@ The production test flows for the three assembled PCBs are depicted below. While
 ![MAG-VIS4001x-N Production Test Flow](vision-module-testing-diagrams/VIS4001x_production_test_flow.png)
 *Figure 8: MAG-VIS4001x-N Production Test Flow*
 
-#### 6.2.2 Test stages
+#### 6.2.2 Test conditions
 
-All three PCBs share the **VIS (Vision Test)** test stage as their primary functional verification. The Power PCB additionally includes a **CONN** test stage. The specific scope of each VIS test is:
+Since the PCB-level tests are functional verification tests rather than parametric characterisation, all procedures are executed at ambient temperature and nominal supply voltage only. No temperature or supply corner conditions are applied at this level, the underlying IC components have already been fully tested at level 1.
+
+For the MAG-VIS4000x-N (Imager PCB), the image sensor is configured in **FHD10** mode (1920 x 1080 @ 10 fps, 10-bit) during all VIS test procedures.
+
+#### 6.2.3 Test stages
+
+All three PCBs share the VIS test stage as their primary functional verification. The Power PCB additionally includes a **CONN** test stage. The specific scope of each VIS test is:
 
 - **VIS4000x -- VIS (Vision Sub-board Test):** Functional test of the assembled imager PCB. Validates that the board-level interconnects and the image sensor readout chain operate correctly after PCB population. The most important verification test in this VIS test stage is the read out of a set of test patterns that are hard coded in the image sensor IC.
 - **VIS4003x -- VIS (Vision Sub-board Test):** Functional test of the assembled serializer PCB. Validates the CXP link functionality and power delivery sub-system at the board level. The most important verification test in this VIS test stage is the read-out (via CXP interface) of a set of external test patterns that are applied to the video pins.
 - **VIS4001x -- CONN (Connectivity Test):** Checks for shorts and opens at the board level, verifying that PCB assembly and soldering have not introduced connection faults.
 - **VIS4001x -- VIS (Vision Sub-board Test):** Verifies functionality of the DCDC sub-board on the MAG-VIS400xx PCBs, including voltage-level accuracy and ripple under worst case DC conditions.
 
-#### 6.2.3 Test procedures
+#### 6.2.4 Test procedures
 
 The tables below list the test procedures for each PCB during its VIS test stage. These procedures are a subset of the component-level tests, re-used at the board level to verify correct assembly and interconnect integrity. The Power PCB additionally includes a CONN stage for connectivity verification before the VIS tests.
 
@@ -358,6 +363,8 @@ The tables below list the test procedures for each PCB during its VIS test stage
 
 This section covers the Module Final Test (MFT) for the fully integrated vision module (MAG-VIS100xx-N, three-PCB vertical stack). It verifies the CoaXPress downlink/uplink and power delivery across the entire module scope, validating high-speed timing and synchronization between the different components.
 
+*Note — The module-level test system is currently under development. At present, testing is limited to ambient temperature and nominal supply voltage (Vnom), using the FHD10 imager mode, and capturing a dark and white image by blocking light and manually inspecting the output on the test computer. The descriptions in this section reflect the full intended scope once the complete test system is implemented.*
+
 #### 6.3.1 Test flow
 
 The production test flow for the fully integrated vision module is depicted below. Pre-tested and approved PCBs from level 2 (Imager, Power, and Serializer boards) are assembled into the final three-PCB vertical stack, followed by visual inspection and comprehensive functional verification.
@@ -365,11 +372,33 @@ The production test flow for the fully integrated vision module is depicted belo
 ![MAG-VIS100xx-N Production Test Flow](vision-module-testing-diagrams/VIS100xx_production_test_flow.png)
 *Figure 9: MAG-VIS100xx-N Production Test Flow*
 
-*Production test stages:*
-- **VI (Visual Inspection):** Assessment of the physical condition of the assembled module to identify visible defects before electrical testing. Checks for cracks, pin issues, delamination, solder anomalies, or mechanical damage on the integrated stack.
-- **VER (Functional Verification):** Confirms that the integrated module is compliant (functional and parametric) against its specifications for normal use-cases. This stage validates CXP downlink/uplink communication, power delivery across the module, image data integrity, and trigger functionality at full operational speed.
+#### 6.3.2 Test conditions
 
-#### 6.3.2 Test procedures
+The tables below define the temperature, supply voltage, and imager mode test conditions used for the module-level verification. Each test procedure references a subset of these conditions.
+
+| Condition | Symbol | Min | Nom | Max | Unit |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Temperature | Temp | 0 (CT) | 25 (RT) | 55 (HT) | °C |
+
+| Condition | Symbol | Min | Nom | Max | Unit |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| Module supply voltage | VDD_IN | 6 | 9 | 12 | V |
+
+| Imager mode | FPS | Image size height | Image size width |
+| :--- | :--- | :--- | :--- |
+| FHD10 | 10 | 1080 | 1920 |
+| FHD30 | 30 | 1080 | 1920 |
+| VGA50 | 50 | 480 | 640 |
+
+The default imager mode is FHD10 unless otherwise specified.
+
+#### 6.3.3 Test stages
+
+*Production test stages:*
+- **VI (Visual Inspection):** Assessment of the physical condition of the assembled module to identify visible defects before electrical testing. Checks for cracks, pin issues, solder anomalies, or mechanical damage on the integrated stack.
+- **VER (Functional Verification):** Confirms that the integrated module is compliant (functional and parametric) against its specifications for normal use-cases. This stage validates CXP downlink/uplink communication, power delivery across the module, image data integrity, and trigger functionality at full operational speed. Test conditions are: RT and Vnom.
+
+#### 6.3.4 Test procedures
 
 The table below lists all test procedures for the integrated module. The VI stage is a manual inspection performed before any electrical test. The VER stage validates the complete signal chain -- from power delivery through image capture to CXP serialization -- at full operational speed. Module variants that include the MAG-DRV IC have additional driver-specific tests.
 
@@ -380,7 +409,7 @@ The table below lists all test procedures for the integrated module. The VI stag
 | CXP Core functionality and video data check | Verifies basic functionality of the MAG-CXP00002-NP IC and CoaXPress video data -- checks lock bits, writes and reads a known register via CoaXPress to confirm communication, enables internal test pattern mode and verifies the correct pattern is received by the frame grabber. | | X |
 | IMG Core functionality and video data check | Verifies basic functionality of the MAG-IMG002x1 IC -- checks PLL status bits, tests image manipulation logic (y-axis flip), enables the internal Test Pattern Generator (TPG) and verifies the received image pattern via CoaXPress under various video modes and frame rates. | | X |
 | IMG Trigger mode | Provides full functional verification of all imager trigger modes: CXP hardware trigger flow, imager free-run burst mode (30-frame burst) and imager software trigger burst mode. | | X |
-| MAG-DRV Capabilities (MAG-VIS1000x only) | Verifies functional operation of the MAG-DRV IC outputs in both steady-state (ON/OFF) and dynamic (PWM) modes, using oscilloscope and MUX card to check all channels. | | X |
+| MAG-DRV Capabilities (MAG-VIS1001x only) | Verifies functional operation of the MAG-DRV IC outputs in both steady-state (ON/OFF) and dynamic (PWM) modes, using oscilloscope and MUX card to check all channels. | | X |
 | MAG-DRV Motor drive capabilities (MAG-VIS1002x only) | Verifies the MAG-DRV IC ability to drive external loads for directional movement of Iris, Zoom and Focus motors, verifying correct drv_enable register values for both directions and safe disable (OFF state). | | X |
 
 ---
@@ -393,50 +422,52 @@ The key specifications for the Vision Series products are extracted from their r
 
 **Table 1: MAG-IMG002X1-NC Key Specifications**
 
-| Test name | Test ID | Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Current consumption** | | | | | | | | | | |
-| Supply current (IDD) | T0007 | VDDD current (active, FHD25 10-bit) | I_VDDD | - | 205 | 1000 | mA | 20 | 300 | Max 1000 mA only at startup/reset |
-| Supply current (IDD) | T0007 | VDDA+VDDIO+VD_RST current (active, FHD25 10-bit) | I_VDDA (combined) | - | 124 | - | mA | 20 | 150 | Split over 3 PSU channels, LSL, USL of VDDA is given here |
-| **Clocking and control signal thresholds** | | | | | | | | | | |
-|  |  | External clock reference | REFCLK | 10 | 20 | 40 | MHz | - | - | Fixed to 20MHz in test setup Hardware |
-| Digital input thresholds (VIL/VIH) | T0004 | TRIG_IN input threshold low | TRIG_in_l | 0.74 | 1.07 | 1.4 | V | - | - | Pin is of type: rising edge triggered |
-| Digital input thresholds (VIL/VIH) | T0004 | TRIG_IN input threshold high | TRIG_in_h | 1.56 | 1.89 | 2.39 | V | 1.6 | 2.6 | - |
-| Digital input thresholds (VIL/VIH) | T0004 | TRIG_IN input hysteresis | TRIG_in_hyst | 0.66 | 0.82 | 1.15 | V | - | - | Pin is of type: rising edge triggered |
-| Digital input thresholds (VIL/VIH) | T0004 | RSTB input threshold (no hysteresis) | RSTB_th_lvl | - | 1.65 | - | V | 1.4 | 2.3 | - |
-| **SPI interface** | | | | | | | | | | |
-|  |  | SPI master clock speed | SPI_CLK | - | - | 20 | MHz | - | - | Fixed to 20MHz in test setup Hardware |
-| Digital output levels / leakage | T0005 | SPI MISO output voltage (no load) | SPI_out | 2.97 | 3.3 | 3.63 | V | 2.7 | - | Tested with 1mA load |
-| Digital input thresholds (VIL/VIH) | T0004 | SPI input threshold low | SPI_in_l | 0.74 | 1.07 | 1.4 | V | 0.6 | 1.7 | s_mosi_vil (representative) |
-| Digital input thresholds (VIL/VIH) | T0004 | SPI input threshold high | SPI_in_h | 1.56 | 1.89 | 2.39 | V | 1.3 | 2.3 | s_mosi_vih (representative) |
-| Digital input thresholds (VIL/VIH) | T0004 | SPI input hysteresis | SPI_in_hyst | 0.66 | 0.82 | 1.15 | V | 0.3 | 0.9 | s_mosi_hysteresis (representative) |
-| **Digital video output interface** | | | | | | | | | | |
-| Digital output levels / leakage | T0005 | VOH (no resistive load) | VOH | 2.97 | VDDIO | 3.63 | V | 2.7 | - | Tested with 1mA load |
-| Digital output levels / leakage | T0005 | VOL (no resistive load) | VOL | - | 0 (gnd) | - | V | - | 0.3 | Tested with 1mA load |
-|  | T0024 | Pixel output clock speed | PIXCLK_speed | 50 | - | 100 | MHz | 1e-06 | - | Only tested at speed during characterization (FHD30 mode), production testing uses FHD10, HD40 and VGA50 mode what is at half of the max speed |
-|  | T0024 | Data output line speed | DV_X_speed | - | - | 50 | MHz | 1e-06 | - | Only tested at speed during characterization (FHD30 mode), production testing uses FHD10, HD40 and VGA50 mode what is at half of the max speed |
-| **Analog signals** | | | | | | | | | | |
-| Power-good / output monitor thresholds | T0010 | Bandgap reference voltage (VDD12BG) | Vvdd12bg | 1.14 | 1.2 | 1.26 | V | 1.05 | 1.35 | - |
-| **Electro-optical characteristics** | | | | | | | | | | |
-|  |  | Effective number of pixels | - | - | 1920 (H) x 1080 (V) | - | - | - | - | Guaranteed by design |
-|  |  | Pixel size | - | - | 5um x 5um | - | - | - | - | Guaranteed by design |
-|  |  | Number of black rows | - | - | 64 | - | - | - | - | Guaranteed by design |
-|  |  | Shutter type | - | - | Rolling shutter | - | - | - | - | Guaranteed by design |
-|  |  | Full well charge | - | - | 94000 | - | e- | - | - | This is a design target, related to test parameter: saturation limit. This is tested only during characterization |
-| Electro-optical characterization | T0038 | Conversion gain | - | - | 0.01 | - | mV/e- | 0.006 | 0.018 | - |
-| Electro-optical characterization | T0038 | Responsivity | - | - | 0.009 | - | DN/p | 0.02895 | 0.04825 | - |
-| Electro-optical characterization | T0038 | Temporal noise | - | - | 66 | - | e- | - | 120 | - |
-| Electro-optical characterization | T0038 | Dynamic range | - | - | 62 | - | dB | 57 | 65 | - |
-| Electro-optical characterization | T0038 | SNR_MAX | - | - | 49.5 | - | dB | 46 | 54 | - |
-| Electro-optical characterization | T0038 | Dark current (DC) | - | - | 0.05 | - | e-/s/px | - | 2500 | - |
-| Electro-optical characterization | T0038 | Dark current non uniformity (DCNU) | - | - | 42.8 | - | e-/s/px | - | 4000 | - |
-| Electro-optical characterization | T0038 | Dark signal non uniformity (DSNU) | - | - | 587.2 | - | e- | - | 600 | - |
-| Electro-optical characterization | T0038 | Photo response non uniformity (PRNU) | - | - | < tba | 2.5 | % of mean | -2.5 | 2.5 | - |
-|  |  | Color filters | - | - | BayerRG (Bayer RGGB) | - | - | - | - | Guaranteed by design |
-|  |  | Programmable features | - | - | Sensor parameters | - | - | - | - | Features are included as functional test: Exposure time, sub-sampling, X-Y mirroring, ADC resolution |
-|  |  | ADC resolution | - | - | 10 and 12 bit | - | - | - | - | Guaranteed by design |
-|  |  | Interface | - | - | 10/12b parallel output | - | - | - | - | Fixed to 10b for all tests |
-|  |  | Cover glass lid | Corning 7980 0F | - | - | - | - | - | - | Guaranteed by design |
+| Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Current consumption** | | | | | | | | |
+| VDDD current (active, FHD25 10-bit) | I_VDDD | - | 205 | 1000 | mA | 20 | 300 | Max 1000 mA only at startup/reset |
+| VDDA+VDDIO+VD_RST current (active, FHD25 10-bit) | I_VDDA (combined) | - | 124 | - | mA | 20 | 150 | Split over 3 PSU channels, LSL, USL of VDDA is given here |
+| **Clocking and control signal thresholds** | | | | | | | | |
+| External clock reference | REFCLK | 10 | 20 | 40 | MHz | - | - | Fixed to 20MHz in test setup Hardware |
+| TRIG_IN input threshold low | TRIG_in_l | 0.74 | 1.07 | 1.4 | V | - | - | Pin is of type: rising edge triggered |
+| TRIG_IN input threshold high | TRIG_in_h | 1.56 | 1.89 | 2.39 | V | 1.6 | 2.6 | - |
+| TRIG_IN input hysteresis | TRIG_in_hyst | 0.66 | 0.82 | 1.15 | V | - | - | Pin is of type: rising edge triggered |
+| RSTB input threshold (no hysteresis) | RSTB_th_lvl | - | 1.65 | - | V | 1.4 | 2.3 | - |
+| **SPI interface** | | | | | | | | |
+| SPI master clock speed | SPI_CLK | - | - | 20 | MHz | - | - | Fixed to 20MHz in test setup Hardware |
+| SPI MISO output voltage (no load) | SPI_out | 2.97 | 3.3 | 3.63 | V | 2.7 | - | Tested with 1mA load |
+| SPI input threshold low | SPI_in_l | 0.74 | 1.07 | 1.4 | V | 0.6 | 1.7 | s_mosi_vil (representative) |
+| SPI input threshold high | SPI_in_h | 1.56 | 1.89 | 2.39 | V | 1.3 | 2.3 | s_mosi_vih (representative) |
+| SPI input hysteresis | SPI_in_hyst | 0.66 | 0.82 | 1.15 | V | 0.3 | 0.9 | s_mosi_hysteresis (representative) |
+| **Digital video output interface** | | | | | | | | |
+| VOH (no resistive load) | VOH | 2.97 | VDDIO | 3.63 | V | 2.7 | - | Tested with 1mA load |
+| VOL (no resistive load) | VOL | - | 0 (gnd) | - | V | - | 0.3 | Tested with 1mA load |
+| Pixel output clock speed | PIXCLK_speed | 50 | - | 100 | MHz | 1e-06 | - | Only tested at speed during characterization (FHD30 mode), production testing uses FHD10, HD40 and VGA50 mode what is at half of the max speed |
+| Data output line speed | DV_X_speed | - | - | 50 | MHz | 1e-06 | - | Only tested at speed during characterization (FHD30 mode), production testing uses FHD10, HD40 and VGA50 mode what is at half of the max speed |
+| **Analog signals** | | | | | | | | |
+| Bandgap reference voltage (VDD12BG) | Vvdd12bg | 1.14 | 1.2 | 1.26 | V | 1.05 | 1.35 | - |
+| **Electro-optical characteristics** | | | | | | | | |
+| Effective number of pixels | - | - | 1920 (H) x 1080 (V) | - | - | - | - | Guaranteed by design |
+| Pixel size | - | - | 5um x 5um | - | - | - | - | Guaranteed by design |
+| Number of black rows | - | - | 64 | - | - | - | - | Guaranteed by design |
+| Shutter type | - | - | Rolling shutter | - | - | - | - | Guaranteed by design |
+| Full well charge | - | - | 94000 | - | e- | - | - | This is a design target, related to test parameter: saturation limit. This is tested only during characterization |
+| Conversion gain | - | - | 0.01 | - | mV/e- | 0.006 | 0.018 | - |
+| Responsivity | - | - | 0.009 | - | DN/p | 0.02895 | 0.04825 | - |
+| Temporal noise | - | - | 66 | - | e- | - | 120 | - |
+| Dynamic range | - | - | 62 | - | dB | 57 | 65 | - |
+| SNR_MAX | - | - | 49.5 | - | dB | 46 | 54 | - |
+| Dark current (DC) | - | - | 0.05 | - | e-/s/px | - | 2500 | - |
+| Dark current non uniformity (DCNU) | - | - | 42.8 | - | e-/s/px | - | 4000 | - |
+| Dark signal non uniformity (DSNU) | - | - | 587.2 | - | e- | - | 600 | - |
+| Photo response non uniformity (PRNU) | - | - | < tba | 2.5 | % of mean | -2.5 | 2.5 | - |
+| Color filters | - | - | BayerRG (Bayer RGGB) | - | - | - | - | Guaranteed by design |
+| Programmable features | - | - | Sensor parameters | - | - | - | - | Features are tested during characterization: Exposure time, sub-sampling, X-Y mirroring, ADC resolution |
+| ADC resolution | - | - | 10 and 12 bit | - | - | - | - | Guaranteed by design |
+| Interface | - | - | 10/12b parallel output | - | - | - | - | Fixed to 10b for all tests |
+| Cover glass lid | Corning 7980 0F | - | - | - | - | - | - | Guaranteed by design |
+
+The table below lists the electro-optical and pixel-array defect test parameters measured during test T0038. The test limits shown are a first suggestion based on early characterisation data and are not yet final. Additional production data is needed to refine these limits so that they are both technically sound and economically viable.
 
 **Table 1b: MAG-IMG002X1-NC Electro-Optical Test Parameters (T0038)**
 
@@ -477,75 +508,75 @@ The key specifications for the Vision Series products are extracted from their r
 
 **Table 2: MAG-CXP00002-NP Key Specifications**
 
-| Test name | Test ID | Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Current consumption** | | | | | | | | | | |
-| Supply current (IDD) | T0007 | 3.3V total supply current (average) | IVDD3V3_TOTAL_AVG | - | 82.35 | - | mA | - | - | Sum of analog + digital |
-| Supply current (IDD) | T0007 | 3.3V digital supply current (average) | IVDD3V3_DIG_AVG | 14.45 | 18.6 | 28 | mA | 20 | 100 | Channel combines DIG+PLL |
-| Supply current (IDD) | T0007 | 3.3V analog supply current (average) | IVDD3V3_ANA_AVG | - | 49.8 | - | mA | 40 | 60 | Active mode measurement |
-| Supply current (IDD) | T0007 | 3.3V PLL supply current (average) | IVDD3V3_PLL_AVG | - | 13.93 | - | mA | - | - | Included in DIG, no separate Power supply channel |
-| **Power consumption** | | | | | | | | | | |
-| Supply current (IDD) | T0007 | Total power consumption | - | - | 271.55 | - | mW | - | - | Derived from IDD x VDD |
-| **Logic level inputs (GPIO)** | | | | | | | | | | |
-| Digital input thresholds (VIL/VIH) | T0004 | VIL (GPIO input low threshold) | VIL | 390 | 470 | 635 | mV | 390 | 635 | - |
-| Digital input thresholds (VIL/VIH) | T0004 | VIH (GPIO input high threshold) | VIH | 443 | 550 | 715 | mV | 443 | 715 | - |
-| Digital input thresholds (VIL/VIH) | T0004 | Hysteresis (GPIO) | Hysteresis | 38 | 80 | 117 | mV | 38 | 117 | - |
-| **Logic level inputs (Video pins)** | | | | | | | | | | |
-| Digital input thresholds (VIL/VIH) | T0004 | VIL (Video input low threshold) | VIL | 1.147 | 1.328 | 1.689 | V | 1.147 | 1.689 | - |
-| Digital input thresholds (VIL/VIH) | T0004 | VIH (Video input high threshold) | VIH | 1.482 | 1.714 | 2.282 | V | 1.482 | 2.282 | - |
-| Digital input thresholds (VIL/VIH) | T0004 | Hysteresis (Video) | Hysteresis | 309 | 387 | 593 | mV | 38 | 593 | - |
-| **Data rates** | | | | | | | | | | |
-| Parallel video data rate | T0023 | Parallel video data rate | DRin,par | - | - | 100 | MHz | - | 0 | Functional test |
-| **Crystal oscillator** | | | | | | | | | | |
-| Crystal / clock / functional config | T0013 | Crystal frequency | fXTAL | 10 | 20 | 40 | MHz | 19.5 | 20.5 | - |
-| **CAM LDO outputs** | | | | | | | | | | |
-| Soft start timing | T0012 | VDD1V8_CAM supply voltage | V_VDD1V8_CAM | 1.7 | 1.8 | 1.9 | V | 1.2 | 2.4 | - |
-| PTAT / temperature sense | T0011 | VDD1V2_CAM reference voltage | V_VDD1V2_CAM | 1.15 | 1.2 | 1.25 | V | 1.15 | 1.25 | - |
+| Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Current consumption** | | | | | | | | |
+| 3.3V total supply current (average) | IVDD3V3_TOTAL_AVG | - | 82.35 | - | mA | - | - | Sum of analog + digital |
+| 3.3V digital supply current (average) | IVDD3V3_DIG_AVG | 14.45 | 18.6 | 28 | mA | 20 | 100 | Channel combines DIG+PLL |
+| 3.3V analog supply current (average) | IVDD3V3_ANA_AVG | - | 49.8 | - | mA | 40 | 60 | Active mode measurement |
+| 3.3V PLL supply current (average) | IVDD3V3_PLL_AVG | - | 13.93 | - | mA | - | - | Included in DIG, no separate Power supply channel |
+| **Power consumption** | | | | | | | | |
+| Total power consumption | - | - | 271.55 | - | mW | - | - | Derived from IDD x VDD |
+| **Logic level inputs (GPIO)** | | | | | | | | |
+| VIL (GPIO input low threshold) | VIL | 390 | 470 | 635 | mV | 390 | 635 | - |
+| VIH (GPIO input high threshold) | VIH | 443 | 550 | 715 | mV | 443 | 715 | - |
+| Hysteresis (GPIO) | Hysteresis | 38 | 80 | 117 | mV | 38 | 117 | - |
+| **Logic level inputs (Video pins)** | | | | | | | | |
+| VIL (Video input low threshold) | VIL | 1.147 | 1.328 | 1.689 | V | 1.147 | 1.689 | - |
+| VIH (Video input high threshold) | VIH | 1.482 | 1.714 | 2.282 | V | 1.482 | 2.282 | - |
+| Hysteresis (Video) | Hysteresis | 309 | 387 | 593 | mV | 38 | 593 | - |
+| **Data rates** | | | | | | | | |
+| Parallel video data rate | DRin,par | - | - | 100 | MHz | - | 0 | Functional test |
+| **Crystal oscillator** | | | | | | | | |
+| Crystal frequency | fXTAL | 10 | 20 | 40 | MHz | 19.5 | 20.5 | - |
+| **CAM LDO outputs** | | | | | | | | |
+| VDD1V8_CAM supply voltage | V_VDD1V8_CAM | 1.7 | 1.8 | 1.9 | V | 1.2 | 2.4 | - |
+| VDD1V2_CAM reference voltage | V_VDD1V2_CAM | 1.15 | 1.2 | 1.25 | V | 1.15 | 1.25 | - |
 
 ### 7.3 MAG-PSU00001-NP (10W Synchronous Step-Down DC/DC Converter)
 
 **Table 3: MAG-PSU00001-NP Key Specifications**
 
-| Test name | Test ID | Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Power** | | | | | | | | | | |
-|  |  | Input voltage supply range | PVin, Vin | 5 | - | 11 | V | - | - | Test condition |
-|  |  | Output current (PCB in air) | Iout | - | - | 1 | A | - | - | Test condition |
-|  |  | Output power (PCB in air) | Pout | - | - | 2 | W | - | - | Test condition |
-| **PWM** | | | | | | | | | | |
-|  |  | Maximum Duty Cycle | DMax | - | 100 | - | % | - | - | Cannot be measured, sensitive node |
-|  |  | Minimum Duty Cycle | DMin | - | 0 | - | % | - | - | Cannot be measured, sensitive node |
-| **Error Amplifier** | | | | | | | | | | |
-|  |  | DC Gain | DCG | - | 90 | - | dB | - | - | Cannot be measured, sensitive node |
-|  |  | Unity Gain-Bandwidth | UGBW | - | 20 | - | MHz | - | - | Cannot be measured, sensitive node |
-|  |  | Slew Rate | SR | - | 10 | - | V/us | - | - | Cannot be measured, sensitive node |
-| **Under-voltage lockout** | | | | | | | | | | |
-| UVLO / reference voltages | T0009 | Vin start threshold | VinStartTh | - | 4.79 | - | V | 4.4 | 4.8 | - |
-| UVLO / reference voltages | T0009 | Vin stop threshold | VinStopTh | - | 4.52 | - | V | 4.12 | 4.53 | - |
-| **Enable** | | | | | | | | | | |
-| Enable thresholds | T0006 | Enable start threshold | EnStartTh | - | 815 | - | mV | 770 | 900 | - |
-| Enable thresholds | T0006 | Enable stop threshold | EnStopTh | - | 730 | - | mV | 670 | 780 | - |
-|  |  | Enable pin series resistance | EnSerRes | - | 10 | - | kΩ | - | - | Guaranteed by design |
-| **Protections** | | | | | | | | | | |
-|  |  | Over Current Protection peak level | OCPpk | - | 6 | - | A | - | - | Cannot be triggered with test setup, functionality of OCP is not covered within test plan |
-|  |  | Over Current Protection average level | OCPavg | - | 4.8 | - | A | - | - | Cannot be triggered with test setup, functionality of OCP is not covered within test plan |
-|  |  | Over Temperature start threshold | OTPStartTh | - | 103 | - | °C | - | - | Only tested during characterization |
-|  |  | Over Temperature stop threshold | OTPStopTh | - | 73 | - | °C | - | - | Only tested during characterization |
-| **Soft Start** | | | | | | | | | | |
-| Soft start timing | T0012 | Soft Start duration | SSt | - | - | 440 | us | - | 1500 | - |
-| **Power Good** | | | | | | | | | | |
-| Power-good / output monitor thresholds | T0010 | Output Over Voltage PGood threshold | OV | - | +6.5 | - | % | 2.5 | 10.5 | - |
-| Power-good / output monitor thresholds | T0010 | Output Under Voltage PGood threshold | UV | - | -6.5 | - | % | -10.5 | -2.5 | - |
-| **PTAT** | | | | | | | | | | |
-|  |  | PTAT temperature slope | PTAT | - | 8.5 | - | mV/°C | - | - | Only tested during characterization |
+| Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Power** | | | | | | | | |
+| Input voltage supply range | PVin, Vin | 5 | - | 11 | V | - | - | Test condition |
+| Output current (PCB in air) | Iout | - | - | 1 | A | - | - | Test condition |
+| Output power (PCB in air) | Pout | - | - | 2 | W | - | - | Test condition |
+| **PWM** | | | | | | | | |
+| Maximum Duty Cycle | DMax | - | 100 | - | % | - | - | Cannot be measured, sensitive node |
+| Minimum Duty Cycle | DMin | - | 0 | - | % | - | - | Cannot be measured, sensitive node |
+| **Error Amplifier** | | | | | | | | |
+| DC Gain | DCG | - | 90 | - | dB | - | - | Cannot be measured, sensitive node |
+| Unity Gain-Bandwidth | UGBW | - | 20 | - | MHz | - | - | Cannot be measured, sensitive node |
+| Slew Rate | SR | - | 10 | - | V/us | - | - | Cannot be measured, sensitive node |
+| **Under-voltage lockout** | | | | | | | | |
+| Vin start threshold | VinStartTh | - | 4.79 | - | V | 4.4 | 4.8 | - |
+| Vin stop threshold | VinStopTh | - | 4.52 | - | V | 4.12 | 4.53 | - |
+| **Enable** | | | | | | | | |
+| Enable start threshold | EnStartTh | - | 815 | - | mV | 770 | 900 | - |
+| Enable stop threshold | EnStopTh | - | 730 | - | mV | 670 | 780 | - |
+| Enable pin series resistance | EnSerRes | - | 10 | - | kΩ | - | - | Guaranteed by design |
+| **Protections** | | | | | | | | |
+| Over Current Protection peak level | OCPpk | - | 6 | - | A | - | - | Cannot be triggered with test setup, functionality of OCP is not covered within test plan |
+| Over Current Protection average level | OCPavg | - | 4.8 | - | A | - | - | Cannot be triggered with test setup, functionality of OCP is not covered within test plan |
+| Over Temperature start threshold | OTPStartTh | - | 103 | - | °C | - | - | Only tested during characterization |
+| Over Temperature stop threshold | OTPStopTh | - | 73 | - | °C | - | - | Only tested during characterization |
+| **Soft Start** | | | | | | | | |
+| Soft Start duration | SSt | - | - | 440 | us | - | 1500 | - |
+| **Power Good** | | | | | | | | |
+| Output Over Voltage PGood threshold | OV | - | +6.5 | - | % | 2.5 | 10.5 | - |
+| Output Under Voltage PGood threshold | UV | - | -6.5 | - | % | -10.5 | -2.5 | - |
+| **PTAT** | | | | | | | | |
+| PTAT temperature slope | PTAT | - | 8.5 | - | mV/°C | - | - | Only tested during characterization |
 
 ### 7.4 MAG-VIS100xx-N (Electronic Vision Module)
 
 **Table 4: MAG-VIS100xx-N Key Specifications**
 
-| Test name | Test ID | Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Electrical characteristics** | | | | | | | | |
-| Module verification (VER) | VER | Module supply current | I_SUPPLY_9V | 160 | - | 257 | mA | - |
-|  |  | AC output impedance (HD-BNC) | Z_out_AC | - | 75 | - | Ohm | - |
+| Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | Comment |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Electrical characteristics** | | | | | | |
+| Module supply current | I_SUPPLY_9V | 160 | - | 257 | mA | - |
+| AC output impedance (HD-BNC) | Z_out_AC | - | 75 | - | Ohm | - |
 

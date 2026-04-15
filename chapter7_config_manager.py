@@ -632,19 +632,24 @@ def _build_t0038_markdown(t0038_params, eo_descs, existing_mids, unit_from_confi
 # ---------------------------------------------------------------------------
 # Cross-reference tables (Chapter 6): test procedure → parameter names
 # ---------------------------------------------------------------------------
-def _build_xref_markdown(rows, product_name):
+def _build_xref_markdown(rows, product_name, product_key=""):
     """Build a cross-reference table mapping test procedures to measured parameters."""
     test_to_params = {}
+    test_to_name = {}
+    prod_labels = _PRODUCT_TEST_LABELS.get(product_key, {})
     for r in rows:
         tp = r.get("Test_Proc", "").strip()
         param = r.get("Parameter", "").strip()
         if not tp or tp in ("-", "None") or not param:
             continue
+        explicit_name = (r.get("Test_Name", "") or "").strip()
         for t in re.split(r'[/,]', tp):
             t = t.strip()
             if not t or t in ("-", "None"):
                 continue
             test_to_params.setdefault(t, []).append(param)
+            if t not in test_to_name and explicit_name:
+                test_to_name[t] = explicit_name
 
     if not test_to_params:
         return ""
@@ -654,12 +659,13 @@ def _build_xref_markdown(rows, product_name):
     lines.append("")
     lines.append("The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name.")
     lines.append("")
-    lines.append("| Test procedure | Parameters measured |")
-    lines.append("| :--- | :--- |")
+    lines.append("| Test procedure | Test ID | Parameters measured |")
+    lines.append("| :--- | :--- | :--- |")
 
     for t in sorted(test_to_params.keys()):
+        name = prod_labels.get(t) or test_to_name.get(t) or _fallback_test_name_from_proc(t)
         params_str = ", ".join(test_to_params[t])
-        lines.append(f"| {t} | {params_str} |")
+        lines.append(f"| {name} | {t} | {params_str} |")
 
     return "\n".join(lines)
 
@@ -670,6 +676,102 @@ XREF_MARKERS = {
     "CXP00002": ("#### 6.1.2 MAG-CXP00002-NP", "#### 6.1.3"),
     "PSU00001": ("#### 6.1.3 MAG-PSU00001-NP", "### 6.2"),
 }
+
+
+# ---------------------------------------------------------------------------
+# Appendix: Traceability matrix  (Option E — category × test ID)
+# ---------------------------------------------------------------------------
+APPENDIX_MARKER = "## Appendix A: Traceability Matrix"
+
+PRODUCT_FULL_NAMES = {
+    "IMG002X1": "MAG-IMG002X1-NC",
+    "CXP00002": "MAG-CXP00002-NP",
+    "PSU00001": "MAG-PSU00001-NP",
+}
+
+
+def _build_traceability_matrix(all_tables):
+    """Build an appendix with one traceability matrix per IC product.
+
+    Rows = parameter categories (Section), Columns = unique test IDs.
+    Cells = X where at least one parameter in that category is tested by that ID.
+    """
+    lines = []
+    lines.append(APPENDIX_MARKER)
+    lines.append("")
+    lines.append(
+        "The matrices below provide a concise overview of which specification "
+        "categories (rows) are verified by which test procedures (columns). "
+        "An **X** indicates that at least one parameter in that category is "
+        "measured by the test. Detailed parameter-level traceability is provided "
+        "in the cross-reference tables of Chapter 6."
+    )
+
+    for product in ["IMG002X1", "CXP00002", "PSU00001"]:
+        rows = all_tables.get(product)
+        if not rows:
+            continue
+
+        # Collect unique test IDs (sorted) and section → set of test IDs
+        section_tests = {}
+        all_tests = set()
+        for r in rows:
+            section = r.get("Section", "").strip()
+            tp = (r.get("Test_Proc", "") or "").strip()
+            if not section or not tp or tp in ("-", "None"):
+                continue
+            for t in re.split(r'[/,]', tp):
+                t = t.strip()
+                if t and t not in ("-", "None"):
+                    section_tests.setdefault(section, set()).add(t)
+                    all_tests.add(t)
+
+        if not all_tests:
+            continue
+
+        sorted_tests = sorted(all_tests)
+        full_name = PRODUCT_FULL_NAMES.get(product, product)
+
+        lines.append("")
+        lines.append(f"### {full_name}")
+        lines.append("")
+
+        # Header
+        header = "| Category |"
+        sep = "| :--- |"
+        for t in sorted_tests:
+            header += f" {t} |"
+            sep += " :---: |"
+        lines.append(header)
+        lines.append(sep)
+
+        # Rows (one per section, ordered by first appearance)
+        seen_sections = []
+        for r in rows:
+            s = r.get("Section", "").strip()
+            if s and s not in seen_sections:
+                seen_sections.append(s)
+
+        for section in seen_sections:
+            tests_in_section = section_tests.get(section, set())
+            row_str = f"| {section} |"
+            for t in sorted_tests:
+                row_str += " X |" if t in tests_in_section else " |"
+            lines.append(row_str)
+
+    return "\n".join(lines)
+
+
+def _update_appendix_in_markdown(content, appendix_md):
+    """Insert or replace the traceability appendix at the end of the document."""
+    pos = content.find(APPENDIX_MARKER)
+    if pos != -1:
+        content = content[:pos].rstrip() + "\n\n"
+    else:
+        content = content.rstrip() + "\n\n---\n\n"
+
+    content += appendix_md + "\n"
+    return content
 
 
 def _update_xref_in_markdown(content, xref_tables):
@@ -768,7 +870,14 @@ def generate_report():
         eo_descs = _read_eo_descriptions(IMG_EO_PARAMS_XLSX)
         t0038_md = _build_t0038_markdown(t0038_params, eo_descs, existing_img_mids, {})
         if t0038_md:
-            img_md += "\n\n" + t0038_md
+            t0038_note = (
+                "The table below lists the electro-optical and pixel-array defect test "
+                "parameters measured during test T0038. The test limits shown are a first "
+                "suggestion based on early characterisation data and are not yet final. "
+                "Additional production data is needed to refine these limits so that they "
+                "are both technically sound and economically viable."
+            )
+            img_md += "\n\n" + t0038_note + "\n\n" + t0038_md
             print(f"  {len([p for p in t0038_params if p['mid'] not in existing_img_mids])} T0038 parameters added")
         md_sections["IMG002X1"] = img_md
 
@@ -803,12 +912,16 @@ def generate_report():
     for product in ["IMG002X1", "CXP00002", "PSU00001"]:
         if product in tables:
             xref_tables[product] = _build_xref_markdown(
-                tables[product], product_labels[product]
+                tables[product], product_labels[product], product_key=product
             )
 
     with open(MD_FILE, "r", encoding="utf-8") as f:
         content = f.read()
     content = _update_xref_in_markdown(content, xref_tables)
+    # Strip any leftover appendix from previous runs
+    app_pos = content.find(APPENDIX_MARKER)
+    if app_pos != -1:
+        content = content[:app_pos].rstrip() + "\n"
     with open(MD_FILE, "w", encoding="utf-8") as f:
         f.write(content)
 
@@ -910,30 +1023,54 @@ _UNIT_SCALE = {
 }
 
 
-# Human-readable labels for Test_Proc IDs (fallback when Test_Name is empty in config).
-_TEST_ID_LABELS = {
-    "T0001": "Power short (input)",
-    "T0002": "Power short (output)",
-    "T0004": "Digital input thresholds (VIL/VIH)",
-    "T0005": "Digital output levels / leakage",
-    "T0006": "Enable thresholds",
-    "T0007": "Supply current (IDD)",
-    "T0008": "On-chip regulator",
-    "T0009": "UVLO / reference voltages",
-    "T0010": "Power-good / output monitor thresholds",
-    "T0011": "PTAT / temperature sense",
-    "T0012": "Soft start timing",
-    "T0013": "Crystal / clock / functional config",
-    "T0014": "Line regulation",
-    "T0015": "Load regulation",
-    "T0016": "Efficiency",
-    "T0017": "Output ripple",
-    "T0020": "CXP uplink data rate",
-    "T0021": "CXP uplink (related)",
-    "T0022": "CXP downlink data rate",
-    "T0023": "Parallel video data rate",
-    "T0038": "Electro-optical characterization",
+# Per-product mapping from Txxxx to Chapter 6 test procedure name.
+_PRODUCT_TEST_LABELS = {
+    "IMG002X1": {
+        "T0004": "VIL/VIH",
+        "T0005": "VOL/VOH",
+        "T0007": "IDDD",
+        "T0010": "Static signal test",
+        "T0024": "Frame modes",
+        "T0038": "Optical test processing",
+    },
+    "CXP00002": {
+        "T0004": "VIL/VIH",
+        "T0005": "VOH/VOL",
+        "T0006": "IOL/IOH",
+        "T0007": "IDDD",
+        "T0009": "Regulators",
+        "T0011": "Regulators",
+        "T0012": "Regulators",
+        "T0013": "Oscillator",
+        "T0020": "CXP Uplink Receiver Sensitivity",
+        "T0021": "CXP Uplink Receiver Sensitivity",
+        "T0022": "Internal Test Patterns",
+        "T0023": "Camera Test",
+    },
+    "PSU00001": {
+        "T0001": "Power Short",
+        "T0002": "Load Short",
+        "T0005": "Leakage",
+        "T0006": "Input threshold",
+        "T0007": "Output drive-strength",
+        "T0008": "On-chip regulator",
+        "T0009": "Under Voltage Lock Out",
+        "T0010": "Output voltage monitor",
+        "T0011": "Over Temperature Protection",
+        "T0012": "Startup behaviour",
+        "T0014": "Line regulation",
+        "T0015": "Load regulation",
+        "T0016": "Efficiency",
+        "T0017": "Output voltage ripple",
+    },
 }
+
+# Global fallback (used when product key is not available)
+_TEST_ID_LABELS = {}
+for _prod_labels in _PRODUCT_TEST_LABELS.values():
+    for _k, _v in _prod_labels.items():
+        if _k not in _TEST_ID_LABELS:
+            _TEST_ID_LABELS[_k] = _v
 
 
 def _fallback_test_name_from_proc(test_proc: str) -> str:
@@ -1000,17 +1137,16 @@ def _build_ic_markdown(rows, table_title):
     lines = []
     lines.append(f"**{table_title}**")
     lines.append("")
-    lines.append("| Test name | Test ID | Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |")
-    lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
+    lines.append("| Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |")
+    lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
 
     prev_section = None
     for r in rows:
         section = r.get("Section", "")
         if section and section != prev_section:
-            lines.append(f"| **{section}** | | | | | | | | | | |")
+            lines.append(f"| **{section}** | | | | | | | | |")
             prev_section = section
 
-        test_name, test_id = _chapter7_test_columns(r)
         param = r.get("Parameter", "-")
         ds_label = _fmt(r.get("Datasheet_Label", ""))
         ds_min = _fmt(r.get("DS_Min", ""))
@@ -1022,7 +1158,7 @@ def _build_ic_markdown(rows, table_title):
         comment = _fmt(r.get("Comment", ""))
 
         lines.append(
-            f"| {test_name} | {test_id} | {param} | {ds_label} | {ds_min} | {ds_typ} | {ds_max} | {unit} | {lsl} | {usl} | {comment} |"
+            f"| {param} | {ds_label} | {ds_min} | {ds_typ} | {ds_max} | {unit} | {lsl} | {usl} | {comment} |"
         )
 
     return "\n".join(lines)
@@ -1033,17 +1169,16 @@ def _build_vis_markdown(rows, table_title):
     lines = []
     lines.append(f"**{table_title}**")
     lines.append("")
-    lines.append("| Test name | Test ID | Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | Comment |")
-    lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
+    lines.append("| Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | Comment |")
+    lines.append("| :--- | :--- | :--- | :--- | :--- | :--- | :--- |")
 
     prev_section = None
     for r in rows:
         section = r.get("Section", "")
         if section and section != prev_section:
-            lines.append(f"| **{section}** | | | | | | | | |")
+            lines.append(f"| **{section}** | | | | | | |")
             prev_section = section
 
-        test_name, test_id = _chapter7_test_columns(r)
         param = r.get("Parameter", "-")
         ds_label = _fmt(r.get("Datasheet_Label", ""))
         ds_min = _fmt(r.get("DS_Min", ""))
@@ -1053,7 +1188,7 @@ def _build_vis_markdown(rows, table_title):
         comment = _fmt(r.get("Comment", ""))
 
         lines.append(
-            f"| {test_name} | {test_id} | {param} | {ds_label} | {ds_min} | {ds_typ} | {ds_max} | {unit} | {comment} |"
+            f"| {param} | {ds_label} | {ds_min} | {ds_typ} | {ds_max} | {unit} | {comment} |"
         )
 
     return "\n".join(lines)
