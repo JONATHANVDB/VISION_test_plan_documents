@@ -1,10 +1,10 @@
 # Pandoc writes diagnostics to stderr; do not treat that as a terminating error.
 $ErrorActionPreference = "Continue"
 $here = $PSScriptRoot
-$md = Join-Path $here "Vision_Series_Test_Plan.md"
+$md = Join-Path $here "Vision_Series_Production_Test_Plan.md"
 $ref = Join-Path $here "templates\word_document_template.docx"
-$out = Join-Path $here "Vision_Series_Test_Plan.docx"
-$alt = Join-Path $here "Vision_Series_Test_Plan_from_template.docx"
+$out = Join-Path $here "Vision_Series_Production_Test_Plan.docx"
+$alt = Join-Path $here "Vision_Series_Production_Test_Plan_from_template.docx"
 $pandoc = if (Test-Path "$env:LOCALAPPDATA\Pandoc\pandoc.exe") {
     "$env:LOCALAPPDATA\Pandoc\pandoc.exe"
 } else {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="170" viewBox="0 0 800 170" style="display:block;width:800px;height:170px">
+  <!-- Outer orange-border rounded box with light orange fill -->
+  <rect x="3" y="3" width="794" height="164" rx="12" ry="12" fill="#fff7ed" stroke="#ea580c" stroke-width="3"/>
+
+  <!-- Orange exclamation triangle icon -->
+  <g transform="translate(28, 22)">
+    <path d="M16 2 L30.5 28 A3 3 0 0 1 28.4 32 L3.6 32 A3 3 0 0 1 1.5 28 L16 2 Z"
+          fill="#ea580c" stroke="none"/>
+    <text x="16" y="28" text-anchor="middle"
+          style="font-weight:900;font-size:20px;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;fill:#ffffff">!</text>
+  </g>
+
+  <!-- Title -->
+  <text x="72" y="46"
+        style="font-weight:700;font-size:17px;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;fill:#9a3412">
+    WARNING &#x2014; Test System Under Development
+  </text>
+
+  <!-- Body text -->
+  <text style="font-size:13.5px;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;fill:#1c1917;line-height:1.5">
+    <tspan x="36" y="72">The module-level test system is currently under development. At present, testing is limited to ambient</tspan>
+    <tspan x="36" dy="21">temperature and nominal supply voltage (Vnom), using the FHD10 imager mode, and capturing a dark</tspan>
+    <tspan x="36" dy="21">and white image by blocking light and manually inspecting the output on the test computer. The</tspan>
+    <tspan x="36" dy="21">descriptions in this section reflect the full intended scope once the complete test system is implemented.</tspan>
+  </text>
+</svg>

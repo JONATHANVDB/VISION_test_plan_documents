@@ -8,13 +8,16 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MD_FILE = os.path.join(BASE_DIR, "Vision_Series_Test_Plan.md")
-OUT_FILE = os.path.join(BASE_DIR, "Vision_Series_Test_Plan.docx")
+MD_FILE = os.path.join(BASE_DIR, "Vision_Series_Production_Test_Plan.md")
+OUT_FILE = os.path.join(BASE_DIR, "Vision_Series_Production_Test_Plan.docx")
 TEMPLATE_FILE = os.path.join(BASE_DIR, "templates", "word_document_template.docx")
+
+COVER_TITLE = "High-level Production Test Plan"
+COVER_SUBJECT = "Vision Series"
 
 doc = Document(TEMPLATE_FILE)
 
-# Strip template placeholder content, keep cover-page section intact
+# Strip template sample content but keep cover page AND front-matter (TOC, LoF, LoT)
 body = doc.element.body
 _cover_end = None
 for _el in body:
@@ -26,14 +29,89 @@ for _el in body:
 
 _to_remove = []
 _past_cover = False
-for _el in body:
+_remove_next_table = False
+_removing_sample = False
+for _el in list(body):
     if _el == _cover_end:
         _past_cover = True
         continue
-    if _past_cover and _el.tag != qn('w:sectPr'):
+    if not _past_cover:
+        continue
+    if _el.tag == qn('w:sectPr'):
+        continue
+
+    if _el.tag == qn('w:p'):
+        _pPr = _el.find(qn('w:pPr'))
+        _style = ''
+        if _pPr is not None:
+            _pStyle = _pPr.find(qn('w:pStyle'))
+            if _pStyle is not None:
+                _style = _pStyle.get(qn('w:val'), '')
+        _text = ''.join(t.text or '' for t in _el.iter() if t.tag == qn('w:t'))
+        if _style == 'Heading1-nonumber' and 'revision' in _text.lower():
+            _to_remove.append(_el)
+            _remove_next_table = True
+            continue
+        if _style == 'Heading1':
+            _removing_sample = True
+
+    if _remove_next_table and _el.tag == qn('w:tbl'):
         _to_remove.append(_el)
+        _remove_next_table = False
+        continue
+
+    if _removing_sample:
+        _to_remove.append(_el)
+
 for _el in _to_remove:
     body.remove(_el)
+
+# --- Fill in cover-page fields from the template ---
+def _replace_cover_text(element, old, new):
+    """Replace *old* with *new* inside every w:t run of *element*."""
+    for t in element.iter(qn('w:t')):
+        if t.text and old in t.text:
+            t.text = t.text.replace(old, new)
+
+def _get_latest_revision():
+    """Parse the Revision History table and return (version, date) of the last row."""
+    in_rev_table = False
+    last = None
+    with open(MD_FILE, "r", encoding="utf-8") as fh:
+        for line in fh:
+            if "Revision" in line and "Date" in line and "Description" in line:
+                in_rev_table = True
+                continue
+            if in_rev_table:
+                if line.startswith("|") and "---" not in line:
+                    last = line
+                elif not line.strip() or line.startswith("#"):
+                    break
+    cols = [c.strip() for c in last.strip().strip("|").split("|")]
+    return cols[0], cols[1]
+
+_rev_version, _rev_date = _get_latest_revision()
+
+_cover_tbl = body[0]
+if _cover_tbl.tag == qn('w:tbl'):
+    _cover_rows = _cover_tbl.findall(qn('w:tr'))
+    if len(_cover_rows) > 1:
+        _replace_cover_text(_cover_rows[1], 'Project & (Type of document)', COVER_TITLE)
+    if len(_cover_rows) > 2:
+        _replace_cover_text(_cover_rows[2], '[Subject]', COVER_SUBJECT)
+    # Row 3 has a nested version/date table; cells 1-3 are wrapped in w:sdt
+    # content controls, so search the entire row for the placeholder text.
+    if len(_cover_rows) > 3:
+        _cell3 = _cover_rows[3].findall(qn('w:tc'))[0]
+        _nested_tbls = _cell3.findall(qn('w:tbl'))
+        if _nested_tbls:
+            _nested_rows = _nested_tbls[0].findall(qn('w:tr'))
+            if len(_nested_rows) > 1:
+                _data_row = _nested_rows[1]
+                _first_tc = _data_row.find(qn('w:tc'))
+                if _first_tc is not None:
+                    _replace_cover_text(_first_tc, '...', _rev_version)
+                _replace_cover_text(_data_row, '[Publish Date]', _rev_date)
 
 with open(MD_FILE, "r", encoding="utf-8") as f:
     lines = f.readlines()
@@ -49,12 +127,7 @@ def add_image(path_rel, caption=None):
         except Exception:
             run.add_picture(img_path, width=Inches(4.5))
         if caption:
-            cap = doc.add_paragraph()
-            cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            run_cap = cap.add_run(caption)
-            run_cap.italic = True
-            run_cap.font.size = Pt(9)
-            run_cap.font.color.rgb = RGBColor(0x64, 0x74, 0x8b)
+            add_figure_caption(caption)
     else:
         p = doc.add_paragraph(f"[Image not found: {path_rel}]")
         p.runs[0].font.color.rgb = RGBColor(0xff, 0x00, 0x00)
@@ -71,6 +144,58 @@ SPEC_TABLE_WIDTHS = {
     "LSL": Cm(1.5),
     "USL": Cm(1.5),
 }
+
+def _add_seq_caption(style_name, seq_identifier, label, caption_text):
+    """Add a caption paragraph using the template's Caption style with SEQ auto-numbering."""
+    p = doc.add_paragraph(style=style_name)
+
+    p.add_run(label + " ")
+
+    r_begin = OxmlElement('w:r')
+    fc_begin = OxmlElement('w:fldChar')
+    fc_begin.set(qn('w:fldCharType'), 'begin')
+    r_begin.append(fc_begin)
+    p._p.append(r_begin)
+
+    r_instr = OxmlElement('w:r')
+    instr = OxmlElement('w:instrText')
+    instr.set(qn('xml:space'), 'preserve')
+    instr.text = ' SEQ {} \\* ARABIC '.format(seq_identifier)
+    r_instr.append(instr)
+    p._p.append(r_instr)
+
+    r_sep = OxmlElement('w:r')
+    fc_sep = OxmlElement('w:fldChar')
+    fc_sep.set(qn('w:fldCharType'), 'separate')
+    r_sep.append(fc_sep)
+    p._p.append(r_sep)
+
+    r_num = OxmlElement('w:r')
+    t_num = OxmlElement('w:t')
+    t_num.text = '#'
+    r_num.append(t_num)
+    p._p.append(r_num)
+
+    r_end = OxmlElement('w:r')
+    fc_end = OxmlElement('w:fldChar')
+    fc_end.set(qn('w:fldCharType'), 'end')
+    r_end.append(fc_end)
+    p._p.append(r_end)
+
+    p.add_run(": " + caption_text)
+
+
+def add_table_caption(caption_text):
+    """Add a Word table caption with SEQ auto-numbering using the template Caption style."""
+    _add_seq_caption('Caption', 'Table', 'Table', caption_text)
+
+
+def add_figure_caption(caption_text):
+    """Add a Word figure caption with SEQ auto-numbering using the template Caption style."""
+    m = re.match(r'^Figure\s+\d+:\s*(.+)$', caption_text)
+    if m:
+        caption_text = m.group(1)
+    _add_seq_caption('Caption', 'Figure', 'Figure', caption_text)
 
 def add_table(header_line, rows):
     cols = [c.strip() for c in header_line.strip().strip("|").split("|")]
@@ -147,6 +272,8 @@ def add_table(header_line, rows):
             cell.width = col_widths[i]
         if i in stage_col_indices:
             cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+        else:
+            cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.LEFT
 
     for row_text in rows:
         cells_text = [c.strip() for c in row_text.strip().strip("|").split("|")]
@@ -166,6 +293,7 @@ def add_table(header_line, rows):
             run.bold = True
             run.font.size = Pt(10)
             run.font.name = 'Calibri'
+            merged.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.LEFT
             shading = OxmlElement('w:shd')
             shading.set(qn('w:fill'), 'D9E2F3')
             shading.set(qn('w:val'), 'clear')
@@ -186,6 +314,9 @@ def add_table(header_line, rows):
                     if i in stage_col_indices:
                         for para in row.cells[i].paragraphs:
                             para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                    else:
+                        for para in row.cells[i].paragraphs:
+                            para.alignment = WD_ALIGN_PARAGRAPH.LEFT
     doc.add_paragraph()
 
 def parse_inline(text):
@@ -206,6 +337,7 @@ i = 0
 table_header = None
 table_rows = []
 in_table = False
+pending_table_caption = None
 
 while i < len(lines):
     line = lines[i].rstrip("\n")
@@ -225,6 +357,9 @@ while i < len(lines):
             continue
     else:
         if in_table:
+            if pending_table_caption:
+                add_table_caption(pending_table_caption)
+                pending_table_caption = None
             add_table(table_header, table_rows)
             in_table = False
             table_header = None
@@ -275,7 +410,13 @@ while i < len(lines):
         i += 1
         continue
 
-    cap_match = re.match(r'^\*(.+)\*$', line.strip())
+    table_cap_match = re.match(r'^\*Table:\s*(.+)\*$', line.strip())
+    if table_cap_match:
+        pending_table_caption = table_cap_match.group(1).strip()
+        i += 1
+        continue
+
+    cap_match = re.match(r'^\*([^*].+?[^*])\*$', line.strip())
     if cap_match and not line.strip().startswith("*Production") and not line.strip().startswith("*Trim") and not line.strip().startswith("*Stand") and not line.strip().startswith("*VIS Sub") and not line.strip().startswith("*(Similar") and not line.strip().startswith("*PSU") and not line.strip().startswith("*VIS4"):
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -307,8 +448,10 @@ while i < len(lines):
         i += 1
         continue
 
-    if line.strip().startswith("*") and line.strip().endswith("*"):
-        text = line.strip().strip("*")
+    stripped = line.strip()
+    if (stripped.startswith("*") and stripped.endswith("*")
+            and not stripped.startswith("**")):
+        text = stripped[1:-1]
         p = doc.add_paragraph()
         run = p.add_run(text)
         run.italic = True
@@ -330,6 +473,9 @@ while i < len(lines):
     i += 1
 
 if in_table:
+    if pending_table_caption:
+        add_table_caption(pending_table_caption)
+        pending_table_caption = None
     add_table(table_header, table_rows)
 
 doc.save(OUT_FILE)
