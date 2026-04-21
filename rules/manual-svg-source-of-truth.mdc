@@ -1,0 +1,18 @@
+---
+description: Never overwrite hand-edited SVG sources; derive variants as new files.
+alwaysApply: true
+---
+
+# Manually edited SVG files are immutable
+
+Some SVG diagrams are **manually tuned in Inkscape (or similar)** and treated as the source of truth.
+
+## Rules
+
+- **Do not modify** SVG files that the user has explicitly hand-edited or named as their fixed reference (for example names containing `_fixed_`, `_JVDB`, or called out as "my edited version").
+- For layout tweaks, exports, or AI iterations, **create a new file** next to the original (for example add a suffix like `_y-compact`, `_v2`, `_export`, or `_generated`) and leave the hand-edited file unchanged.
+- If the user asks to "update the diagram" without naming a target file, **default to a new derivative** and mention which file was left untouched.
+
+## Rationale
+
+Hand edits (snapping, spacing, text baselines) are easy to lose in a bulk regen. A separate variant preserves trust and diff clarity.
