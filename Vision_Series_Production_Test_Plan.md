@@ -5,12 +5,17 @@
 | 1.0 | 2026-04-10 | Initial draft of the Vision Series Test Plan | Jonathan Vanden Berk |
 | 1.1 | 2026-04-13 | Updated diagrams and test stage descriptions | Jonathan Vanden Berk |
 | 1.2 | 2026-04-15 | Added product specifications and acceptance criteria | Jonathan Vanden Berk |
+| 1.3 | 2026-04-22 | Tightened USLs for MAG-IMG002x1-NC bad-row/bad-column (T0035) and PRNU global outliers (T0038), and added PROD/EM/reject bin classification to the pixel-array defect and hot-pixel/DSNU/PRNU outlier parameter descriptions | Jonathan Vanden Berk |
 
 ## Introduction & Scope
 
-This document outlines the verification framework for Magics Technologies’ Vision Series products to ensure all quality targets are met. The Vision Series encompasses a diverse range of hardware, including standalone radiation-hardened ICs (Image Sensor, Serializer, and DC/DC Converter) and fully integrated electronic Vision Modules.
+This document outlines the verification framework for Magics Technologies’ Vision Series products to ensure all quality targets are met. The Vision Series encompasses a diverse range of hardware, including standalone radiation-hardened ICs (Image Sensor (MAG-IMG002x1-NC), Serializer (MAG-CXP00002-NP), and DC/DC Converter (MAG-PSU00001-NP)) and fully integrated electronic Vision Modules (MAG-VIS100xx-N).
 
 This test plan details the test flows, conditions, and stages, alongside the production and trimming procedures required to guarantee the reliability and performance of each product. Furthermore, this document defines the direct relationship between datasheet specifications and the specific test parameters used to verify them.
+
+This document specifically covers the production screening and verification procedures performed on every manufactured unit to guarantee zero-hour quality and compliance with datasheet specifications. 
+
+Long-term reliability (e.g., High-Temperature Operating Life, thermal cycling, mechanical shock) and radiation tolerance (TID, SEE) are guaranteed by design and verified through separate periodic qualification campaigns. These are documented in dedicated product qualification reports and are outside the scope of this production test plan.
 
 ---
 
@@ -42,7 +47,7 @@ The verification and testing of the Vision Series products follow a three-step h
 
 While the previous chapter outlined the high-level verification of the Vision Series products along the horizontal process rail, this chapter provides the detailed test specifications for each product, organized by product level test.
 
-Note that the test procedures listed in this chapter measure significantly more parameters than those published in the product datasheets. The additional data collection serves Magics internal process monitoring: it enables detailed analysis of block and function-level performance on each IC, tracking of parametric drift over production lots, and early detection of process shifts. All internal parameters have defined limits and are actively monitored during production. To keep this report concise, only the parameters that are specified in the product datasheets are discussed in the acceptance criteria of Chapter 7.
+Note that the test procedures listed in this chapter measure significantly more parameters than those published in the product datasheets. The additional data collection serves Magics internal process monitoring: it enables detailed analysis of block and function-level performance on each IC, tracking of parametric drift over production lots, and early detection of process shifts. All internal parameters have defined limits and are actively monitored during production. To keep this report concise, only the parameters that are specified in the product datasheets are discussed in the acceptance criteria of Chapter 5.
 
 ### Level 1: IC Test Specifications
 
@@ -83,7 +88,7 @@ In the test stage section below, the default test conditions for each stage are 
 
 ##### Test stages
 *Production test stages:*
-- **FT (Final Test):** Confirms that the product is compliant against test limits. This stage performs full electrical parametric verification of the image sensor, including continuity, power supply integrity, I/O thresholds, output drive strength, and power consumption measurements. Test conditions are: RT and Vnom, FHD10 mode, dark current related parameters are calculated from a ROI of 400 x 400 pixels in the center of the array. The sensor array is covered from any light input.
+- **FT (Final Test):** Confirms that the product is compliant against test limits. This stage performs full electrical parametric verification of the image sensor, including continuity, power supply integrity, I/O thresholds, output drive strength, and power consumption measurements. Test conditions are: CT/RT/HT and Vmin/Vnom/Vmax, FHD10 mode, dark current related parameters are calculated from a ROI of 400 x 400 pixels in the center of the array. The sensor array is covered from any light input.
 - **VI (Visual Inspection):** Examination of external surfaces, glass lid, and wire bonding. This inspection identifies visible defects such as cracks, delamination, contamination, or bond wire anomalies before the device proceeds to optical testing.
 - **OT (Optical Test):** Verification of the optical performance of the image sensor. This stage validates dynamic range, pixel response uniformity, dark current, and other electro-optical parameters. The pixel array is also tested for defects in pixels, rows, and columns. Test conditions are: RT (ambient) and Vnom, FHD10 mode, dark current related parameters are calculated from a ROI of 400 x 400 pixels in the center of the array.
 
@@ -126,7 +131,7 @@ The table below lists all test procedures applicable to the MAG-IMG002x1-NC and 
 | Optical test processing | Reads raw images from previous tests and performs PTC, SN and DC per pixel analysis. Results are combined and reported to the results database. | | | | X |
 
 
-The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
+The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 5 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
 
 *Table: MAG-IMG002x1-NC Parameter Traceability*
 
@@ -134,7 +139,7 @@ The table below maps each test procedure to the datasheet parameters it verifies
 | :--- | :--- | :--- |
 | VIL/VIH | T0004 | TRIG_IN input threshold low, TRIG_IN input threshold high, TRIG_IN input hysteresis, RSTB input threshold (no hysteresis), SPI input threshold low, SPI input threshold high, SPI input hysteresis |
 | VOL/VOH | T0005 | SPI MISO output voltage (no load), VOH (no resistive load), VOL (no resistive load) |
-| IDDD | T0007 | VDDD current (active, FHD25 10-bit), VDDA+VDDIO+VD_RST current (active, FHD25 10-bit) |
+| IDDD | T0007 | VDDD current (active, FHD10 10-bit), VDDA+VDDIO+VD_RST current (active, FHD10 10-bit) |
 | Static signal test | T0010 | Bandgap reference voltage (VDD12BG) |
 | Frame modes | T0024 | Pixel output clock speed, Data output line speed |
 | Optical test processing | T0038 | Conversion gain, Responsivity, Temporal noise, Dynamic range, SNR_MAX, Dark current (DC), Dark current non uniformity (DCNU), Dark signal non uniformity (DSNU), Photo response non uniformity (PRNU) |
@@ -206,7 +211,7 @@ The table below lists all test procedures applicable to the MAG-CXP00002-NP and 
 | OTP Write | Writes the final trim configuration data into the OTP cells and verifies successful programming. | | | X |
 
 
-The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
+The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 5 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
 
 *Table: MAG-CXP00002-NP Parameter Traceability*
 
@@ -276,7 +281,7 @@ The table below lists all test procedures applicable to the MAG-PSU00001-NP. The
 | Efficiency | Measures efficiency over different loads and input/output voltage conditions. | Vout:0.9V/1.2V/1.5V/1.8V/2.0V/2.5V/3.3V, Vmin/Vmax, Iload: 0.5A/0.8A/1.0A, Halfsw:ON/OFF| | X |
 
 
-The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 7 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
+The table below maps each test procedure to the datasheet parameters it verifies. Parameters are listed by their Chapter 5 name. Note that only a subset of the test procedures is used to cover all datasheet parameters.
 
 *Table: MAG-PSU00001-NP Parameter Traceability*
 
@@ -363,8 +368,6 @@ The tables below list the test procedures for each PCB during its VIS test stage
 
 This section covers the Module Final Test (MFT) for the fully integrated vision module (MAG-VIS100xx-N, three-PCB vertical stack). It verifies the CoaXPress downlink/uplink and power delivery across the entire module scope, validating high-speed timing and synchronization between the different components.
 
-![Warning — Test System Under Development](vision-module-testing-diagrams/warning_module_test_under_development.png)
-
 #### Test flow
 
 The production test flow for the fully integrated vision module is depicted below. Pre-tested and approved PCBs from level 2 (Imager, Power, and Serializer boards) are assembled into the final three-PCB vertical stack, followed by visual inspection and comprehensive functional verification.
@@ -426,15 +429,15 @@ The table below lists all test procedures for the integrated module. The VI stag
 
 The key specifications for the Vision Series products are extracted from their respective datasheets and are listed in this chapter. The acceptance criteria and test limits are defined in the production test plans and where extracted from the test system of the product.
 
-### MAG-IMG002X1-NC (Full HD CMOS Image Sensor)
+### MAG-IMG002x1-NC (Full HD CMOS Image Sensor)
 
-*Table: MAG-IMG002X1-NC Key Specifications*
+*Table: MAG-IMG002x1-NC Key Specifications*
 
 | Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Current consumption** | | | | | | | | |
-| VDDD current (active, FHD25 10-bit) | I_VDDD | - | 205 | 1000 | mA | 20 | 300 | Max 1000 mA only at startup/reset |
-| VDDA+VDDIO+VD_RST current (active, FHD25 10-bit) | I_VDDA (combined) | - | 124 | - | mA | 20 | 150 | Split over 3 PSU channels, LSL, USL of VDDA is given here |
+| VDDD current (active, FHD10 10-bit) | I_VDDD | - | 205 | 1000 | mA | 20 | 300 | Max 1000 mA only at startup/reset |
+| VDDA+VDDIO+VD_RST current (active, FHD10 10-bit) | I_VDDA (combined) | - | 124 | - | mA | 20 | 150 | Split over 3 PSU channels, LSL, USL of VDDA is given here |
 | **Clocking and control signal thresholds** | | | | | | | | |
 | External clock reference | REFCLK | 10 | 20 | 40 | MHz | - | - | Fixed to 20MHz in test setup Hardware |
 | TRIG_IN input threshold low | TRIG_in_l | 0.74 | 1.07 | 1.4 | V | - | - | Pin is of type: rising edge triggered |
@@ -475,30 +478,30 @@ The key specifications for the Vision Series products are extracted from their r
 | Interface | - | - | 10/12b parallel output | - | - | - | - | Fixed to 10b for all tests |
 | Cover glass lid | Corning 7980 0F | - | - | - | - | - | - | Guaranteed by design |
 
-The table below lists the pixel-array defect test parameters measured during test T0035: Optical defect map. The test limits shown are a first suggestion based on early characterisation data and are not yet final. Additional production data is needed to refine these limits so that they are both technically sound and economically viable.
+The table below lists the pixel-array defect test parameters measured during test T0035: Optical defect map. Test limits are continuously refined based on statistical production data to ensure optimal quality and yield.
 
-*Table: MAG-IMG002X1-NC Pixel-Array Defect Test Parameters (T0035)*
+*Table: MAG-IMG002x1-NC Pixel-Array Defect Test Parameters (T0035)*
 
 | Name | Unit | LSL | USL | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | Number of dead pixels | px | - | 50 | Dead pixel is a pixel that has unusually low positive or negative response when responding to light (also known as stuck-at pixel or negative gain pixel). Dead pixels from dead rows or columns are excluded from this count. |
-| Number of clusters with 2 dead pixels | cl | - | 50 |  |
-| Number of clusters with >3 dead pixels | cl | - | 50 |  |
-| Number of dead rows | rows | - | 5 |  |
-| Number of dead columns | cols | - | 5 |  |
+| Number of clusters with 2 dead pixels | cl | - | 50 | 2 neigbour dead pixels of same channel |
+| Number of clusters with >3 dead pixels | cl | - | 50 | 3 or more neigbour dead pixels of same channel |
+| Number of dead rows | rows | - | 5 | Dead row = 100 or more dead pixels in 1 row |
+| Number of dead columns | cols | - | 5 | Dead column = 100 or more dead pixels in 1 column |
 | Number of bright pixels | px | - | 50 | Bright pixel is a pixel that has unusually high value in dark condition. This can cover pixels with very high outlier values in the pixel DC histogram, or broken pixel/col/row with unusually high offset. Bright pixels from bright rows or columns are excluded from this count. |
-| Number of clusters with 2 bright pixels | cl | - | 50 |  |
-| Number of clusters with >3 bright pixels | cl | - | 50 |  |
-| Number of bright rows | rows | - | 5 |  |
-| Number of bright cols | cols | - | 5 |  |
-| Number of bad columns | cols | - | 5 | Bad_col = dead_col + bright_col |
-| Number of bad rows | rows | - | 5 | Bad_row = dead_row + bright_row |
+| Number of clusters with 2 bright pixels | cl | - | 50 | 2 neigbour bright pixels of same channel |
+| Number of clusters with >3 bright pixels | cl | - | 50 | 3 or more neigbour bright pixels of same channel |
+| Number of bright rows | rows | - | 5 | Bright row = 100 or more bright pixels in 1 columns |
+| Number of bright cols | cols | - | 5 | Bright column = 100 or more bright pixels in 1 columns |
+| Number of bad columns | cols | - | 0 | Bad_col = dead_col + bright_col. USL = 0 for production (PROD) parts; parts with 1–5 bad columns are re-binned as engineering model (EM); >5 bad columns → part is rejected. |
+| Number of bad rows | rows | - | 0 | Bad_row = dead_row + bright_row. USL = 0 for production (PROD) parts; parts with 1–5 bad rows are re-binned as engineering model (EM); >5 bad rows → part is rejected. |
 | Distance between bad columns | cols | 5 | - |  |
 | Distance between bad rows | rows | 5 | - |  |
 
-The table below lists the electro-optical and pixel-array defect test parameters measured during test T0038: Optical test processing . The test limits shown are a first suggestion based on early characterisation data and are not yet final. Additional production data is needed to refine these limits so that they are both technically sound and economically viable.
+The table below lists the electro-optical and pixel-array defect test parameters measured during test T0038: Optical test processing. Test limits are continuously refined based on statistical production data to ensure optimal quality and yield.
 
-*Table: MAG-IMG002X1-NC Electro-Optical Test Parameters (T0038)*
+*Table: MAG-IMG002x1-NC Electro-Optical Test Parameters (T0038)*
 
 | Name | Unit | LSL | USL | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -506,15 +509,15 @@ The table below lists the electro-optical and pixel-array defect test parameters
 | Dark signal non uniformity (DSNU) local stdev | e- | - | 1500 | Describes offset variation between pixels in close proximity |
 | Column FPN without black row correction, global stdev | DN | - | - | Similar to DSNU but without column FPN reduction. In this case, pixel contribution will be much less than column contribution, as expected |
 | Column FPN without black row correction, local stdev | DN | - | - |  |
-| Number of DSNU global outliers | px | - | 50 | Describes the outliers in the offset histogram |
+| Number of DSNU global outliers | px | - | 50 | Describes the outliers in the offset histogram. USL = 50 for production (PROD) parts; up to 150 outliers accepted as engineering model (EM); >150 → part is rejected. |
 | DSNU global stdev, row contribution | e- | - | 600 |  |
 | DSNU global stdev, col contribution | e- | - | 600 | Useful to check if spatial variation is dominated by column or row |
-| Number of PRNU global outliers | px | - | 1000 | Describes the outliers in the gain histogram |
+| Number of PRNU global outliers | px | - | 150 | Describes the outliers in the gain histogram. USL = 150 for production (PROD) parts; up to 1000 outliers accepted as engineering model (EM); >1000 → part is rejected. |
 | PRNU global stdev, row contribution | % of mean | -2.5 | 2.5 |  |
 | PRNU global stdev, col contribution | % of mean | -2.5 | 2.5 | Useful to check if spatial variation is dominated by column or row |
-| Percentage of hot pixels > criteria 1 | % | - | 1200 | These parameters can represent the tail part of DC histogram |
-| Percentage of hot pixels > criteria 2 | % | - | 600 |  |
-| Percentage of hot pixels > criteria 3 | % | - | 5 |  |
+| Hot pixels > criteria 1 | px | - | 1200 | These parameters can represent the tail part of DC histogram. Criteria 1: pixels with value > 5x average of pixels in ROI. USL = 1200 for production (PROD) parts; up to 5000 accepted as engineering model (EM); >5000 → part is rejected. |
+| Hot pixels > criteria 2 | px | - | 600 | Criteria 2: pixels with value > 10x average of pixels in ROI. USL = 600 for production (PROD) parts; up to 2500 accepted as engineering model (EM); >2500 → part is rejected. |
+| Hot pixels > criteria 3 | px | - | 5 | Criteria 3: pixels with value > 100x average of pixels in ROI. USL = 5 for production (PROD) parts; up to 20 accepted as engineering model (EM); >20 → part is rejected. |
 | Percentage of clusters with 2 hot pixels | % | 0 | 100 | cluster size of 2 pixel, because due to crosstalk we expect that hot pixels appear in groups of 2 |
 | Percentage of clusters with >3 hot pixels | % | 0 | 100 | to distinguish clusters due to pixel crosstalk or something else |
 | Photo response non uniformity (PRNU) local stdev | % of mean | -1 | 1.5 | Describes gain (light response) variation between pixels in close proximity |
@@ -606,7 +609,7 @@ The table below lists the electro-optical and pixel-array defect test parameters
 
 | Document Name | Version |
 | :--- | :--- |
-| MAG-IMG002X1-NC Datasheet | Rev. 1.2 (December 2025) |
+| MAG-IMG002x1-NC Datasheet | Rev. 1.2 (December 2025) |
 | MAG-CXP00002-NP Datasheet | Rev. 2.1 (November 2025) |
 | MAG-PSU00001-NP Datasheet | Rev. 0.5 (May 2025) |
 | MAG-VIS100xx-N Datasheet | Rev. 1.1 (November 2025) |
