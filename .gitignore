@@ -1,0 +1,17 @@
+# Python byte-cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Office (Word/Excel/PowerPoint) lock files - created while a document is open
+~$*
+
+# Generic temp / OS clutter
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
