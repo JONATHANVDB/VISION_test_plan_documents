@@ -1,0 +1,688 @@
+
+===== Page 1 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04-rev1. 2 
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV / Confidential information   | 1 
+ 
+ 
+Figure 1: Electronic Vision Module (MAG -VIS10014 -N) – 
+comprising Magics’ ICs MAG -IMG00251 -NC, MAG -CXP0002 -
+NP and  2x MAG -PSU00001 -NP. 
+1. Description  
+The Magics’ Vision Series portfolio contains products 
+which are to be used as core building blocks of a 
+radiation -hardened camera. Next to the standalone ICs 
+in the Vision Series, Magics also offers full -blown 
+electronic Vision modules, containing all ICs from the 
+Vision Series, integrated in the form of a three -PCB 
+stack up. The modules are the electronic heart of a 
+radiation -hardened camera and contain at minimum 
+the following Magics’ ICs from the Vision Series:  
+• MAG -IMG002X1 -NC: Full HD CMOS rad -hard 
+image sensor  
+• MAG -PSU00001 -NP: rad -hard DC/DC 
+converter controller  
+• MAG -CXP00002 -NP: CoaXPress serializer IC  
+Different variants with different features are offered as 
+an end product (overview of product variants can be 
+found in section 7), of which some also contain ICs from 
+the Magics’ Motion Series. By incorporating the Motion 
+Series ICs, additional functionality, such as motorized 
+lens control, can be added to the module.  
+Next to the Magics’ ICs all the supporting electronics, as 
+described in the application diagrams in the respective 
+IC datasheets, are integrated into the module. These 
+components include passives, such as resistors, inductors and capacitors, as well as a XTAL oscillator for 
+clock reference input. In addition, there is a connector 
+to supply power (9V) and a HD -BNC connector to 
+interface a 75 -Ohm coaxial cable for video transmission 
+(downlink) and configuration data (up link).  
+2. Key features  
+• Modular design consisting of three PCBs 
+containing Magics’ ICs and supporting 
+components.  
+o Electronic module can be integrated as is in 
+a rad -hard camera. No additional electronic 
+components required!  
+• Full HD (1920x1080) CMOS image sensor  
+o >2Mpixel  
+o Up to 30 FPS in Full HD mode  
+o Electronic rolling shutter  
+o > 60dB dynamic range  
+o Available in monochrome and color version  
+▪ RGGB Bayer pattern for color version  
+• Features  
+o Image flipping  
+o Dark pixel readout option  
+o Programmable integration time  
+o Configurable window modes (FHD, HD, VGA , 
+etc.)  
+• Configurable operating mode  
+o Triggered, burst and continuous  mode  
+• CoaXPress video interface: 1.25Gbps single line 
+CXP 2.0 device side  interface  
+o 1.25Gbps downlink communication  
+o 20Mbps uplink communication  
+o 75-Ohm coax cable – up to >150m depending 
+on the quality of the cable  
+o GenICam compliant  
+• On-board X -TAL clock of 20 MHz  
+• Single supply operation : 9V input voltage  
+o Internally 3.3V and 1.8V supply voltages are 
+generated  
+• Operating temperature: 0 to 50 degC ambient  
+• Different flavors with different functions 
+available.  
+o E.g. integrated motorized lens control.  
+• Radiation hardness:  
+o > 1MGy TID (Si)  
+o Single -event tolerance by design  
+  
+
+
+===== Page 2 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 2 
+ 
+3. MAG -VIS modules and block diagrams  
+The core products of Magics Technologies are ICs and they form the base for all of our derived products. The ICs in the 
+Vision Series are already listed above and are depicted in Figure 2. 
+ 
+Figure 2: Three main ICs as part of the Magics' Vision Series. Note: MAG -IMG001X1 -NC (JLCC -68 package) has become obsolete.  
+3.1 MAG -VIS modules overview  
+Magics offers MAG -VIS modules in the form of a three -PCB stack, of which each PCB has his own function and 
+components. Below the three PCBs in the stack of the MAG -VIS modules are listed:  
+- PCB1 : this PCB contains the MAG -IMG002x1 -NC FULL HD image sensor  
+- PCB2 : this PCB contains a MAG -PSU00001 -NP controller to generate the 1.8V supply for the imager (PCB1) and 
+optionally additional functions are added to this PCB as well.  
+o Different versions available, for example with a MAG -DRV00002 -NP added to the design. See Table 2. 
+- PCB3 : this PCB contains the MAG -CXP00002 -NP CoaXPress -compatible serializer chip, and a MAG -PSU00001 -
+NP to generate the 3.3V supply to supply the imager and the serializer.  
+To date, Magics offers three different variants of the MAG -VIS modules  (six if differentiated between mono and color) , 
+and these modules are depicted in Figure 3. 
+ 
+ 
+Figure 3: MAG -VIS modules - three different variants.  
+The six different MAG -VIS product codes are listed in the next table ( Table 1), together with a listing of the corresponding 
+PCBs integrated in the stack. Each of the modules contain different PCBs, each with a unique product code. These PCBs 
+with product codes are visualized in Figure 4 and are listed in Table 2. 
+For the corresponding block diagrams of each of the modules, it is referred to section 3.3. 
+  
+
+
+===== Page 3 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 3 
+ 
+Table 1: Overview of the offered MAG -VIS modules.  
+MAG -VIS module  PCB1  PCB2  PCB3  Description  
+MAG -VIS10003 -N MAG -VIS40003 -N MAG -VIS40011 -N MAG -VIS400 31-N MAG -VIS m odule as in  MAG -
+CAM10003 -N – mono imager  
+MAG -VIS10004 -N MAG -VIS4000 4-N MAG -VIS40011 -N MAG -VIS400 31-N MAG -VIS m odule as in  MAG -
+CAM1000 4-N – color imager  
+MAG -VIS10013 -N MAG -VIS40003 -N MAG -VIS4001 2-N MAG -VIS400 31-N MAG -VIS module without MAG -
+DRV00002 -NP and 14 -pin 
+connector on PCB2 – mono 
+imager  
+MAG -VIS10014 -N MAG -VIS4000 4-N MAG -VIS4001 2-N MAG -VIS400 31-N MAG -VIS module without MAG -
+DRV00002 -NP and 14 -pin 
+connector on PCB2 – color 
+imager  
+MAG -VIS10023 -N MAG -VIS40003 -N MAG -VIS400 21-N MAG -VIS400 31-N MAG -VIS module with 
+motorized lens control 
+capability – mono imager  
+MAG -VIS10024 -N MAG -VIS4000 4-N MAG -VIS400 21-N MAG -VIS400 31-N MAG -VIS module with 
+motorized lens control 
+capability – color imager  
+ 
+3.2 MAG -VIS PCB overview  
+Each PCB within the MAG -VIS module stack has its own unique product code and is also available for individual purchase. 
+Customers interested in this option are encouraged to contact sales@magics.tech . While detailed information regarding 
+the interfaces and pinouts of the individual PCBs is beyond the scope of this datasheet, it can be provided upon request. 
+The primary focus of this document is on the complete MAG -VIS module assemblies (section 3.1). 
+Each of the offered standalone PCBs of the MAG -VIS modules are depicted in Figure 1 with their corresponding product 
+code. The complete list with additional details is listed in Table 2. 
+ 
+ 
+Figure 4: MAG -VIS PCBs which are used in the MAG -VIS modules.  
+ 
+
+
+===== Page 4 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 4 
+ 
+Table 2: Overview of the PCB products in the MAG -VIS family  
+PCB MAG -VIS PCB code  Description  
+PCB1  MAG -VIS40003 -N PCB with MAG -IMG00241 -N (mono) imager and passive components 
+for biasing and filtering.  
+MAG -VIS4000 4-N PCB with MAG -IMG00251 -N (color) imager and passive components for 
+biasing and filtering.  
+PCB2  MAG -VIS40011 -N PCB with MAG -PSU00001 -NP to generate the 1.8V for the imager, with 
+a MAG -DRV00002 -NP integrated, whose outputs are accessible 
+through a 14 -pin connector at the side.  
+MAG -VIS4001 2-N PCB with a MAG -PSU00001 -NP to generate the 1.8V for the imager.  
+MAG -VIS400 21-N PCB with a MAG -PSU00001 -NP to generate the 1.8V for the imager. 
+Additionally, MAG -DRV00002 -NP and relays are integrated to function 
+as a DC motor controlled for a motorized lens.  
+PCB3  MAG -VIS400 31-N PCB with a MAG -PSU00001 -NP to generate the 3.3V for MAG -
+IMG002x1 -NC, MAG -DRV00002 -NP and MAG -CXP00002 -NP, and one 
+MAG -CXP00002 -NP for video communication.  
+ 
+3.3 Block diagrams of MAG -VIS modules  
+This section presents the block diagrams of the MAG -VIS modules. While the previous sections provided an overview of 
+the different product variants, this section offers a more detailed look at the internal components and architecture of 
+each module . 
+3.3.1 MAG -VIS1000x -N 
+ 
+Figure 5: Block diagram of MAG -VIS1000x -N module.  
+
+
+===== Page 5 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 5 
+ 
+The MAG -VIS1000x -N module is the version integrated into the MAG -CAM demonstrator, but it is also available as a 
+radiation -hardened standalone product. While PCB1 and PCB3 are identical across the MAG -VIS1000x -N, MAG -
+VIS1001x -N, and MAG -VIS1002x -N variants , the difference lies in the middle PCB (PCB2). This central board defines the 
+specific functionality of each module. A block diagram of the MAG -VIS1000x -N module is shown in  Figure 5. 
+At the core of the module is a Full HD image sensor, mounted on PCB1, available in both monochrome (MAG -IMG00241 -
+NC) and color (MAG -IMG00251 -NC) versions. Both versions use the CLCC -104 package. The image sensor communicates 
+via a CMOS parallel interface w ith the MAG -CXP00002 -NP serializer, located on PCB3. This serializer converts the parallel 
+video data into a serialized stream suitable for transmission over a coaxial cable.  
+All communication lines pass through PCB2, which also handles signaling between components. In addition to the 
+parallel data interface, a dedicated SPI bus is used for communication between the image sensor and the serializer. This 
+SPI interface is exclusi vely used for configuration and control of the image sensor by the serializer.  
+The MAG -CXP00002 -NP serializer manages all communication between the image sensor and the CoaXPress (CXP) host, 
+effectively presenting the module as a single logical device to the host controller. Through the 20 -MHz uplink channel 
+between the frame grabber and the serializer, the host can communicate with both the serializer and the image sensor. 
+The register maps are designed to appear unified, making the system fully GenICam compliant.  
+In addition to the vision -related components, the MAG -VIS1000x -N module includes an extra device from Magics’ 
+Motion Series: the MAG -DRV00002 -NP driver IC. This chip provides eight low -side drivers, each capable of sourcing up 
+to 125 mA, ideal for applicat ions such as LED control. The driver IC is controlled via a second master SPI interface on the 
+serializer, which is also accessible via the CXP uplink, allowing full remote control from the frame grabber.  
+A 14 -pin connector located on the side of the module (see Figure 3 and Figure 4) provides:  
+• Access to the eight low -side driver outputs.  
+• A 9V power supply input.  
+• Ground connections.   
+The following table lists the connections to these 14 pins:  
+Table 3: 14-pin connector connections.  
+1  
+(L) 2 3 4 5 6 7 8 9 10 11 12 13 14 
+(R) 
+GND  CH7 CH6 CH5 CH4 9V 9V 9V 9V CH0 CH1 CH2 CH3 GND  
+ 
+For the dimensions of the modules, it is referred to section 0. 
+
+===== Page 6 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 6 
+ 
+3.3.2 MAG -VIS1001x -N 
+ 
+Figure 6: Block diagram of MAG -VIS1001x -N module.  
+ 
+Figure 6 shows the block diagram of the MAG -VIS1001x -N module, which is a simplified version of the MAG -VIS1000x -
+N. In this variant, the MAG -DRV00002 -NP driver IC and the 14 -pin connector are omitted from PCB2. As a result, the 
+module focuses solely on the core cam era chipset functionality.  
+
+
+===== Page 7 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 7 
+ 
+3.3.3 MAG -VIS1002x -N  
+ 
+Figure 7: Block diagram of MAG -VIS1002x -N module.  
+ 
+The most recent addition to the product line is the MAG -VIS1002x -N module, with its block diagram shown in  Figure 7. 
+This variant introduces DC motor control functionality integrated into PCB2, enabling open -loop control of up to three 
+brushed DC motors. This makes the module well -suited for driving motorized lenses with zoom, iris, and focus control.  
+ 
+  
+
+
+===== Page 8 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 8 
+ 
+4. Specifications  
+4.1 Absolute maximum ratings  
+The absolute maximum ratings are the ratings for which the device does not get permanently damaged, but in which 
+the performance is not guaranteed.  
+Name  Description  Min Abs. Max  Unit  
+V_SUPPLY_9V  Power supply to the module  0 12 V 
+Tj Junction temperature of silicon  -40 85 °C 
+Tstorage  Storage temperature  0 50 °C 
+4.2 Electrical characteristics  
+Label  Parameter  Test conditions  Min Typ Max  Unit  
+I_SUPPLY_9V  Current consumption on power supply 
+module  See more details on conditions in the table 
+below.  160  257 mA 
+Z_out_AC  AC output impedance HD -BNC   75  Ohm  
+ 
+For the IC -related electrical characteristics, it is referred to the corresponding IC datasheets.  
+Detailed current consumption on the power supply module, label: I_SUPPLY_9V.  
+Test conditions  
+Min Typ Max  Unit  
+Camera Mode  V_SUPPLY_9V  Exposure time [ µs] Temperature  Light condition  
+FULLHD 10 FPS  
+6V 
+ 40 000  
+Room  
+ Full dark   194  mA 
+100 Full light   197  mA 
+40 000  Full light   209  mA 
+FULLHD 25 FPS 40 000  Full dark   236  mA 
+100 Full light   236  mA 
+40 000  Full light   251  mA 
+FULLHD 30 FPS 40 000  Full dark   235  mA 
+100 Full light   248  mA 
+40 000  Full light   257  mA 
+HD 40  FPS 40 000  Full dark   216  mA 
+100 Full light   225  mA 
+40 000  Full light   231  mA 
+VGA 50  FPS 40 000  Full dark   195  mA 
+100 Full light   199  mA 
+40 000  Full light   202  mA 
+FULLHD 10 FPS  
+9V 
+ 40 000  Full dark   160  mA 
+100 Full light   162  mA 
+40 000  Full light   164  mA 
+FULLHD 25 FPS 40 000  Full dark   180  mA 
+100 Full light   185  mA 
+40 000  Full light   197  mA 
+FULLHD 30 FPS 40 000  Full dark   187  mA 
+100 Full light   194  mA 
+40 000  Full light   200  mA 
+HD 40  FPS 40 000  Full dark   174  mA 
+100 Full light   175  mA 
+40 000  Full light   184  mA 
+VGA 50  FPS 40 000  Full dark   160  mA 
+100 Full light   163  mA 
+40 000  Full light   165  mA 
+ 
+
+===== Page 9 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 9 
+ 
+4.3 Recommended operating conditions  
+Description  Min Typ Max  Unit  
+V_SUPPLY_9V  6 9 11 V 
+Coaxial cable impedance   75  Ohm  
+Coaxial cable attenuation 625 MHz (for h igh-speed downlink)    21.2  dB 
+Coaxial cable attenuation @30MHz (for low -speed uplink)    4.74  dB 
+Operation temperature  - environmental  0 - 50 °C 
+Exposure time – see below in section 4.3.1  0  5 ms 
+ 
+4.3.1 Recommended operating conditions in radiation environment  
+The primary performance parameter affected by irradiation is dark current. As radiation dose accumulates, dark current 
+increases, which can cause the image to saturate more quickly during long exposure times. However, in terms of 
+functionality, the imager remains fully operational.  
+ 
+Due to on -chip parameter drifts induced by radiation, some biasing parameters may require adjustment over the 
+sensor's lifetime. This re -tuning is straightforward and involves uploading updated register settings via the CoaXPress 
+(CXP) link —no manual inter vention on the camera hardware is necessary. Note that, regardless of irradiation, the 
+camera already requires a register map upload at boot to apply the correct configuration.  
+ 
+Additionally, dark current also increases with temperature, which is a well -known behaviour of all CMOS image sensors. 
+Importantly, the sensor’s self -heating is influenced by the radiation dose rate —a higher dose rate leads to a greater 
+temperature rise, f urther amplifying dark current.  
+ 
+Recommended Operating Guidelines for High -Dose Environments (>1 kGy/hr)  
+To ensure optimal sensor performance under high radiation conditions:  
+• Minimize exposure time (preferably below 5 ms):  
+o Longer exposures result in more integrated dark current.  
+o Exposure time can be dynamically adjusted via CXP uplink commands.  
+• Maintain low sensor temperature:  
+o Implement active cooling solutions to prevent self -heating.  
+o With effective thermal management, strict exposure time limitations may be relaxed.  
+Lower Dose Rate Conditions (<0.5 kGy/hr)  
+At lower dose rates, sensor self -heating is significantly reduced. As a result, dark current remains relatively stable, and 
+the impact on image quality is minimal.s  
+ 
+  
+
+===== Page 10 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 10 
+ 
+5. Mechanical dimensions and interfaces  
+5.1 Dimensions  
+Below an overview of the mechanical dimensions of the MAG -VIS100xx -N is given. Note that the PCB X -Y dimensions 
+are exactly the same for all the module variants. The depth of the module, however, depends on the variant.  
+The lens mounting position is always 13.63 mm from the top PCB.  
+ 
+Figure 8: MAG -VIS100 0x-N module PCB and stack -up dimensions [mm].  
+ 
+Figure 9: MAG -VIS1001x -N module  PCB and stack -up dimensions [mm].  
+ 
+
+
+===== Page 11 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 11 
+ 
+ 
+Figure 10: MAG -VIS100 2x-N module PCB and stack -up dimensions [mm].  
+ 
+  
+
+
+===== Page 12 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 12 
+ 
+5.2 Connectors  
+In this section more details are given on the used connectors.  
+5.2.1 14-pin connector  
+Connector name  14-pin connector  
+Description  This connector gives access to the low -side driver pins of the driver IC MAG -DRV00002 -
+NP. In addition to the access to the low -side drivers, it also gives access to the 9V power 
+supply and corresponding ground  (see section 3.3.1 ).  
+PCB Integrated  on MAG -VIS40011 -N 
+ 
+Manufacturer part 
+number  851-43-014-20-001000  
+Manufacturer 
+description  14 position receptacle connector , pitch: 0 ,050” (1,27mm)  
+Pinout   
+  
+ 
+ 
+ 
+  
+
+
+===== Page 13 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 13 
+ 
+5.2.2 10-pin connector  
+Connector name  10-pin connector  
+Description  This connector serves as the interface for the lens's iris, zoom, and focus motors.  This 
+connector also provides access to 2 low-side driver pins of the MAG -DRV00002 -NP IC, 
+along with power and ground connections.  
+PCB Integrated on MAG -VIS40021 -N 
+ 
+ 
+Manufacturer part 
+number  43045 -1006  
+Manufacturer 
+description  10 position pin header, pitch: 3mm, 2 rows  
+Pinout   
+ 
+ 
+ 
+5.2.3 Power connector  
+Connector name  Power  connector  
+Description  The main power connector.  
+PCB Integrated on MAG -VIS40031 -N 
+ 
+Manufacturer part 
+number  TS2P3F20 -BP 
+Manufacturer 
+description  3 position circular connector receptacle  
+
+
+===== Page 14 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 14 
+ 
+Pinout   
+ 
+ 
+ 
+5.2.4 HD-BNC connector  
+Connector name  HD-BNC  
+Description  The CoaXPress interface connector.  
+PCB Integrated on MAG -VIS40031 -N 
+ 
+Manufacturer part 
+number  034-1139 -12G 
+Manufacturer 
+description  75 Ohm BNC receptacle connector.  
+Pinout   
+ 
+ 
+ 
+ 
+ 
+  
+
+
+===== Page 15 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 15 
+ 
+5.2.5 PCB stack -up connector  
+Connector name   
+Description  These male -female connectors are used to interconnect the different PCBs in the 
+stackup.  
+PCB Integrated on all module PCBs  
+ 
+Manufacturer part 
+number  See Figure 11. 
+Manufacturer 
+description  Board to board connectors.  
+Pinout  A list of the different signals which run through the entire PCB stack -up is listed in Figure 
+11. 
+ 
+ 
+ 
+ 
+ 
+
+
+===== Page 16 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 16 
+ 
+ 
+Figure 11: Connector stack -up PIN interface.  
+DV_XO 1 2 DV_X6 TV0 1 2 VDDD_1V8
+DV_X1 3 4 DV_X7 TV1 3 4 GND
+DV_X2 5 6 DV_X8 TV2 5 6 VDDIO_3V3
+DV_X3 7 8 DV_X9 TV3 7 8 GND
+DV_X4 9 10 DV_X10 NC 9 10 VDDD_1V8
+DV_X5 11 12 DV_X11 NC 11 12 VDDD_1V8
+GND 13 14 DV_CLK NC 13 14 VDDD_1V8
+NC 15 16 DV_DVAL NC 15 16 GND
+GND 17 18 DV_LVAL TV8 17 18 TB0
+NC 19 20 DV_FVAL TV9 19 20 TB1
+NC 21 22 GND TV10 21 22 TB2
+NC 23 24 TRIGGER VREF_1V2 23 24 TB3
+NC 25 26 GND VDDA_3V3 25 26 GND
+NC 27 28 CLK GND 27 28 NC
+NC 29 30 GND VDDPLL_3V3 29 30 NC
+NC 31 32 IMG_SPI_CS_BAR GND 31 32 GND
+NC 33 34 IMG_SPI_SCLK VD_RST_3V3 33 34 NC
+NC 35 36 IMG_SPI_MOSI GND 35 36 NC
+NC 37 38 IMG_SPI_MISO NC 37 38 NC
+NC 39 40 RST NC 39 40 NC
+DV_XO 1 2 DV_X6 TV0 1 2 FRONT_1V8
+DV_X1 3 4 DV_X7 TV1 3 4 GND
+DV_X2 5 6 DV_X8 TV2 5 6 VDDIO_3V3
+DV_X3 7 8 DV_X9 TV3 7 8 GND
+DV_X4 9 10 DV_X10 TV4 9 10 FRONT_1V8
+DV_X5 11 12 DV_X11 TV5 11 12 FRONT_1V8
+GND 13 14 DV_CLK TV6 13 14 FRONT_1V8
+FRONT_1V25 15 16 DV_DVAL TV7 15 16 GND
+GND 17 18 DV_LVAL TV8 17 18 TB0
+CTR_SPI_SCLK 19 20 DV_FVAL TV9 19 20 TB1
+CTR_SPI_MOSI 21 22 GND TV10 21 22 TB2
+CTR_SPI_MISO 23 24 TRIGGER VDDBG_1V2 23 24 TB3
+CTR_GPIO7 25 26 GND VDD_3V3 25 26 GND
+CTR_GPIO6 27 28 CLK GND 27 28 V_SUPPLY_9V
+CTR_GPIO5 29 30 GND VDDPIX_3V3 29 30 V_SUPPLY_9V
+CTR_GPIO4 31 32 IMG_SPI_CS_BAR GND 31 32 GND
+CTR_GPIO3 33 34 IMG_SPI_SCLK VDDD_3V3 33 34 Vin_misc
+CTR_GPIO2 35 36 IMG_SPI_MOSI GND 35 36 Vin_misc
+CTR_GPIO1 37 38 IMG_SPI_MISO MEGA_RTEMP_L 37 38 Vin_misc
+CTR_GPIO0 39 40 RST MEGA_RTEMP_H 39 40 Vin_misc
+DV_XO 1 2 DV_X6 TV0 1 2 BACK_1V8
+DV_X1 3 4 DV_X7 TV1 3 4 GND
+DV_X2 5 6 DV_X8 TV2 5 6 VDDIO_3V3
+DV_X3 7 8 DV_X9 TV3 7 8 GND
+DV_X4 9 10 DV_X10 TV4 9 10 BACK_1V8
+DV_X5 11 12 DV_X11 TV5 11 12 BACK_1V8
+GND 13 14 DV_CLK TV6 13 14 BACK_1V8
+BACK_1V25 15 16 DV_DVAL TV7 15 16 GND
+GND 17 18 DV_LVAL TV8 17 18 TB0
+CTR_SPI_SCLK 19 20 DV_FVAL TV9 19 20 TB1
+CTR_SPI_MOSI 21 22 GND TV10 21 22 TB2
+CTR_SPI_MISO 23 24 TRIGGER VDDBG_1V2 23 24 TB3
+CTR_GPIO7 25 26 GND VDD_3V3 25 26 GND
+CTR_GPIO6 27 28 CLK GND 27 28 V_SUPPLY_9V
+CTR_GPIO5 29 30 GND VDDPIX_3V3 29 30 V_SUPPLY_9V
+CTR_GPIO4 31 32 IMG_SPI_CS_BAR GND 31 32 GND
+CTR_GPIO3 33 34 IMG_SPI_SCLK VDDD_3V3 33 34 Vin_misc
+CTR_GPIO2 35 36 IMG_SPI_MOSI GND 35 36 Vin_misc
+CTR_GPIO1 37 38 IMG_SPI_MISO MEGA_RTEMP_L 37 38 Vin_misc
+CTR_GPIO0 39 40 RST MEGA_RTEMP_H 39 40 Vin_misc
+DV_XO 1 2 DV_X6 TV0 1 2 VDDIO_1V8
+DV_X1 3 4 DV_X7 TV1 3 4 GND
+DV_X2 5 6 DV_X8 TV2 5 6 VDDCAM_3V3
+DV_X3 7 8 DV_X9 TV3 7 8 GND_3V3
+DV_X4 9 10 DV_X10 TV4 9 10 VDDIO_1V8
+DV_X5 11 12 DV_X11 TV5 11 12 VDDIO_1V8
+GND 13 14 DV_CLK TV6 13 14 VDDIO_1V8
+MEGA_1V25 15 16 DV_DVAL TV7 15 16 GND
+GND 17 18 DV_LVAL TV8 17 18 TB0
+CTR_SPI_SCLK 19 20 DV_FVAL TV9 19 20 TB1
+CTR_SPI_MOSI 21 22 GND TV10 21 22 TB2
+CTR_SPI_MISO 23 24 TRIGGER VREF_CAM 23 24 TB3
+CTR_GPIO7 25 26 GND VDDA_3V3 25 26 GND
+CTR_GPIO6 27 28 CLK GND 27 28 V_SUPPLY_9V
+CTR_GPIO5 29 30 GND VDDPLL_3V3 29 30 V_SUPPLY_9V
+CTR_GPIO4 31 32 IMG_SPI_CS_BAR GND 31 32 GND
+CTR_GPIO3 33 34 IMG_SPI_SCLK VDDD_3V3 33 34 Vin_misc
+CTR_GPIO2 35 36 IMG_SPI_MOSI GND 35 36 Vin_misc
+CTR_GPIO1 37 38 IMG_SPI_MISO NC 37 38 Vin_misc
+CTR_GPIO0 39 40 RST NC 39 40 Vin_miscPCB 3
+SERIALIZERSIDE TO PCB 
+2
+MPN:
+52091-0474P1 P2P2
+PCB 2
+POWERSIDE TO 
+PCB 1
+MPN: 
+52091-0474P1 P2
+SIDE TO 
+PCB 3
+MPN: 
+52885-0474P4 P5PCB 1
+IMAGERSIDE TO 
+PCB 2
+MPN: 
+52901-0474P1
+
+===== Page 17 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 17 
+ 
+6. Operating the MAG -VIS modules  
+More information on operating the MAG -VIS modules is available when the modules are purchased, in the form of a 
+user manual. In case any additional questions arise, it is advised to contact sales@magics.tech . 
+The MAG -VIS module comes with pre -defined DCF files (basically camera configuration files), which configure the 
+camera for operation in different modes:  
+• VGA5:  VGA resolution at 5 frames per second.  
+• VGA50: VGA resolution at 50 frames per second.  
+• VGA100: VGA resolution at 100 frames per second.  
+• HD5: HD resolution at 5 frames per second.  
+• HD40: HD resolution at 40 frames per second.  
+• FHD10: FHD resolution at 10 frames per second.  
+• FHD25: FHD resolution at 25 frames per second.  
+• FHD30: FHD resolution at 30 frames per second.  
+More information on loading the DCF files can be found in the user manual.  
+Also, Magics has an application note available on the selection of the CXP frame grabber. Magics will be happy to support 
+the customer with it.  
+7. Product maturity levels  
+Magics uses the following product maturity levels:  
+Maturity  Description  
+PROTO  Functionality tested in typical voltage and temperature; no commitment on specification performance. Package 
+may differ depending on availabilities.  
+EM Characterization performed in typical voltage and temperature conditions. No commitment on specification 
+performance.  
+EQM  Characterization performed over full voltage and temperature range.  
+PROD  Qualified parts , no screening  for space use  
+FM Qualified parts , screen ed for space use  
+8. Product versions  
+Product code   Maturity level availability   Description  
+MAG -VIS10003 -N EM, EQM  MAG -VIS module as in MAG -CAM10003 -N – mono imager  
+MAG -VIS10004 -N EM, EQM  MAG -VIS module as in MAG -CAM10004 -N – color imager  
+MAG -VIS10013 -N EM, EQM , PROD  MAG -VIS module without MAG -DRV00002 -NP and 14 -pin connector on PCB2 – mono imager  
+MAG -VIS10014 -N EM, EQM , PROD  MAG -VIS module without MAG -DRV00002 -NP and 14 -pin connector on PCB2 – color imager  
+MAG -VIS10023 -N EM MAG -VIS module with motorized lens control capability – mono imager  
+MAG -VIS10024 -N EM MAG -VIS module with motorized lens control capability – color imager  
+MAG -VIS40003 -N EM, EQM , PROD  PCB with MAG -IMG00241 -N (mono) imager and passive components for biasing and filtering.  
+MAG -VIS40004 -N EM, EQM , PROD  PCB with MAG -IMG00241 -N (mono) imager and passive components for biasing and filtering.  
+MAG -VIS40011 -N EM, EQM  PCB with MAG -PSU00001 -NP to generate the 1.8V for the imager, with a MAG -DRV00002 -NP 
+integrated, whose outputs are accessible through a 14 -pin connector at the side.  
+MAG -VIS40012 -N EM, EQM , PROD  PCB with a MAG -PSU00001 -NP to generate the 1.8V for the imager.  
+MAG -VIS40021 -N EM PCB with a MAG -PSU00001 -NP to generate the 1.8V for the imager. Additionally, MAG -
+DRV00002 -NP and relays are integrated to function as a DC motor controlled for a motorized 
+lens.  
+MAG -VIS40031 -N EM, EQM , PROD  PCB with a MAG -PSU00001 -NP to generate the 3.3V for MAG -IMG002x1 -NC, MAG -DRV00002 -
+NP and MAG -CXP00002 -NP, and one MAG -CXP00002 -NP for video communication.  
+The datasheets of the respective IC products can be received at request. Please contact sales@magics.tech . 
+
+===== Page 18 =====
+ Datasheet - MAG -VIS100xx -N 
+2026/04 -rev1.2  
+MAG -VIS100xx -N- MAG -VIS Vision Modules  
+Copyright © M agics Technologies  NV   | 18 
+ 
+9. Revision information  
+Version number  Date   Change description  
+2025/10 -rev1.0  2025 -10-08 Initial version – first release.  
+2025/11 -rev1.1  2025 -11-14 - added new section on product maturity levels  
+- updated disclaimer  
+2026/04 -rev1.2  2026 -04-24 - removed watermark.  
+- added PROD model availability for some versions.  
+ 
+ 
+Disclaimer  
+Magics Technologies ’ products are sold by description only. Magics Technologies reserves the right to make changes in circuit design, software and/or 
+specifications at any time without notice  for products in PROTO or EM maturity status . Accordingly, the reader is cautioned to verify that datasheets 
+are current before placing orders. Information furnished by M agics Technologies  is believed to be accurate and reliable. However, no responsibility 
+is assumed by M agics Technologies  for its use; nor for any infringements of patents or other rights of third parties which may result from its u se. No 
+license is granted by implication or otherwise under any patent or patent rights of M agics Technologies . 
+This development is  partially  co-funded in collaboration with Fusion For Energy.  
+For information regarding M agics Technologies  and its products, see www.magics.tech  

@@ -1,0 +1,822 @@
+
+===== Page 1 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 1 
+ 
+ 
+Figure 1: 32-lead plastic QFN (5x5 mm) (component is 
+available as die, other package formats can be made 
+available).  
+1. Key performance parameters  
+• Core performance parameters  
+o Input voltage range 5 to 1 1V 
+o Continuous 4A load capability  (with active 
+cooling)  and 1A with passive cooling  
+o Integrated Power N -channel MOSFETs  
+o Adjustable switching frequency 1 -3MHz  
+o Synchronous Buck topology with continuous 
+mode operation  
+o High bandwidth feedback loop (150KHz) for 
+good transient performance  
+• Additional features  
+o Over -Current protection  
+o Under -voltage lockup  
+o Over -Temperature protection  
+o Power Good output  
+o Enable Input  
+o Selectable Power Transistor size (5/5th or 
+2/5th) for improved efficiency at small loads 
+(<600mA)  
+• Supplies and temperature  
+o 5 - 11V input  
+o -40°C to 125°C operating temperature * 
+* Note: over-temperature protection kicks in at a 
+lower temperature at ~100 °C.  
+• Radiation hardness:  
+o TID:  >1 MGy  (Si) 
+o SEE: continuous operation during exposure 
+to heavy ions of LET up to 64MeVcm2mg-1 
+with short transients below 20% of the 
+nominal Vout (no destructive event, no 
+output power interruption).  
+• Package Info: QFN -32 5 mm x 5mm  
+ 
+2. Applications  
+Point Of Load in distributed power systems where 
+either radiation tolerance or magnetic field tolerance, 
+or both, are required.  
+ 
+3. Markets  
+Nuclear, Space, High -energy particle accelerators, 
+Medical accelerators . 
+ 
+4. Description  
+MAG -PSU00001 -NP is a single -phase synchronous buck 
+converter developed to provide an efficient solution for 
+the distribution of power in High Energy Physics 
+experiments. As such, it has been designed for flawless 
+functionality in a harsh radiation and magnetic field 
+envi ronment. The selection of an appropriate CMOS 
+technology, coupled to the systematic use of Radiation 
+Hardness By Design (RHBD) techniques, makes the 
+converter capable of continuous operation up to more 
+than 100 Mrad/1MGy (Si) total ionizing dose. Singl e 
+Event Effects resilience has been built -in, and the circuit 
+has been tested free of destructive SEEs and of output 
+power interruptions during irradiations with heavy ions 
+up to an equivalent LET of 64MeVcm2mg-1 (at 60o 
+incidence; no data available for higher LETs). MAG -
+PSU00001 -NP has been designed for operation in a 
+strong magnetic field in excess of 40,000 Gauss, and has 
+been optimized for air  core inductors of 400 -500nH: to 
+be compatible with these small coil values, its switching 
+operation is in the 1 -3MHz range (1.5 -2MHz for 
+maximum efficiency).  
+The monolithic construction of MAG -PSU00001 -NP, 
+with the integration of the power train and the 
+bootstrap diode with the controller, makes the 
+converter a space -efficient solution to provide POL 
+regulation from a 5 -11V supply rail. Its protection 
+features include Over -Current, Over -Temperature and 
+Input Under -Voltage to improve system -level security 
+in the event of fault conditions. The chip temperature 
+increase in the application can be monitored via a 
+dedicated analo g signal (PTAT).   
+
+
+===== Page 2 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 2 
+ 
+5. Typical application  
+ 
+Figure 2: Typical application diagram.  
+ 
+ 
+ 
+6. Absolute  Maximum Ratings  
+Power Input Voltage PVin  ................................ . -0.3V to +12.0V  
+Control Input Voltage Vin  ................................ . -0.3V to +12.0V  
+Bootstrap Voltage BootS  ...............................  -0.3 to PVin+3.6V  
+Phase Voltage  ............  0.3 V to Vin (DC), -2 to 13.5 V (AC, 10ns)  
+Phase to BootS Voltage ................................ .......  -0.3V to +3.6V  
+Driver Voltage, V33Dr  ................................ .........  -0.3V to +3.6V  
+Feedback input Voltage of the E/A Vi  .................  -0.3V to +3.6V  
+Frequency selector Rf  ................................ .........  -0.3V to +3.6V  
+Power transistor size toggle HalfSw  .................... -0.3V to +3.6V  
+Reference voltage toggle Ref1V2  ........................ -0.3V to +3.6V  
+Converter Enable En  ................................ ........... -0.3V to +3.6V  
+Power good PGood  ................................ .............. -0.3V to +6.0V  
+Output Voltage Vout  ................................ ............ -0.3V to +6.0V  
+Current in PGood pin (when PGood is negated)  ..............   50uA  
+Imax in En pin……………………………………………………………….100uA   
+ 7. Pin Configuration  
+ 
+Figure 3: Top view - 32-lead plastic QFN (5x5 mm)   
+Thermal pad must be soldered to PCB PGnd . 
+ 
+  
+
+
+===== Page 3 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 3 
+ 
+8. Pin Function   
+Rf (Pin 1):  Frequency Selector. A resistor placed 
+between this Pin and the board GND determines the 
+switching frequency of the converter as illustrated in the 
+following table. The recommended range for best 
+performance is 1.5 -2 MHz .  
+Resistance  
+(ohm)  Frequency  
+(MHz)  
+270K  1.03  
+200K  1.35  
+180K  1.48  
+160K  1.65  
+130K  1.99  
+100K  2.51  
+82K  2.98  
+ 
+PGood (Pin2):  Power Good flag. This output pin comes 
+from an open -drain NMOS transistor that is conductive 
+when the converter is not regulating the output voltage. 
+It requires a pull -up resistor to the appropriate user -
+required voltage. It is recommended to obtain this 
+voltage from Vout, either with a simple pull -up or with a 
+voltage divider. The value of the pull -up resistor 
+determines the current in the open -drain NMOS, which 
+should be limited below 50uA. PGood is asserted (NMOS 
+off) during normal operation, while it i s negated (NMOS 
+on) in disable mode, during restart, in case of under -
+voltage or over -temperature, and when the output 
+voltage is outside a regulation window approximately 
+±6.5% around the selected Vout.  
+Gnd (Pin3, 5, 20):  Ground of the control electronics of 
+the converter. It must be connected to the PCB ground 
+plane possibly in a location remote to the power current 
+loop in the same plane.  
+Vi (Pin 4):  Input voltage of the Error Amplifier. The 
+compensation network is integrated on -chip and 
+ensures a bandwidth of about 150kHz, but the DC 
+regulation voltage Vout is selected by a voltage divider 
+between Vout and gnd  with two resitors (Off -chip 
+components,  ). Vi is connected between the 2  resistors 
+and the resulting voltage is compared to the internal 
+reference voltage (about 0.6V). The resistor between 
+Vout and Vi must have a value of 1MΩ, while the one 
+between Vi and gnd is selectable (no resistor makes Vout 
+= Vref).  This is shown in Figure 4.  
+Figure 4: Configuring the output voltage . 
+V33Dr (Pin6): Voltage supply for the drivers of the 
+power transistors. Although the regulator providing the 
+3.3V to the drivers is integrated, the large gate 
+capacitance of the power switches requires a hefty 
+charge storage element capable of providing quickly all 
+the r equired transient current. This cannot  be achieved 
+by on -chip capacitor, and an external capacitor of 220nF, 
+positioned as close to the V33Dr pin as possible and 
+directly connected to the PGnd (on the top PCB la yer), is 
+required.  
+PGnd (Pin 7, 8, 9, 17, 18, 19):  Power Ground. This is the 
+gnd of the power train and drivers, where large current 
+transients are flowing. All PGnd pins must be connected 
+to a large power plane under the qfn32, itself soldered 
+to the Thermal Pad of the package, and connected to the 
+PCB gn d plane by a large number of vias.   
+BootS (Pin 10):  BootStrap capacitor voltage. MAG -
+PSU00001 -NP uses 2 NMOS transistors in the power 
+train, and the High Side (HS) switch requires a BootStrap 
+circuit, which is embedded, for correct gate driving (the 
+gate has to be connected to Phase for turnoff and to 
+Phase+3.3V for turn -on). Given the large size of t he HS 
+power switch, an off -chip capacitor is required to 
+provide the transient current to the HS drivers during 
+switching. This capacitor, of 220nF, must be positioned 
+between Phase and BootS pins , as close as possible to 
+the qfn32 package.  
+Bgp_EA (Pin 21): The reference voltage to the Error 
+Amplifier is buffered and made observable at this pin 
+exclusively for test purposes. It is recommended to leave 
+this pin floating.  
+Inv_Enable (Pin 22 ): Toggle of the polarity of the Enable 
+pin. If this pin is connected to gnd, the polarity of the 
+Enable pin is switched. It is recommended to leave this 
+pin floating.  
+HalfSW (Pin 23):  Toggle controlling the size of the power 
+train transistors. If this pin is connected to gnd, only 
+2/5th of the integrated power switches are used, 
+
+
+===== Page 4 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 4 
+ 
+decreasing the power required to charge their large gate 
+capacitance (increasing however their on -resistance). In 
+this configuration, efficiency increases for light loads – 
+below about 600mA. For larger loads, leave the pin 
+floating for higher efficiency and reliability.  
+Vout (Pin 24):  Regulated output voltage.  Note: This pin 
+must be connect though the resistive divider to Vi ( Pin 
+4) to come to the desired output voltage (See ) ( This is 
+clarified in the description of Pin 4 (Vi). ) 
+PTAT (Pin 25):  Proportional To Absolute Temperature 
+provides and analog voltage whose variation with the 
+chip junction T is linear with a slope of about 8.5 mV/oC. 
+See section 12.13  for a detailed explanation.   
+PVin (Pin 26, 27, 28, 29):  Power Input Voltage. Input 
+voltage of the power switches and drivers, where large 
+current transients are flowing. Large input capacitances 
+must be connected between this pin and PGnd as close to the package as possible (see board design 
+recommendations in the application note ).  
+Vin (Pin 31):  Input Voltage for the control electronics of 
+the converter. It is recommended to connect it to PVin 
+close to the chip.  
+En (Pin 32):  Enable input. MAG -PSU00001 -NP is 
+normally disabled and requires a voltage above 850mV 
+applied to this pin to be enabled and start operation. 
+This voltage has been chosen to make the pin 
+compatible with control from almost any CMOS logic 
+controller between 0.9 and 3.3V. The polarity of th e pin 
+can be inverted by connecting Inv_Enable (Pin22) to gnd, 
+in which case MAG -PSU00001 -NP is enabled for applied 
+voltages below 850mV. Note that an embedded 500 k Ω 
+resistor pulls the voltage of the En pin to gnd. A 
+maximum current of 100uA is allowed in to the pin.  
+ 
+9. Recommended Operating  Conditions  
+Table 1: Recommended operating conditions.  
+Description  Min  Max  Unit  
+Input voltage - PVin, Vin  5 11 V 
+Output voltage - Vout  0.9 5 V 
+Conversion ratio - Vout/Vin  2 10  
+Output current – Iout (supposes efficient cooling of PCB ground plane)  0 4 A 
+Output power – Pout (supposes efficient cooling of PCB ground plane)  0 10 W 
+Switching frequency  1.5 2 MHz  
+Cooling plate temperature (temperature of the PCB ground plane that has to be attached to a cooling 
+plate)  -40 30 oC 
+Output current above which HalfSw should be left floating for higher efficiency and reliability  600 800 mA 
+Inductor value  400 500 nH 
+Enable voltage   3.3 V 
+Power Good voltage   3.3 V 
+  
+
+===== Page 5 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 5 
+ 
+10. Electrical Specifications  
+Table 2: Electrical specifications.  
+SYMBOL  PARAMETER  TEST CONDITIONS  MIN  TYP MAX  UNITS  
+Power          
+PVin, Vin  Input voltage supply range  Converter operational  5 - 11 V 
+Iin Input current for control electronics (via Vin pin)  En pin low, converter disabled  - 2 - mA 
+Iout (1) Output current  f=1.8MHz, L=460nH, package thermal pad 
+soldered to PCB, PCB in air  - - 1 A 
+f=1.8MHz, L=460nH, good thermal contact 
+with cooling plate at 18oC - - 4 A 
+Pout (1) Output power  f=1.8MHz, L=460nH, package thermal pad 
+soldered to PCB, PCB in air  - - 2 W 
+f=1.8MHz, L=460nH, good thermal contact 
+with cooling plate at 18oC - - 10 W 
+PWM      
+DMax  Maximum Duty Cycle    - 100 - % 
+DMin  Minimum Duty Cycle    - 0 - % 
+Error Amplifier      
+DCG  DC Gain  CL = 1pF at VF Pin  - 90 - dB 
+UGBW  Unity Gain -Bandwidth  CL = 1pF at VF Pin  - 20 - MHz  
+SR Slew Rate  CL = 1pF at VF Pin  - 10 - V/µs  
+Under -Voltage Lockout      
+VinStartTh  Vin start threshold  Vin rising trip level (2) - 4.79  - V 
+VinStopTh  Vin stop threshold  Vin falling trip level (2) - 4.52  - V 
+Enable      
+EnStartTh  Enable start threshold  Enable rising trip level (2) - 815 - mV 
+EnStopTh  Enable stop threshold  Enable falling trip level (2) - 730 - mV 
+EnSerRes  Enable pin series resistance (to limit current 
+through ESD when MAG -PSU00001 -NP is   - 10 - kΩ 
+not powered)  
+Protections      
+OCPpk  Over Current Protection peak level  Vin=10V, Vout=2.5V, f=1.8MHz, L=460nH, 
+Tcoolingpad≈18oC, (3) - 6 - A 
+OCPavg  Over Current Protection average output current 
+level  Vin=10V, Vout=2.5V, f=1.8MHz, L=460nH, 
+Tcoolingpad≈18oC, (2),(4) - 4.8  
+A 
+OTPStartTh  Over Temperature  Tj rising trip level, (5) - 103 - oC 
+Protection start threshold  
+OTPStopTh  Over Temperature  Tj falling trip level, (5) - 73 - oC 
+Protection stop threshold  
+Soft Start      
+SSt Duration of the Soft Start procedure to reach 
+regulation at nominal Vout  Vin=10V, Vout=2.5V, f=1.8MHz, L=410nH, 
+Tcoolingpad≈18oC, (2),(6)  
+440  
+us 
+Power Good      
+OV Output Over Voltage  PGood upper threshold     
++6.5   
+% 
+UV Output Under Voltage     
+-6.5  
+% 
+PGood lower threshold  
+Proportional To Absolute Temperature signal      
+ 
+ 
+ 
+1 Max rated output current only allowed if max output power is not exceeded.  
+2 Average value taken from measurements on 10 samples from the production run.  
+3 This value has not been measured precisely and is reported as approximate indication of the peak current detection for OCP. T he peak value does 
+not have relevant dependence on Vin and Vout.  
+4 The OCP uses a peak detector, hence the average output current for OCP detection depends on the input and output voltages. In  particular, the OCP 
+detection current for Vin=10V is not significantly different for Vout of 2.5 -5V, whilst it increases by about 10% at 1.8V and even further at smaller 
+output voltages.   
+5 The threshold temperature for OTP is approximate, since it is not measured on -chip (no junction T available when the measurements have been 
+done, on version 2.0 of DCDC1100 ). Fully assembled DCDC1100  boards regulating 2.5V with no load were put in good thermal contact with a thermal 
+chuck, and T was increased. The temperature of the chuck when the DCDC1100  module turned off (and back on) was taken as threshold.  
+6 The duration of the Soft Start does not have a relevant dependence on Vin and Vout.  
+
+===== Page 6 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 6 
+ 
+SYMBOL  PARAMETER  TEST CONDITIONS  MIN  TYP MAX  UNITS  
+PTAT  Analog output voltage  Converter disabled, environmental T 
+sweep   
+8.5  
+mV/oC 
+ 
+11. Block Diagram  
+ 
+Figure 5: Block diagram of the MAG -PSU00001 -NP. 
+ 
+
+
+===== Page 7 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 7 
+ 
+12. Operation  
+MAG -PSU00001 -NP is a  DCDC converter  designed 
+specifically  for application in the high radiation and 
+magnetic field of experiments in High Energy Physics. 
+Radiation tolerance is a particularly difficult target for a 
+DCDC converter, and its achievement required to 
+compromise on other performances typically importan t 
+in similar components in the commercial marketplace. 
+The typical application at steady large load current with 
+power provided from a remote supply (not from a 
+battery) implies very relaxed require ments on 
+quiescent current, while a fast feedback loop is at 
+premium for some detectors where current 
+consumption might have an instantaneous threefold 
+increase.  
+12.1 Output voltage selection  
+The output voltage is determined by the choice of the 
+2 resistors in voltage divider configuration between 
+Vout and gnd () ). In doing so, it is important to know 
+as precisely as possible the value of the reference 
+voltage to the Error Amplifier. This has been measured 
+on 40 tests points on each production wafer. The 
+average value over the 6 wafers is 599mV with a 
+standard dev iation of 5.7mV (minimum measured: 
+583mV; maximum measured: 613mV).  
+12.2 Switching frequency  
+The switching frequency of the converter can be 
+adjusted with one external resistor, which provides the 
+bias current to the embedded oscillator. Although 
+MAG -PSU00001 -NP has been tested as functional over 
+a wide range of frequency (1 to 3.5MHz), best 
+performance is achieved in the range of 1.5 -2MHz. At 
+lower frequency, the peak -peak current in the small air -
+core inductor increases excessively and determines 
+useless losses and possibly an early onset of the OCP. At 
+higher frequency, driving losses increases dramatically 
+and make the efficiency drop very sensibly. While usage 
+at 1.5MHz allows top efficiency, 1.8MHz operation 
+allows for reduced conductive noise and is preferred as 
+default configuration.   
+12.3 Embedded  linear regulators  
+While it can operate from a supply voltage of up to 
+11V, the control electronics in MAG -PSU00001 -NP 
+requires powering at 3.3V. A number of linear 
+regulators are embedded to provide appropriate 
+voltage to the drivers of the power transistors, to the bandgap and reference current generator, to the 
+analog and to the digital circuitry. With the exception 
+of the voltage regulation for the power transistors’ 
+drivers, all storage capacitors required for the 
+regulators are on -chip and have been sized to ensu re 
+stea dy voltage even during large current surges.  
+12.4 Under -Voltage lockout  
+The embedded linear regulators need a sufficient level 
+of overvoltage to provide stable 3.3V voltage to the 
+control circuitry. To prevent faulty operation because of 
+lack of appropriate supply to the control electronics, an 
+on-chip comparator only enables operation of the 
+circuit when the input voltage is above about 4.8V (on 
+rising Vin). This comparator has an hysteresis and  MAG -
+PSU00001 -NP is disabled again when, for falling Vin, the 
+input voltage drops below about 4.5V.  
+12.5 Enabling MAG -PSU00001 -NP  
+The circuit is disabled by default, so it will not start 
+when a sufficient Vin is applied to its input unless the 
+available enable pin (En) has not been asserted by 
+applying a voltage above about 820mV. MAG -
+PSU00001 -NP can hence be turned on -off by a control 
+signal without the need for removing the power to its 
+Vin bus, which makes easy its parallelization on the 
+same supply bus (each MAG -PSU00001 -NP providing 
+regulated power to a different load). The polarity of the 
+enable signal can however be inverted by  connecting 
+the Inv_Enable pin to gnd. In this case, the circuit is 
+disabled when a voltage above 820mV is applied to the 
+enable (En) pin; it is hence enabled by default if the En 
+pin is floating – an internal pull -down resistor of 500 k Ω 
+keeps the voltage of the pin to gnd.  
+12.6 Soft Start procedure  
+When the converter is enabled a large current is 
+required to charge the output capacitors to the nominal 
+regulated voltage. This current has to be limited to 
+avoid circuit damage. A pre -defined Soft Start (SS) 
+procedure takes care of limiting the inrush cu rrent by 
+gently increasing the reference voltage of the EA, the 
+output voltage reaching the nominal value in about 
+440us in the nominal configuration using the 0.6V 
+bandgap (at the switching frequency of 1.8MHz, this 
+time varying inverse linearly with freq uency). Every 
+time the converter is disabled – either by acting on the 
+En pin, by under -voltage lockout, or by OTP detection – 
+it follows a hard -wired sequence to reach the state 
+where it efficiently regulates the output voltage. This 
+sequence is controlle d by an embedded 2bits state 
+
+===== Page 8 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 8 
+ 
+machine. SS takes place in the third of the 4 states and 
+finishes when the rising reference voltage slightly 
+exceeds the bandgap reference voltage. At this time, 
+the reference to the EA is switched to the steady 
+reference generator (bandgap). It is hence n ormal to 
+observe a small decreasing voltage step in Vout at the 
+end of the SS procedure.  
+12.7 Power Good flag  
+The PG output pin is used to signal that MAG -
+PSU00001 -NP is correctly regulating the output voltage. 
+For easy compatibility with almost any CMOS logic level 
+up to 3.3V, this output is an open drain (of an NMOS 
+transistor). This transistor is normally disabled when 
+the converter is regulating correctly, while it is  turned 
+on otherwise: in disabled state (En pin low), in OTP, in 
+reset and when the output voltage is outside a ±6.5% 
+window around nominal. In the absence of Vin, or in 
+under -voltage lockout, powe r is not provided to the 
+control electronics and the open -drain transistor 
+cannot exert its pull -down function. To avoid PG to rise 
+in this condition it is recommended to use Vout as pull -
+up voltage (either directly or via a voltage divider).  
+Current in the NMOS pull -down transistor has to be 
+limited below 50uA, so an appropriate pull -up network 
+has to be selected. The absolute maximum voltage on 
+the PG pin is 3.6V.  
+12.8 Over -Temperature Protection (OTP)  
+A dedicated circuit monitors the on -chip junction 
+temperature and disables MAG -PSU00001 -NP when it 
+reaches about 103oC (the OTP temperatures are not 
+precisely measured since T is not measured on MAG -
+PSU00001 -NP itself). The OTP has a hysteresis of about 
+30oC, hence the converter restarts (with SS) when the 
+junction temperature decreases below 73oC. In case of 
+inefficient cooling, it is hence possible that the 
+converter cycles between the disabled and enabled 
+states at a frequency dependent on the load and 
+cooling conditions.  
+12.9 Over -Current Protection (OCP)  
+OCP is integrated as a real peak detector on the 
+current flowing during each cycle in the HS transistor. 
+Current sensing takes place on the parasitic 
+resistance of metal lines bringing the input current 
+from the input pads to the HS transistor. When the 
+instantaneous current exceeds about 6A ( 
+approximate value), the PWM is reset and forces the 
+HS to turn off. If the excessive load current condition 
+persists, the on -time of the HS is not determined anymore by the feedback loop (which would require 
+longer on -times to provide more output power) but 
+by the OCP, and as a consequence the output voltage 
+drops. This condition might endure as a steady state, 
+PG being pulled to gnd if the output voltage drop 
+exceeds 6.5% of the nominal. The peak current of 6A 
+transla tes in different average output current 
+depending on the input and output voltage, 
+frequency and inductor value.  
+12.10  Compensation network  
+The compensation network is fully integrated and 
+determines a typical loop bandwidth of about 150kHz 
+in the recommended operation environment 
+(frequency, voltages, inductor, on -board passives). 
+MAG -PSU00001 -NP is hence capable of quickly 
+adjusting the output voltage in case of output load 
+transients.  
+12.11  Cooling  
+MAG -PSU00001 -NP is specified for operation up to 
+10W output power. With an efficiency of 80% in case of 
+large load current and not – cryogenic cooling, this 
+translates in more than 2W lost in the converter 
+(including the resistance of the inductor and of other 
+passive compon ents). Most of this power is burnt by the 
+chip itself and needs to be transferred to the cooling 
+system efficiently. The chosen qfn32 package has an 
+exposed cooling pad to which the IC is directly attached, 
+and the pad must be soldered to  the gnd plane of the 
+PCB which itself must have a good thermal contact to 
+the cooling  method used .  
+12.12  Operation at small output current  
+The size of the power transistors has been chosen for 
+optimum efficiency in the output current range of 
+1.5-2.5A. For small output currents the excessive size 
+of the transistors induces a large penalty in efficiency, 
+since their large gate capacitance has to be charged 
+at every switching cycle (large driving losses). To 
+partially reduce the losses associated to the large size 
+of the power train, it is possible to stop a fraction of 
+the drivers by pulling down (to gnd) the HalfSw pin. 
+In this way, only 2/5th of the HS and LS transistors are 
+switching, increasing their effective on -resistance 
+(not too relevant for small load currents) but saving 
+switching power.  The power efficien cy at small loads,  
+is given in   , for currents up to  1000mA,  measured @ 
+the following nominal conditions: Vin=10V, 
+Vout=2.5V, f=1.8MHz, L=460nH.   
+
+===== Page 9 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 9 
+ 
+Table 3: Power efficiency at small current loads.  
+ Efficiency (%)  
+Iout (mA)  HalfSw floating  HalfSw grounded  
+100  39.3%  44.6%  
+200  56.5%  61.0%  
+300  64.6%  68.1%  
+400  69.9%  73.0%  
+500  73.7%  75.8%  
+600  76.8%  77.7%  
+700  78.5%  79.4%  
+800  79.6%  80.1%  
+900  80.2%  80.4%  
+1000  80.8%  80.4%  
+12.13  Proportional  To Absolute 
+Temperature (PTAT) voltage  
+The PTAT analog signal can be used to monitor the T 
+increase of the MAG -PSU00001 -NP ASIC during 
+operation, in particular to verify that the cooling is 
+appropriate. The absolute value of the PTAT voltage at 
+a given T has a wide sample -to-sample variability. 
+However, the PTAT increase with respect to T is very 
+close to a straight line with slope 8.5 mV/oC. This has 
+been verified on 4 samples from 2 different 
+manufacturing lots: although the PTAT value at the 
+same T could vary by 200mV, all samples had a linea r 
+dependence between ΔPTAT and ΔT, with a very similar 
+slope (averaging 8.5). This linear relation is shown for 
+one of the measured samples in  Figure 6. The 
+discontinuity above 100oC happens when the OTP sets 
+in and is due to a hysteresis inserted because of the 
+over -T protection. The vertical scale has an origin at 
+about 25oC inthis case because the PTAT variation has 
+been arbitrarily referred to the value at that T. Given 
+the variability in the absolute value of the PTAT, it is 
+possible that some sample outputs a 0V signal for very 
+low T and only start to the linear relation  at higher 
+temperature. In our tests, this happened in one sample 
+(0V output between -30 and -18oC).   
+Figure 6: PTAT variation as a function of temperature.  
+12.14  Radiation  tolerance  
+12.14.1  Total ionizing  dose effects  
+Samples have been exposed under bias at 25 oC and -25 
+oC, while biased at 10V input voltage and providing 2A 
+current to a load. The radiation source was the CERN X -
+ray irradiation system accelerating 40keV electrons on 
+a Tungsten target.  
+While the output voltage andinput/output currents 
+were measured every few seconds, the irradiation was 
+periodically stopped for a few minutes to measure the 
+evolution of other parameters of the converter, in 
+particular the thresholds for the enable, the OV C, OTP 
+and UVLO protection circuits. All these parameters 
+were never found to shift significantly during the 
+irradiation and consequent annealing. After irradiation, 
+annealing was performed first at room temperature for 
+a week and then at 100 °C for anothe r week, always 
+with the sample actively  regulating its output voltage.  
+No significant changes have been observed a radiation 
+levels higher than 100 krad.  
+12.14.2  Single event effects  
+The SEE test was performed at the Heavy Ion irradiation  
+Facility (HIF) of the Cyclotron Resource Centre (CRC) of  
+Louvain -la-Neuve, Belgium, using the available high  
+penetration ion cocktail. Two samples were exposed at 
+room  temperature, with the available water cooling 
+system to allow  heat dissipation in the vacuum 
+chamber, while providing 1 or  2 A to a load at 1.2 and 
+2.5 V. A bank of fast comparators  with programmable 
+threshold, as well as an oscilloscope,  constantly 
+monitored the output voltage of the ex posed  converter 
+during the test. Every time the voltage was above  (or 
+below) the threshold, the comparator tripped and 
+Temperature (C)  
+0 
+ 120 
+ -40 
+ -20 
+ 100 
+ 20 
+ 40 
+ 60 
+ 80 
+-0.4 
+-0.2 
+0 
+0.2 
+0.4 
+0.6 
+0.8 
+1 
+1.2 
+PTAT normalized to first point vs T  
+ChipB 
+Fit 
+Slope from the fit = 8.43 mV/deg  
+
+===== Page 10 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 10 
+ 
+provided  a signal to an FPGA -based control system: the 
+duration of  this signal corresponds  to the time 
+over/below threshold. The  PowerGood signal was also 
+monitored at the same time.  
+During the 5 -hours irradiation, with Ar, Ni and Kr ions at  
+different angles for effective Linear Energy Transfers 
+(LETs)  in the range of 10.2 to 65.2 MeVcm2mg-1, 
+samples were  exposed to a total integrated flux of 
+about 126 million ions.   
+MAG -PSU00001 -NP constantly provided regulated 
+power to the load all  the time: no reset or functional 
+interrupt was ever observed.  The observed SETs are 
+summarized in Table II and III  for falling single event and 
+rising single transients respectively. From the tables, it 
+is possible to see that SETs exceeding  6% of the nominal 
+voltage only occur above a LET of  20 MeVcm2mg -1.  
+In proton or neutron particle environments  SETs will 
+hence be limited to amplitudes  below 6%. It is also 
+possible to observe how the cross -section  and duration 
+of the events increase with the LET of the  incoming ion. 
+SETs above 20% of the output voltage  were not 
+observed even with the highest available LET.  
+ 
+Table 4: Cross section in (in cm2)  during a 5 hour heavy ION 
+radation with a total integrated flux of 125 Millions ions  for 
+falling single event transients in function of the Linear energy 
+transfer (MeVcm2mg -1) and observed deviation of the 
+output voltage (%)  
+LET Falling SET threshold (% of V out) 
+2% 6% 10%  20%  
+10.2  2.4*10-8 (-) 7.7*10-8 (-)   
+12.45  9.9*10-7 (2.4)   9.8*10-7 (-)  14.42  6.5*10-6 (4.1)  9.4*10-8 (-)   
+17.78   3.3*10-7 (-)   
+20.4   3.0*10-6 (1.6)  1.3*10-6 (1.4)   
+24.9   6.6*10-6 (1.4)  5.0*10-6 (1.4)   
+32.6   1.0*10-5 (2.2)  8.0*10-6 (1.5)  1.4*10-7 (-) 
+46.1    9.0*10-6 (1.5)   
+65.2    8.1*10-6 (1.5)   
+ 
+Table 5: Cross section in (in cm2)  during a 5 hour heavy ION 
+radation with a total integrated flux of 125 Millions ions  for 
+rising single event transients in function of the Linear energy 
+transfer (MeVcm2mg -1) and observed deviation of the 
+output voltage (%).  
+LET Rising SET threshold (% of V out) 
+2% 6% 10%  20%  
+10.2  3.4*10-7 (0.5) 7.7*10-8 (-)   
+12.45  2.7*10-6 (1.3)  1.4*10-7 (-)  
+14.42  5.4*10-7 (1.0) 9.4*10-8 (-)   
+17.78   3.3*10-7 (-)   
+20.4   6.6*10-7 (0.4) 1.4*10-7 (-)  
+24.9   3.3*10-7 (0.5) 1.4*10-7 (-)  
+32.6   2.3*10-6 (1.2) 1.4*10-7 (-)  
+46.1    1.4*10-7 (-)  
+65.2    1.4*10-7 (0.4)  
+ 
+13. Validation of operation conditions  
+All operation conditions  can be validated with  MAG -
+PSU00001 -NP modules . These are available on request.  
+  
+
+===== Page 11 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 11 
+ 
+14. Package description  
+MAG -PSU00001 -NP is packaged in a plastic Quad Flat No -Lead (QFN) package 5.0x5.0x0.9mm in size, with 32 pads and 
+with an exposed pad to be soldered to the PCB for better thermal properties. The package is rated for a chip temperature 
+increase of 27 to 31 oC/W depending on the air flow. The suggested PCB footprint  for the integration of MAG -PSU00001 -
+NP is shown in the following figure. The dimension of the signal pads is 0.25x0.5mm and the one of the central exposed 
+thermal pad is 3.6x3.6mm. All distances ar e referred to the centre  of the signal or exposed thermal pads.  
+The MAG -PSU00001 -NP can also be delivered in other type s of packages upon customers’ request, such as CQFP, PQFP, 
+or PBGA.  
+ 
+Figure 7: Suggested PCB footprint for the integration of the MAG -PSU00001 -NP QFN32 package.  
+  
+
+
+===== Page 12 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 12 
+ 
+15. Product maturity levels  
+Magics uses the following product maturity levels.  
+Maturity  Description  
+PROTO  Functionality tested in typ voltage,temperature; no commitment on spec performance, Package may differ 
+depending on availabilities.  
+EM Characterization performed in typ voltage, temperature, no commitment on spec performance  
+EQM  Characterization performed over full voltage and temperature range  
+PROD  Qualified samples, no screening  
+FM Qualified samples, screening performed  
+ 
+16. Product versions  
+Product code   Maturity level availability   Description  
+MAG -PSU00001 -NP EM, EQM , PROD  Radiation tolerant 10W Synchronous Step -Down Buck DC/DC converter  in a QFN32 package  
+ 
+  
+
+===== Page 13 =====
+ Datasheet – MAG -PSU00001 -NP 
+2026/04-rev1.0 
+MAG -PSU00001 -NP– Radiation tolerant 10W Synchronous Step -Down Buck 
+DC/DC converter  
+Copyright © M agics Technologies  NV / Confidential information   | 13 
+ 
+17. Revision information  
+Version number  Date   Change description  
+ 2023/04 -rev0.4 2023 -04-28 - Key performance parameters restructured  
+- Product maturity levels info added  
+- Product versions info added  
+- Revision information introduced  
+2025/05 -rev0.5  2025 -05-08 - added a note at the operating temperature: * Note: over -temperature protection kicks in at a 
+lower temperature at ~100 °C.  
+- fixed references in the text.  
+- updated several other captions of figures and tables.  
+- updated maturity levels to EM and EQM.  
+- added maximum current into En pin: 100uA . 
+- updated application diagram: 220nF and 3kOhm load to V33Dr.  
+2026/04-rev1.0 2026-04-24 - removed watermark.  
+- added PROD models to the availability.  
+ 
+ 
+Disclaimer  
+Magics Technologies ’ products are sold by description only. Magics Technologies reserves the right to make changes in circuit design, software and/or 
+specifications at any time without notice. Accordingly, the reader is cautioned to verify that datasheets are current before placing orders. Information 
+furnished by M agics Technologies  is believed to be accurate and reliable. However, no responsibility is assumed by M agics Technologies  for its use; 
+nor for any infringements of patents or other rights of third parties which may result from its use. No license is granted by  implication or otherwise 
+under any patent or patent rights of M agics Technologies . 
+For information regarding M agics Technologies  and its products, see www.magics.tech  

@@ -197,16 +197,18 @@ IMG_PARAMS = [
     ("Electro-optical characteristics", "Pixel size", "", "", "5um x 5um", "", "", "", "", ""),
     ("Electro-optical characteristics", "Number of black rows", "", "", "64", "", "", "", "", "32 at the top; 32 at the bottom"),
     ("Electro-optical characteristics", "Shutter type", "", "", "Rolling shutter", "", "", "", "", ""),
-    ("Electro-optical characteristics", "Full well charge", "", "", "94000", "", "e-", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "Conversion gain", "", "", "0.01", "", "mV/eV", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "Responsivity", "", "", "0.009", "", "DN/e-", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "Temporal noise", "", "", "66", "", "e-", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "Dynamic range", "", "", "62", "", "dB", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "SNR_MAX", "", "", "49.5", "", "dB", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "Dark current (DC)", "", "", "0.05", "", "fA", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "Dark current non uniformity (DCNU)", "", "", "42.8", "", "e-/s", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "Dark signal non uniformity (DSNU)", "", "", "587.2", "", "e-", "", "", "Preliminary measurement results pre-irradiation"),
-    ("Electro-optical characteristics", "Photo response non uniformity (PRNU)", "", "", "< tba", "", "% RMS", "", "", "To be added once characterized"),
+    ("Electro-optical characteristics", "Saturation limit", "", "", "107000", "", "e-", "M3805", "T0038", "Typical pre-irrad value. Related to design target full-well charge. Tested only during characterization"),
+    ("Electro-optical characteristics", "Conversion gain", "", "", "0.012", "", "mV/e-", "M3802", "T0038", ""),
+    ("Electro-optical characteristics", "System gain (K)", "", "", "0.0088", "", "DN_10bit/e-", "M3804", "T0038", "10-bit equivalent. K = conversion gain / ADC gain"),
+    ("Electro-optical characteristics", "Responsivity", "", "", "0.009", "", "DN/p", "M3800", "T0038", ""),
+    ("Electro-optical characteristics", "Read noise", "", "", "76", "", "e-", "M3812", "T0038", 'Datasheet rev 2.0 renamed "Temporal noise" to "Read noise"'),
+    ("Electro-optical characteristics", "Dynamic range", "", "", "62", "", "dB", "M3807", "T0038", ""),
+    ("Electro-optical characteristics", "SNR_MAX", "", "", "50.3", "", "dB", "M3806", "T0038", ""),
+    ("Electro-optical characteristics", "Dark current (DC)", "", "", "536", "", "e-/s/px", "M3813", "T0038", "Typical pre-irrad value (0 Gy TID, RT). Post 1MGy TID and 7d/100\u00b0C anneal: typ 42344 e-/s/px"),
+    ("Electro-optical characteristics", "Dark current non uniformity (DCNU)", "", "", "1596", "", "e-/s/px", "M3815", "T0038", "Typical pre-irrad value (0 Gy TID, RT). Post 1MGy TID and 7d/100\u00b0C anneal: typ 10778 e-/s/px"),
+    ("Electro-optical characteristics", "Dark signal non uniformity (DSNU)", "", "", "159", "", "e-", "M3808", "T0038", "Measured after Column FPN (CFPN) correction"),
+    ("Electro-optical characteristics", "Photo response non uniformity (PRNU)", "", "", "1.21", "", "% of mean", "M3809", "T0038", "Measured after Column FPN (CFPN) correction at 50% dynamic range"),
+    ("Electro-optical characteristics", "Column Fixed-Pattern Noise (CFPN)", "", "", "5.62", "", "DN_10bit", "M3818", "T0038", "10-bit equivalent. New parameter added in datasheet rev 2.0"),
     ("Electro-optical characteristics", "Color filters", "", "", "BayerRG (Bayer RGGB)", "", "", "", "", "In the case of the color version"),
     ("Electro-optical characteristics", "Programmable features", "", "", "Sensor parameters", "", "", "", "", "Exposure time, sub-sampling, X-Y mirroring, ADC resolution"),
     ("Electro-optical characteristics", "ADC resolution", "", "", "10 and 12 bit", "", "", "", "", "Selectable"),
@@ -999,28 +1001,51 @@ def _fmt(val):
 
 # check_limits stores values in base SI (A, V, Hz, s, …).
 # This map gives the multiplier to convert from base SI to the display unit.
+#
+# Special-case "_10bit" suffix: some IMG image-sensor parameters (e.g. K,
+# col_fpn) are stored in check_limits as 12-bit DN values, while the datasheet
+# typ values are reported in 10-bit equivalent. Tagging the unit as DN_10bit
+# (or DN_10bit/e-) applies a 0.25 scale (12-bit -> 10-bit) and the table
+# renders the unit without the "_10bit" suffix.
 _UNIT_SCALE = {
-    "mA":    1e3,
-    "uA":    1e6,
-    "mV":    1e3,
-    "V":     1,
-    "MHz":   1e-6,
-    "kHz":   1e-3,
-    "Hz":    1,
-    "Ohm":   1,
-    "Ω":     1,
-    "%":     1,
-    "ms":    1e3,
-    "us":    1e6,
-    "s":     1,
-    "mW":    1e3,
-    "W":     1,
-    "A":     1,
-    "Gbps":  1,
-    "Mbps":  1,
-    "°C":    1,
-    "mV/mA": 1,
+    "mA":           1e3,
+    "uA":           1e6,
+    "mV":           1e3,
+    "V":            1,
+    "MHz":          1e-6,
+    "kHz":          1e-3,
+    "Hz":           1,
+    "Ohm":          1,
+    "Ω":            1,
+    "%":            1,
+    "ms":           1e3,
+    "us":           1e6,
+    "s":            1,
+    "mW":           1e3,
+    "W":            1,
+    "A":            1,
+    "Gbps":         1,
+    "Mbps":         1,
+    "°C":           1,
+    "mV/mA":        1,
+    "DN_10bit":     0.25,   # 12-bit DN (check_limits) -> 10-bit DN (display)
+    "DN_10bit/e-":  0.25,   # 12-bit DN/e- (check_limits) -> 10-bit DN/e- (display)
 }
+
+# Display-only aliases: when rendering the Unit column in the markdown table,
+# the key is replaced by the value (the actual scaling is handled separately
+# via _UNIT_SCALE above).
+_DISPLAY_UNIT_ALIAS = {
+    "DN_10bit":     "DN",
+    "DN_10bit/e-":  "DN/e-",
+}
+
+
+def display_unit(unit: str) -> str:
+    """Return the human-friendly unit string used in the markdown table."""
+    if unit is None:
+        return ""
+    return _DISPLAY_UNIT_ALIAS.get(unit, unit)
 
 
 # Per-product mapping from Txxxx to Chapter 6 test procedure name.
@@ -1152,13 +1177,15 @@ def _build_ic_markdown(rows, table_title):
         ds_min = _fmt(r.get("DS_Min", ""))
         ds_typ = _fmt(r.get("DS_Typ", ""))
         ds_max = _fmt(r.get("DS_Max", ""))
-        unit = _fmt(r.get("Unit", ""))
-        lsl = _convert_lsl_usl(r.get("LSL", ""), unit)
-        usl = _convert_lsl_usl(r.get("USL", ""), unit)
+        raw_unit = r.get("Unit", "")
+        unit_for_scale = _fmt(raw_unit)
+        lsl = _convert_lsl_usl(r.get("LSL", ""), unit_for_scale)
+        usl = _convert_lsl_usl(r.get("USL", ""), unit_for_scale)
+        unit_display = _fmt(display_unit(raw_unit))
         comment = _fmt(r.get("Comment", ""))
 
         lines.append(
-            f"| {param} | {ds_label} | {ds_min} | {ds_typ} | {ds_max} | {unit} | {lsl} | {usl} | {comment} |"
+            f"| {param} | {ds_label} | {ds_min} | {ds_typ} | {ds_max} | {unit_display} | {lsl} | {usl} | {comment} |"
         )
 
     return "\n".join(lines)

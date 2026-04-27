@@ -6,6 +6,7 @@
 | 1.1 | 2026-04-13 | Updated diagrams and test stage descriptions | Jonathan Vanden Berk |
 | 1.2 | 2026-04-15 | Added product specifications and acceptance criteria | Jonathan Vanden Berk |
 | 1.3 | 2026-04-22 | Tightened USLs for MAG-IMG002x1-NC bad-row/bad-column (T0035) and PRNU global outliers (T0038), and added PROD/EM/reject bin classification to the pixel-array defect and hot-pixel/DSNU/PRNU outlier parameter descriptions | Jonathan Vanden Berk |
+| 1.4 | 2026-04-24 | Aligned MAG-IMG002x1-NC datasheet specifications with new datasheet rev 2.0 (April 2026): updated electro-optical typical values (conversion gain, SNR_MAX, DSNU, PRNU, DC, DCNU, read noise, saturation limit), added system gain (K) and column FPN (CFPN) rows, switched current-consumption test condition reference from FHD10 to FHD25, added the new datasheet pixel-array defect specifications table (section 7.5), removed the internal T0035/T0038 detailed parameter tables, refreshed all datasheet references in chapter 6, and extended the References chapter with traceability tables for the per-product test-plan documents and the GIT repositories holding each product's test-system software and Product specification and test Limits-file (pinned by repo, branch and last-touching commit on the Limits-file) | Jonathan Vanden Berk |
 
 ## Introduction & Scope
 
@@ -110,7 +111,7 @@ The table below lists all test procedures applicable to the MAG-IMG002x1-NC and 
 | VIL/VIH | Checks the input hysteresis of all digital input pins by sweeping the input voltage and observing the digital state transition. | | X | | |
 | VOL/VOH | Measures the low and high voltage of digital outputs at 1 mA load. | | X | | |
 | IOL/IOH | Measures the low and high level output current of digital outputs. | | X | | |
-| IDDD | Measures the current consumption of the DUT in multiple states, video modes, frame rates and test patterns. | FHD10/HD40/VGA50 | X | X | |
+| IDDD | Measures the current consumption of the DUT in multiple states, video modes, frame rates and test patterns. | FHD10/HD40/VGA50/FHD25 | X | X | |
 | Test buffer offset | Measures the offset of both test buffers on the test mux. | | X | X | |
 | Static signal test | Measures the voltage/current of certain internal signals. | | X | | |
 | PLL open-loop | Measures the open-loop frequency of the VCO while forcing the VCO voltage. | | X | | |
@@ -122,7 +123,7 @@ The table below lists all test procedures applicable to the MAG-IMG002x1-NC and 
 | Serial interface | Validates the SPI serial interface functionality. | | X | X | X |
 | Trim test | Trims each internal block (voltage reference, current reference) by sweeping trim codes and selecting the best-fit value. | | | X | |
 | Ramp gen trim | Trims the ramp generator circuitry to target voltage and slope values. | | | X | |
-| Frame modes | Validates the different video modes by capturing and verifying images. | FHD10/HD40/VGA50 | | | X |
+| Frame modes | Validates the different video modes by capturing and verifying images. | FHD10/HD40/VGA50/FHD25 | | | X |
 | Blackpixel readout | Tests the black reference pixel readout. | | | | X |
 | Optical init | Defines the exposure time range required for correct linear fitting in DC and PTC analysis, and measures light nonuniformity. | | | | X |
 | Optical defect map | Captures raw images to map bright/dead pixels, rows and columns. | | | | X |
@@ -139,10 +140,11 @@ The table below maps each test procedure to the datasheet parameters it verifies
 | :--- | :--- | :--- |
 | VIL/VIH | T0004 | TRIG_IN input threshold low, TRIG_IN input threshold high, TRIG_IN input hysteresis, RSTB input threshold (no hysteresis), SPI input threshold low, SPI input threshold high, SPI input hysteresis |
 | VOL/VOH | T0005 | SPI MISO output voltage (no load), VOH (no resistive load), VOL (no resistive load) |
-| IDDD | T0007 | VDDD current (active, FHD10 10-bit), VDDA+VDDIO+VD_RST current (active, FHD10 10-bit) |
+| IDDD | T0007 | VDDD current (active, FHD25 10-bit), VDDA+VDDIO+VD_RST current (active, FHD25 10-bit) |
 | Static signal test | T0010 | Bandgap reference voltage (VDD12BG) |
 | Frame modes | T0024 | Pixel output clock speed, Data output line speed |
-| Optical test processing | T0038 | Conversion gain, Responsivity, Temporal noise, Dynamic range, SNR_MAX, Dark current (DC), Dark current non uniformity (DCNU), Dark signal non uniformity (DSNU), Photo response non uniformity (PRNU) |
+| Optical defect map | T0035 | Number of dead pixels, Number of bright pixels, Number of bad columns, Number of bad rows, Distance between bad columns, Distance between bad rows |
+| Optical test processing | T0038 | Conversion gain, System gain (K), Read noise, Dynamic range, SNR_MAX, Dark current (DC), Dark current non uniformity (DCNU), Dark signal non uniformity (DSNU), Photo response non uniformity (PRNU), Column Fixed-Pattern Noise (CFPN), Saturation limit |
 
 #### MAG-CXP00002-NP (CXP Interface IC)
 
@@ -436,8 +438,8 @@ The key specifications for the Vision Series products are extracted from their r
 | Parameter | Datasheet Label | DS Min | DS Typ | DS Max | Unit | LSL | USL | Comment |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Current consumption** | | | | | | | | |
-| VDDD current (active, FHD10 10-bit) | I_VDDD | - | 205 | 1000 | mA | 20 | 300 | Max 1000 mA only at startup/reset |
-| VDDA+VDDIO+VD_RST current (active, FHD10 10-bit) | I_VDDA (combined) | - | 124 | - | mA | 20 | 150 | Split over 3 PSU channels, LSL, USL of VDDA is given here |
+| VDDD current (active, FHD25 10-bit) | I_VDDD | - | 205 | 1000 | mA | 20 | 300 | Max 1000 mA only at startup/reset |
+| VDDA+VDDIO+VD_RST current (active, FHD25 10-bit) | I_VDDA (combined) | - | 124 | - | mA | 20 | 150 | Split over 3 PSU channels, LSL, USL of VDDA is given here |
 | **Clocking and control signal thresholds** | | | | | | | | |
 | External clock reference | REFCLK | 10 | 20 | 40 | MHz | - | - | Fixed to 20MHz in test setup Hardware |
 | TRIG_IN input threshold low | TRIG_in_l | 0.74 | 1.07 | 1.4 | V | - | - | Pin is of type: rising edge triggered |
@@ -462,68 +464,35 @@ The key specifications for the Vision Series products are extracted from their r
 | Pixel size | - | - | 5um x 5um | - | - | - | - | Guaranteed by design |
 | Number of black rows | - | - | 64 | - | - | - | - | Guaranteed by design |
 | Shutter type | - | - | Rolling shutter | - | - | - | - | Guaranteed by design |
-| Full well charge | - | - | 94000 | - | e- | - | - | This is a design target, related to test parameter: saturation limit. This is tested only during characterization |
-| Conversion gain | - | - | 0.01 | - | mV/e- | 0.006 | 0.018 | - |
-| Responsivity | - | - | ??? | - | DN/p | 0.02895 | 0.04825 | - |
-| Temporal noise | - | - | 66 | - | e- | - | 120 | - |
+| Saturation limit | - | - | 107000 | - | e- | 40000 | - | Typical pre-irrad value. Related to design target full-well charge. Tested only during characterization |
+| Conversion gain | - | - | 0.012 | - | mV/e- | 0.006 | 0.018 | - |
+| System gain (K) | - | - | 0.0088 | - | DN/e- | 0.0055 | 0.0165 | 10-bit equivalent. K = conversion gain / ADC gain |
+| Read noise | - | - | 76 | - | e- | - | 120 | - |
 | Dynamic range | - | - | 62 | - | dB | 57 | 65 | - |
-| SNR_MAX | - | - | 49.5 | - | dB | 46 | 54 | - |
-| Dark current (DC) | - | - | ??? | - | e-/s/px | - | 2500 | - |
-| Dark current non uniformity (DCNU) | - | - | ??? | - | e-/s/px | - | 4000 | - |
-| Dark signal non uniformity (DSNU) | - | - | 587.2 | - | e- | - | 600 | - |
-| Photo response non uniformity (PRNU) | - | - | < tba | 2.5 | % of mean | -2.5 | 2.5 | - |
+| SNR_MAX | - | - | 50.3 | - | dB | 46 | 54 | - |
+| Dark current (DC) | - | - | 536 | - | e-/s/px | - | 2500 | Typical pre-irrad value (0 Gy TID, RT) |
+| Dark current non uniformity (DCNU) | - | - | 1596 | - | e-/s/px | - | 4000 | Typical pre-irrad value (0 Gy TID, RT) |
+| Dark signal non uniformity (DSNU) | - | - | 159 | - | e- | - | 600 | Measured after Column FPN (CFPN) correction |
+| Photo response non uniformity (PRNU) | - | - | 1.21 | - | % of mean | -2.5 | 2.5 | Measured after Column FPN (CFPN) correction at 50% dynamic range |
+| Column Fixed-Pattern Noise (CFPN) | - | - | 5.62 | - | DN | 5.175 | 7.075 | 10-bit equivalent. |
 | Color filters | - | - | BayerRG (Bayer RGGB) | - | - | - | - | Guaranteed by design |
 | Programmable features | - | - | Sensor parameters | - | - | - | - | Features are tested during characterization: Exposure time, sub-sampling, X-Y mirroring, ADC resolution |
 | ADC resolution | - | - | 10 and 12 bit | - | - | - | - | Guaranteed by design |
 | Interface | - | - | 10/12b parallel output | - | - | - | - | Fixed to 10b for all tests |
 | Cover glass lid | Corning 7980 0F | - | - | - | - | - | - | Guaranteed by design |
 
-The table below lists the pixel-array defect test parameters measured during test T0035: Optical defect map. Test limits are continuously refined based on statistical production data to ensure optimal quality and yield.
+The table below lists the pixel-array defect specifications published in the MAG-IMG002x1-NC datasheet (rev 2.0, section 7.5). These limits are applicable to pre-irradiation conditions and are the datasheet acceptance criteria used during production testing in test T0035 (Optical defect map). Magics also collects a broader set of internal pixel-defect parameters (e.g. cluster counts, bright/dead row & column counts) for process monitoring; those are not listed here as they are not part of the datasheet acceptance criteria.
 
-*Table: MAG-IMG002x1-NC Pixel-Array Defect Test Parameters (T0035)*
+*Table: MAG-IMG002x1-NC Pixel-Array Defect Specifications (Datasheet rev 2.0 section 7.5)*
 
-| Name | Unit | LSL | USL | Description |
+| Parameter | Unit | LSL | USL | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| Number of dead pixels | px | - | 50 | Dead pixel is a pixel that has unusually low positive or negative response when responding to light (also known as stuck-at pixel or negative gain pixel). Dead pixels from dead rows or columns are excluded from this count. |
-| Number of clusters with 2 dead pixels | cl | - | 50 | 2 neigbour dead pixels of same channel |
-| Number of clusters with >3 dead pixels | cl | - | 50 | 3 or more neigbour dead pixels of same channel |
-| Number of dead rows | rows | - | 5 | Dead row = 100 or more dead pixels in 1 row |
-| Number of dead columns | cols | - | 5 | Dead column = 100 or more dead pixels in 1 column |
-| Number of bright pixels | px | - | 50 | Bright pixel is a pixel that has unusually high value in dark condition. This can cover pixels with very high outlier values in the pixel DC histogram, or broken pixel/col/row with unusually high offset. Bright pixels from bright rows or columns are excluded from this count. |
-| Number of clusters with 2 bright pixels | cl | - | 50 | 2 neigbour bright pixels of same channel |
-| Number of clusters with >3 bright pixels | cl | - | 50 | 3 or more neigbour bright pixels of same channel |
-| Number of bright rows | rows | - | 5 | Bright row = 100 or more bright pixels in 1 columns |
-| Number of bright cols | cols | - | 5 | Bright column = 100 or more bright pixels in 1 columns |
+| Number of dead pixels | px | - | 50 | Dead pixel is a pixel that has unusually low positive or negative response to light (stuck-at or negative-gain pixel). Dead pixels from dead rows or columns are excluded from this count. |
+| Number of bright pixels | px | - | 50 | Bright pixel is a pixel with unusually high value in dark condition (high outliers in the pixel DC histogram, or broken pixel/col/row with unusually high offset). Bright pixels from bright rows or columns are excluded from this count. |
 | Number of bad columns | cols | - | 0 | Bad_col = dead_col + bright_col. USL = 0 for production (PROD) parts; parts with 1–5 bad columns are re-binned as engineering model (EM); >5 bad columns → part is rejected. |
 | Number of bad rows | rows | - | 0 | Bad_row = dead_row + bright_row. USL = 0 for production (PROD) parts; parts with 1–5 bad rows are re-binned as engineering model (EM); >5 bad rows → part is rejected. |
-| Distance between bad columns | cols | 5 | - |  |
-| Distance between bad rows | rows | 5 | - |  |
-
-The table below lists the electro-optical and pixel-array defect test parameters measured during test T0038: Optical test processing. Test limits are continuously refined based on statistical production data to ensure optimal quality and yield.
-
-*Table: MAG-IMG002x1-NC Electro-Optical Test Parameters (T0038)*
-
-| Name | Unit | LSL | USL | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| Typical system gain | DN/e- | 0.022 | 0.066 | System gain = conversion gain / ADC gain (in typ) |
-| Dark signal non uniformity (DSNU) local stdev | e- | - | 1500 | Describes offset variation between pixels in close proximity |
-| Column FPN without black row correction, global stdev | DN | - | - | Similar to DSNU but without column FPN reduction. In this case, pixel contribution will be much less than column contribution, as expected |
-| Column FPN without black row correction, local stdev | DN | - | - |  |
-| Number of DSNU global outliers | px | - | 50 | Describes the outliers in the offset histogram. USL = 50 for production (PROD) parts; up to 150 outliers accepted as engineering model (EM); >150 → part is rejected. |
-| DSNU global stdev, row contribution | e- | - | 600 |  |
-| DSNU global stdev, col contribution | e- | - | 600 | Useful to check if spatial variation is dominated by column or row |
-| Number of PRNU global outliers | px | - | 150 | Describes the outliers in the gain histogram. USL = 150 for production (PROD) parts; up to 1000 outliers accepted as engineering model (EM); >1000 → part is rejected. |
-| PRNU global stdev, row contribution | % of mean | -2.5 | 2.5 |  |
-| PRNU global stdev, col contribution | % of mean | -2.5 | 2.5 | Useful to check if spatial variation is dominated by column or row |
-| Hot pixels > criteria 1 | px | - | 1200 | These parameters can represent the tail part of DC histogram. Criteria 1: pixels with value > 5x average of pixels in ROI. USL = 1200 for production (PROD) parts; up to 5000 accepted as engineering model (EM); >5000 → part is rejected. |
-| Hot pixels > criteria 2 | px | - | 600 | Criteria 2: pixels with value > 10x average of pixels in ROI. USL = 600 for production (PROD) parts; up to 2500 accepted as engineering model (EM); >2500 → part is rejected. |
-| Hot pixels > criteria 3 | px | - | 5 | Criteria 3: pixels with value > 100x average of pixels in ROI. USL = 5 for production (PROD) parts; up to 20 accepted as engineering model (EM); >20 → part is rejected. |
-| Percentage of clusters with 2 hot pixels | % | 0 | 100 | cluster size of 2 pixel, because due to crosstalk we expect that hot pixels appear in groups of 2 |
-| Percentage of clusters with >3 hot pixels | % | 0 | 100 | to distinguish clusters due to pixel crosstalk or something else |
-| Photo response non uniformity (PRNU) local stdev | % of mean | -1 | 1.5 | Describes gain (light response) variation between pixels in close proximity |
-| Number of DSNU local outliers | px | - | 50 |  |
-| Number of column offset outliers without black correction | col | - | 50 |  |
-| Number of PRNU local outliers | px | - | 50 |  |
+| Distance between bad columns | cols | 5 | - | Only applicable for EM parts. |
+| Distance between bad rows | rows | 5 | - | Only applicable for EM parts. |
 
 ### MAG-CXP00002-NP (CoaXPress Serializer ASIC)
 
@@ -547,7 +516,7 @@ The table below lists the electro-optical and pixel-array defect test parameters
 | VIH (Video input high threshold) | VIH | 1.482 | 1.714 | 2.282 | V | 1.482 | 2.282 | - |
 | Hysteresis (Video) | Hysteresis | 309 | 387 | 593 | mV | 38 | 593 | - |
 | **Data rates** | | | | | | | | |
-| Parallel video data rate | DRin,par | - | - | 100 | MHz | pass/fail | | Functional test |
+| Parallel video data rate | DRin,par | - | - | 100 | MHz | pass/fail | - | Functional test |
 | **Crystal oscillator** | | | | | | | | |
 | Crystal frequency | fXTAL | 10 | 20 | 40 | MHz | 19.5 | 20.5 | - |
 | **CAM LDO outputs** | | | | | | | | |
@@ -605,14 +574,44 @@ The table below lists the electro-optical and pixel-array defect test parameters
 
 ## References
 
-*Table: Reference Documents*
+### Datasheets
+
+*Table: Datasheet Reference Documents*
 
 | Document Name | Version |
 | :--- | :--- |
-| MAG-IMG002x1-NC Datasheet | Rev. 1.2 (December 2025) |
-| MAG-CXP00002-NP Datasheet | Rev. 2.1 (November 2025) |
-| MAG-PSU00001-NP Datasheet | Rev. 0.5 (May 2025) |
-| MAG-VIS100xx-N Datasheet | Rev. 1.1 (November 2025) |
+| MAG-IMG002x1-NC Datasheet | Rev. 2.0 (April 2026) |
+| MAG-CXP00002-NP Datasheet | Rev. 2.2 (April 2026) |
+| MAG-PSU00001-NP Datasheet | Rev. 1.0 (April 2026) |
+| MAG-VIS100xx-N Datasheet | Rev. 1.2 (April 2026) |
+
+### Product test plans
+
+The detailed per-product production test plans listed below are internal Magics documents used as input for the present overview document. They define the device-under-test fixtures, equipment, pin-mapping, and the step-by-step test procedures that implement the test stages described in Chapter 3.
+
+*Table: Product Test Plan Documents*
+
+| Product | Test Plan Document | Revision |
+| :--- | :--- | :--- |
+| MAG-IMG002x1-NC | IMG002x1_test_plan_1v2.docx | Rev. 1.2 |
+| MAG-CXP00002-NP | mag-cxp-product-test-plan_1v2.docx | Rev. 1.2 |
+| MAG-PSU00001-NP | ProductTestDevelopmentMAG-PSU_test_plan_1v2.docx | Rev. 1.2 |
+| MAG-VIS100xx-N | MAG_VIS100XX_EVK_Modules_Test_Plan.docx | TBD |
+
+### Product specification and test Limits-file GIT traceability
+
+Each product has a dedicated GIT repository that contains the full software of the production test system used to test that product, including the test sequences, post-processing scripts and the Product specification and test Limits-file. The Limits-file holds the acceptance limits (LSL/USL) applied by the test system to decide pass/fail and binning of every device under test. It is the single source of truth used at run-time; any change to a limit is traceable through the commit history of this file. The repositories are hosted under the `magics-tech` GitHub organization (`https://github.com/magics-tech/<repo>`).
+
+The table below pins, per product, the repository hosting the test-system software, the active branch, the path to the Product specification and test Limits-file inside the repository, and the last commit that updated that file.
+
+*Table: Product specification and test Limits-file GIT Traceability*
+
+| Product | GIT repository (test-system software) | Branch | Limits-file path | Last commit on Limits-file | Commit date | Commit message |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| MAG-IMG002x1-NC | magics-tech/Vision-MEGACAM-python-sw | Product_tester | vision_megacam_python_sw/f_post_processing/check_limits.xlsx | 38774b6 | 2026-04-24 | Update Limits-file with new limit configurations for FPN correction |
+| MAG-CXP00002-NP | magics-tech/proxima-product-test-sw | master | sw/f_post_processing/check_limits.xlsx | 28f7e3e | 2026-01-21 | Update limits of M0103, M0133, M0135 and M0137 based on testing results of 22 parts. Set vref_ptat to force pass since this circuit shows unstable behavior but this can be waived since not used in application |
+| MAG-PSU00001-NP | magics-tech/DCDC-tester-python-sw | master | dcdc_tester_python_sw/f_post_processing/check_limits.xlsx | c76063b | 2026-03-23 | added condition to limit for V_PTAT |
+| MAG-VIS100xx-N | magics-tech/vision-evk-product-tester-python-sw | master | Not yet present in repo | - | - | Limits-file to be added once defined |
 
 ---
 

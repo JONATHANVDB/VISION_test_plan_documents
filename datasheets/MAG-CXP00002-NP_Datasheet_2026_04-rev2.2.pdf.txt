@@ -1,0 +1,2752 @@
+
+===== Page 1 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 1 
+ 
+ 
+Figure 1: MAG -CXP00002 -NP is packaged in a plastic QFN -64 
+package - including thermal pad . 
+1. Key performance parameters  
+• Core performance parameters  
+o Parallel -to-serializer interface  
+o CoaXPress  (CXP)  2.0 device side interface  
+o 1.25Gbps downlink communication  
+o 20Mbps uplink communication  
+• Additional features  
+o Programmable frame size and pixel depth  
+o Imager reset and trigger HW outputs  
+o 1.8V LDO output with up  to 10mA load 
+capa bility  (to supply  an imager)  
+o On-chip 1.2V LDOs  
+o GenICam  compliant  
+o 11 GPIOs  
+• Supplies and power consumption  
+o Single  3.3V supply operati on 
+o 272 mW typical power consumption  
+• Clocking options  
+o X-tal oscillator clock: 10-40MHz  
+o External reference clock : 10-40MHz  
+• Interfaces  
+o 12-bit parallel camera interface  (receiver)  
+o CoaXPress  (CXP) -compatible video interface  
+o 11 GPIOs for control/readback  
+▪ Built -in Master SPI functionality on  
+GPIO<10:7>  
+o Dedicated m aster SPI to control imager  
+• Operation temperature: -40 to 85 degC junction  
+• Radiation hardness:  
+o TID level: > 100Mrad  / 1MGy  (Si) 
+o SEL/SEU: >  60 MeV.cm²/mg * 
+* by design – not validated  
+• Package Info  
+o Plastic QFN -64 
+2. Applications  
+• CoaXPress  video streaming  
+• Machine vision / Surveillance  
+• Camera control  3. Description  
+The MAG -CXP00002 -NP is a camera interface ASIC that 
+support s harsh environment video transmission  over a 
+75-Ohm coax cable  for camera applications.  
+The MAG -CXP00002 -NP is a radiation -hardened  device -
+side CoaXPress  2.0 video transmission ASIC. The ASIC 
+supports downlink video streaming at 1.25Gbps  (CXP -1 
+mode)  and receives uplink control commands at 
+20.83Mbps , all over a single 75 -Ohm cable. In addition, 
+it also supports Power -over -Coax (PoC) and is 
+compatible with COTS CXP frame grabbers. For CXP 
+certified cables, the cable length can go above 100m in 
+the mode of operation  implemented (CXP -1). 
+The parallel input interface supports raw parallel pixel 
+data from an image sensor with up to 12b pixel depth 
+and is capable of interfacing different frame sizes and 
+frame rates.  
+MAG -CXP00002 -NP features a dedicated master SPI 
+interface to  communicate with an image sensor  chip , as 
+well as a secondary master SPI interface , allowing 
+communication to other  SPI slave devices, such as chips 
+from the Magics Motion Series . The serializer ASIC also 
+features imager control pins such as a RESET  signal  and 
+a TRIGGER  signal  and integrate s perfectly  with the 
+MAG -IMG001X1 -NC image sensor of Magics. The chip 
+set can form the heart of a camera system  and the 
+combination is fully GenICam  compliant.  From a user 
+point of view (e.g. CXP host) the chip set is seen as a 
+single device , because of the integrated register map 
+bootstrapping implemented in the serializer ASIC , 
+which holds a copy of the register map of the imager.  
+4. Simplified pinout diagram  
+Figure 2: Simplified pinout of MAG -CXP00002 -NP. 
+
+
+===== Page 2 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 2 
+ 
+A simplified pinout diagram of  MAG -CXP00002 -NP can be seen in  Figure 2 . The connection to the camera chip consists 
+of the 12 pins that receive data from the imager  chip (VIDEO_DATA<11:0>) and the synchronization signals  (i.e. 
+PIXEL_CLK_CAM, DATA_VALID_CAM, LINE_VALID_CAM  and FRAME_VALID_CAM). The serializer has a master SPI 
+dedicated for the imager , in addition to a reset signal RESET_CAM and trigger signal TRIGGER_CAM to control  the imager 
+chip. On the top row of the pins, there are 11 GPIOs pins that the user can  used  in different ways , such a s for a second 
+master SPI interface . The connection to the external clock crystal or the clock reference and the coaxi al cable leading to 
+the frame grabber are on the right side  of the chip  (XTALP/N, REF_CLK, TRXP/N). A 1.8V regulated power supply 
+VDD1V8_CAM and a 1.2V reference voltage VREF_CAM can be used to provide power and a voltage reference to the 
+imager , depending on the needs of the imager chip. Note that the VDD1V8_CAM pin cannot be used to drive the 1.8V 
+domain of the MAG -IMG001X1 -NC imager, as it cannot supply enough current.  
+The ASIC can be powered from a single 3.3V supply and power is given through multiple 3.3V pins. As there are several 
+on-chip LDOs, external decoupling is required to compensate the loop for these LDOs. Therefore, there are multiple 
+LDO pins on the chip as well.  
+5. Block Diagram  
+The block diagram in Figure 3  shows the main functional blocks of MAG -CXP00002 -NP. The VTOI, PTAT, VREF and IREF 
+form the biasing block, providing all other blocks with reference voltages and currents. The LDO_CAM and CAM_REF 
+provide a 1.8V power supply and a 1.2V reference voltage for the imager chip connected to MAG -CXP00002 -NP. The 
+clock reference block, containing an oscillator and buffer for an external clock reference form together with the PLL the 
+clock generation block, generating the required 125MHz and 1.25GHz on -chip clocks for the digital block and the 
+serializer. The serializer, low-voltage differential signalling  (LVDS ) driver and the hybrid block form the front -end block  
+which is  responsible for serializing the parallel data from the digital block and transmitting i t to a coaxial cable . In 
+addition, it takes care of receiving  the slow uplink communication data sent by the frame grabber to the serializer  via 
+the same  coax  cable. Finally, the digital block is responsible for deserializing the uplink communication, and the encoding 
+of the parallel data from the imager to be sent to the serializer. The digital block also houses SPI modules for slave and 
+master SPI interfaces , next to the GenICam  compliant register bank.  
+ 
+Figure 3: Top-level block diagram of MAG -CXP00002 -NP. 
+
+
+===== Page 3 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 3 
+ 
+6. Pin configurations and functions  
+ 
+Figure 4: Pinning diagram of MAG -CXP00002 -NP in a QFN -64 package  (top-view  with pins annotated  – dashed lines are at the 
+bottom side ). 
+The pin list and correspo nding place on the package is given in the table below and in the figure above, respectively. 
+Note that the picture is looked from at the top. The left upper pin of the QFN package is pin number 1. A proposal for 
+decoupling cap and external components is given in the last column of the table.  
+ 
+Table 1: Pin list, pin names and descriptions  
+PIN NAME  I/O Description  External components or connections  
+1 PIXEL_CLK_CAM  I Clock signal from imager   
+2 VIDEO_DATA_11  I Video data from imager   
+3 VIDEO_DATA_10  I Video data from imager   
+4 VIDEO_DATA_9  I Video data from imager   
+5 VIDEO_DATA_8  I Video data from imager   
+6 VIDEO_DATA_7  I Video data from imager   
+7 VIDEO_DATA_6  I Video data from imager   
+8 VSS Ground  Ground   
+9 VSS_DIG  Ground  Ground   
+10 VSS_DIG  Ground  Ground   
+11 VIDEO_DATA_5  I Video data from imager   
+12 VIDEO_DATA_4  I Video data from imager   
+13 VIDEO_DATA_3  I Video data from imager   
+14 VIDEO_DATA_2  I Video data from imager   
+15 VIDEO_DATA_1  I Video data from imager   
+16 VIDEO_DATA_0  I Video data from imager   
+17 MASTER_MISO_CAM  I Master SPI data input for 
+imager   
+18 MASTER_MOSI_CAM  O Master SPI data output for 
+imager   
+19 MASTER_SPI_CLK_CAM  O Master SPI clock output 
+for imager   
+20 MASTER_CSB_CAM  O Master SPI chip select 
+output for imager   
+
+
+===== Page 4 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 4 
+ 
+PIN NAME  I/O Description  External components or connections  
+21 TRIGGER_CAM  O Trigger signal for imager   
+22 RESET_CAM  O Reset signal for imager   
+23 LDO_DIG_OUT  Analog  DIG LDO output  Decoupling on pin 50.  
+24 SLAVE_MOSI  I Slave SPI data input  Ground if not used.  
+25 SLAVE_MISO  O Slave SPI data output   
+26 SLAVE_SPI_CLK  I Slave SPI clock input  Ground if not used.  
+27 SLAVE_CSB  I Slave SPI chip select input  Add pull -up resistor of 4.7kOhm for 
+correct operation  if not used.  
+28 RESETN  I RESET signal for chip   
+29 VDD2V5_OTP  Supply  OTP supply   
+30 VDD3V3_DIG  Supply  IO supply for DIG LDO   
+31 VDD3V3_ANA  Supply  IO supply for ANA LDO   
+32 LDO_OUT_ANA  Analog  ANA LDO output  1uF Murata GRM155C70J105KE11  
+33 LDO_OUT_ANA  Analog  ANA LDO output   
+34 VSS_ANA  Ground  Analog domain ground   
+35 TRXN  O  Driver output n  75 Ohm Coax cable with 56nF series cap  
+36 TRXP  O  Driver output p  75 Ohm termination  
+37 VSS_ANA  Ground  Analog domain ground   
+38 VDD3V3_CAM  Supply  IO supply for CAM LDO   
+39 VREF_CAM  Analog  CAM reference output  10nF external cap  
+40 LDO_CAM_OUT  Supply  CAM LDO output  1uF Murata GRM155C70J105KE11  
+41 LDO_VCO_OUT  Analog  VCO LDO output   
+42 REF_CLK  I  Reference clock input  Note: internal 330 Ohm load!  
+43 XTALN  I Crystal input n   
+44 XTALP  I Crystal input p   
+45 LDO_OUT_PLL  Analog  PLL LDO output  100nF Murata GRM155R70J104KA01  
+46 LDO_OUT_BIAS  Analog  BIAS LDO output  100nF Murata GRM155R70J104KA01  
+47 VDD3V3_PLL  Supply  IO supply for PLL LDO   
+48 OSC O Clock reference for 
+external use  (e.g. imager)   
+49 VDD3V3_DIG  Supply  IO supply for DIG LDO   
+50 LDO_DIG_OUT  Analog  DIG LDO output  100nF Murata GRM155R70J104KA01  
+51 GPIO_0  I/O General purpose 
+IO/SPI_CSB7  Optional pull -up or pull -down resistors  
+52 GPIO_1  I/O General purpose 
+IO/SPI_CSB6  Optional pull -up or pull -down resistors  
+53 GPIO_2  I/O General purpose 
+IO/SPI_CSB5  Optional pull -up or pull -down resistors  
+54 GPIO_3  I/O General purpose 
+IO/SPI_CSB4  Optional pull -up or pull -down resistors  
+55 GPIO_4  I/O General purpose 
+IO/SPI_CSB3  Optional pull -up or pull -down resistors  
+56 GPIO_5  I/O General purpose 
+IO/SPI_CSB2  Optional pull -up or pull -down resistors  
+57 GPIO_6  I/O General purpose 
+IO/SPI_CSB1  Optional pull -up or pull -down resistors  
+58 GPIO_7  I/O General purpose 
+IO/SPI_CSB0  Optional pull -up or pull -down resistors  
+59 GPIO_8  I/O General purpose 
+IO/SPI_CLK  Optional pull -up or pull -down resistors  
+60 GPIO_9  I/O General purpose 
+IO/SPI_MOSI  Optional pull -up or pull -down resistors  
+61 GPIO_10  I/O General purpose 
+IO/SPI_MISO  Optional pull -up or pull -down resistors  
+62 FRAME_VALID_CAM  I Frame valid from camera   
+63 LINE_VALID_CAM  I Line valid from camera   
+64 DATA_VALID_CAM  I Data valid from camera   
+65 Thermal Pad  Ground    
+
+===== Page 5 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 5 
+ 
+7. Specifications  
+7.1 Absolute maximum ratings  
+Name  Description  Min Max  Unit  
+VDD3V3_DIG,  
+VDD3V3_PLL,  
+VDD3V3_ANA  
+VDD3V3_CAM  IO supply voltages  
+-0.3 3.80  V 
+LDO_OUT_DIG, LDO_OUT_PLL, 
+LDO_OUT_BIAS,  
+LDO_OUT_ANA  LDO outputs for core voltage. Can be used to externally provide 
+core voltage too, if needed.  -0.3 1.38  V 
+VDD1V8_CAM  LDO output for the camera chip  -0.3 3.8 V 
+VDD1V2_CAM  Voltage reference for the camera chip  -0.3 1.38  V 
+GPIO_10…GPIO_0  11 GPIO pins  -0.3 3.80  V 
+VIDEO_DATA_11…VIDEO_DATA_0  Data input from camera chip  -0.3 3.80  V 
+FRAME_VALID_CAM, 
+LINE_VALID_CAM, 
+DATA_VALID_CAM  Frame/Line/Data valid from camera chip  
+-0.3 3.80  V 
+PIXEL_CLK_CAM  Clock signal from camera chip  -0.3 3.80  V 
+OSC Clock reference for the camera chip  -0.3 3. 80  V 
+XTALP/XTALN  Crystal interface  -0.3 1.38  V 
+REF_CLK  Clock reference for the serializer chip  -0.3 3. 80  V 
+TRXP/TRXN  Downlink/Uplink interface  -0.3 1.38  V 
+SLAVE_SPI_CLK, SLAVE_MOSI, 
+SLAVE_MISO, SLAVE_CSB  Slave SPI interface  -0.3 1.38  V 
+MASTER_SPI_CLK_CAM, 
+MASTER_MOSI_CAM, 
+MASTER_MISO_CAM, 
+MASTER_CSB_CAM  Master SPI interface for the camera chip  
+-0.3 1.38  V 
+RESET_CAM  Reset for camera chip  -0.3 3. 80  V 
+TRIGGER_CAM  Trigger for camera chip  -0.3 3. 80  V 
+RESETN  Serializer chip reset  -0.3 3. 80  V 
+Tj Junction temperature  -55 175 °C 
+Tstorage  Storage temperature  -55 50 °C 
+ 
+7.2 Recommended operating conditions  
+Description  Min Typ Max  Unit  
+VDD3V3_DIG/ANA/PLL/ CAM  2.97  3.3 3.63  V 
+VDD1V8_CAM  1.62 1.8 1.98  V 
+VDD1V2_DIG/ANA/PLL/BIAS  1.08  1.2 1.32  V 
+GPIO<10:0>  2.97 /1.08  3.3/1.2 3.63 /1.32  V 
+Parallel video interface ( DV<11:0>, FVAL, DVAL, LVAL, PCLK ) 2.97  3.3 3.63  V 
+Master/Slave SPI  2.97/1.08  3.3/1.2  3.63/1.32  V 
+XTAL  1.08  1.2 1.32  V 
+Operation temperature  (junction temperature)  -40 - 85 °C 
+ 
+7.3 Electrical characteristics  
+Label  Parameter  Test conditions  Min Typ Max  Unit  
+Current consumption  
+IVDD3V3_TOTAL_AVG  3.3V total supply rail current average   - 82.35  - mA 
+IVDD3V3_DIG_AVG  3.3V digital supply rail current average   14.45  18.6  28 mA 
+IVDD3V3_ANA_AVG  3.3V analog supply rail current average   - 49.8  - mA 
+IVDD3V3_PLL_AVG  3.3V pll supply rail current average   - 13.93  - mA 
+Power consumption  
+ Total power consumption   - 271.55  - mW 
+Logic level inputs for SPI  
+VIL Input low voltage threshold   390 470 635 mV 
+VIH Input high voltage threshold   443 550 715 mV 
+
+===== Page 6 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 6 
+ 
+Label  Parameter  Test conditions  Min Typ Max  Unit  
+Hysteresis  Hysteresis of the SPI input levels   38 80 117 mV 
+Logic level inputs for GPIO<10:0>, dv11:0>, lval, fval, dval, pclk  
+VIL Input low voltage threshold   390 470 635 mV 
+VIH Input high voltage threshold   443 550 715 mV 
+Hysteresis 
+window    38 80 117 mV 
+Logic level inputs for DV<11:0>  
+VIL Input low voltage threshold   1.147  1.328  1.689  V 
+VIH Input high voltage threshold   1.482  1.714  2.282  V 
+Hysteresis    309 387 593 mV 
+Data rate for DV<11:0>  
+DR in,par parallel video data rate   - - 100 MHz  
+Data rate for transceiver output TRXP and TRXN  
+ZL Transceiver load   - 75 - Ω 
+DR down downlink data rate   - 1.25  - Gbps  
+DR up uplink data rate   - 20.833  - Mbps  
+Crystal oscillator  
+fXTAL Xtal frequency   10 20 40 MHz  
+CAM signals  
+V_VDD1V8_CAM  Supply voltage to supply 1.8V to 
+external imager   1.7 1.8 1.9 V 
+I_VDD 1V8_CAM  Load current which can be sourced 
+from the VDD1V8_CAM pin.     10 mA 
+V_VDD1V2_CAM  Reference voltage which could be used 
+by an imager   1.15  1.2 1.25  V 
+  
+
+===== Page 7 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 7 
+ 
+8. Detailed description  
+In the next sections the operation of the device together with the different features is described in more detail.  
+8.1 Power -on-sequence  
+The chip can be powered from a single 3.3V supply. After pow ering the chip and after releasing the reset , a device 
+discovery is  typically  initiated by the CXP h ost (i.e. frame grabber)  and consists of the following tasks:  
+• Match Device transmitter and Host receiver bit rates to obtain register access.  
+• Discover Devices and the connection topology.  
+• Negotiate the CoaXPress  version to use  (CXP v2.0 is implemented, but it is compatible with lower versions) . 
+• Detect the high speed up -connection (not supported in this version of the standard  – fixed at 20.83Mbps ). 
+• Negotiate maximum packet sizes.  
+• Set the connection speed after reading ConnectionConfigDefault  . 
+Any link reset issued either in this device discovery sequence or by the user  (Address 0x4000)  triggers the bootstrap 
+FSM module  and resets the connected imager for a selected delay.  The bootstrap FSM module is responsible for 
+synchronizing the registers of MAG -CXP00002 -NP and the connected imager. From a user point of view, it seems that 
+the chip set (imager and serializer) is a single device, sharing a single register map.  More information can be found in 
+section 9.2 when used in combination with the Magics Full HD imager MAG -IMG001X1 -NC. 
+ 
+8.2 Parallel v ideo  input  interface  
+ 
+Figure 5: Video interface for MAG -CXP00002 -NP. 
+ 
+A typical image sensor connection scenario of the MAG -CXP00002 -NP is shown above in Figure 5  using the Magics MAG -
+IMG001X1 -NC image sensor  chip as the imaging device. The interface between the camera chip and the serializer 
+consists of the parallel data of the captured image (DV _x<11 :0> or VIDEO_DATA< 11:0>), the data/line/frame valid 
+signals ( DVAL, LVAL, FVAL or DATA_VALID_CAM, LINE_VALID_CAM, FRAME_VALID_CAM ), the PIXCLK clock from the 
+imager  chip for synchronization and sampling of the  input signals from the imager  chip , an SPI interface for 
+communication and a reference clock and trigger output going from the serializer to the imager  chip.  
+ 
+
+
+===== Page 8 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 8 
+ 
+ 
+Figure 6: Timing diagram for the video interface between serializer and camera chip . 
+ 
+The t iming diagram in Figure 6  the signals  between the imager  chip and the serializer. The pixel data  clock PCLK  provides 
+the means to sample the data and the edge with which the serializer samples the incoming data can be changed if 
+necessary.  For the latter it is referred to register.  The FVAL  signals that a frame is still being read out, while the LVAL  
+and DVAL  signals are active while a line respectively  a pixel is being read out.  
+8.3 CXP interface  
+ 
+Figure 7: CXP interface between MAG -CXP00002 -NP and a frame grabber . 
+ 
+The CXP interface is depicted in Figure 7 . The device side, consisting of the imager  chip and the serializer MAG -
+CXP00002 -NP is connected to the host side (frame grabber) via a 75 Ohm coaxial cable according to the CoaXPress  2.0 
+standard.  As the LVDS driver of MAG -CXP00002 -NP has a differential output, only one output pin, TRXN is connected to 
+the coaxial cable, while the other output pin is locally terminated on the PCB using a 75 Ohm resistance. The decoupling 
+capacitors Cd are chosen to the values provided by the CoaXPress  2.0 standard documentation according (56nF in our 
+case). If required, P oC can be applied on TP3 to supply  the device side with power. In this case, a P oC filter is also added 
+on TP2, while the serializer chip should switch to the baseline wandering filtered uplink mode to correctly read the data 
+from the host side.  Note that commercial frame grabbers always implement such PoC feature on the host side. However, 
+the default PoC voltage defined by the standard is 24V. Note that Magics’ DC/DC converters (MAG -PSU00001 -NP) 
+cannot handle such high voltage and are limited to  11V max at their input.  
+8.4 Master SPI  interface  
+Two serial Peripheral interface ( SPI) Masters  are provided where the first one is connected to the imager ’s slave 
+interface for synchronizing MAG -CXP00002 -NP registers to the imager's registers and program its registers through 
+uplink commands sent from the frame grabber. The  second SPI master is sharing the GPIO pins when enabled and is 
+used to control an external ASIC having an SPI slave interface.  
+The main features of the instantiated SPI master are:  
+− The SPI mode is fixed to mode 0, other modes are not supported. This means:  
+o The idle clock level is 0  
+o Serial data is captured on the rising edge  
+
+
+===== Page 9 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 9 
+ 
+o Serial data is updated/launched on the falling edge  
+− A runtime configurable transaction size in bits up to 64 bits.  
+− A runtime configurable clock frequency  
+8.4.1 Imager Master SPI  
+This SPI master is dedicated to the imager connected to it. The control of the master is taken  care of  by the bootstrap 
+FSM, which ensures that all configuration data ends up at the imager, and that all necessary information to configure 
+itself, is read from the imager. The latter ensures that the serializer works together properly with the imager . More 
+information can be found in section 9.2. 
+For the  SPI master connected to the imager, the default clock frequency is 20.83Mhz. However, the frequency can be 
+adapted through the register ‘VendorUniqueBootstrapFSM_spi_master_clock_divider ’. 
+8.4.2 General purpose Master SPI  
+As mentioned above, a second master SPI is implemented on the chip, and the IO pins  for the  hardware  interface are 
+shared with the GPIO pins. The GPIO pins to be used for the general purpose master SPI are listed in section 6, i.e. pins 
+58 to 61  (SPI_CSB0, SPI_CLK, SPI_MOSI, SPI_MISO) . The rest of the GPIO pins could also be used as SPI chip selects, 
+which means that you can connect up t o 8 different slave SPI devices to the GPIO pins.  To enable the master SPI 
+functionality on the GPIO pins, please set register bit ‘VendorUniqueSPIGPIO_spi_enable’. Note that also the clock 
+frequency of the general purpose master SPI can be selected, but by the register ‘VendorUniqueSPIGPIO_divider’ . 
+Default frequency is 62.5  MHz , because the ‘VendorUniqueSPIGPIO_d ivider’ value is set to a default 0 . 
+The transaction size of the SPI command can be chosen with the register ‘VendorUniqueSPIGPIO_transaction_size’  and 
+can be up to 64 bits.  The slave to be selected is to be  defined  in register ‘VendorUniqueSPIGPIO_ssel’ . The data to be 
+sent to the slave needs to be written in ‘VendorUniqueSPIGPIO_data_mosi’  (note: 2 32 -bit registers – address 0xd440 
+and 0xd44 8). The data that will be received from the SPI is to be found back in register  
+‘VendorUniqueSPIGPIO_data_miso’  (note: 2 32 -bit registers – address 0xd 44c and 0xd450 ). If a SPI command needs to 
+be initiated, the above settings need to be set before initiating the SPI access. The latter can be done by writing a 1 to 
+the register ‘VendorUniqueSPIGPIO_trigger’ . This field is automatically reset to 0  afterwards . To monitor  if the 
+transaction is still busy, the register ‘VendorUniqueSPIGPIO_busy’  could be read  and equals 1 if a transaction is busy.  
+Note that this general purpose Master SPI is to be controlled through CXP up -link commands and as a result, the 
+remaining bandwidth for these commands depend on the selected video mode and corresponding frame rate and data 
+load . This means that the rate/speed of writing and reading SPI data can depend on the video mode selected. As a result, 
+Magics advises to not use this SPI interface to be integrated in control loops which require accurate timing, such as 
+motor control loops. For the latter, Magics advise s to use the BiSS communication chips from the Motion Series.  
+8.5 GPIO s and programmability  
+The GPIOs implementation is compliant with the GenICam /IIDC2 standard  (see Figure 8 ). The GPIO pins are also shared 
+with an SPI master interface . The SPI master functionality is described in the previous section. This section covers the 
+GPIO control. As mentioned, Figure 8  below gives an overview of the block diagram of the normal DigitalIOControl for 
+each I/O line.  However, we do not implement all features as are depicted in the figure. Referring to Figure 8, we do not 
+implement the TriggerSource  and TimerTriggerSource  blocks.  
+By default,  all the GPIOs are set to input.  This could be changed  to an output  in register  ‘IOLineModeAll_Value ’. In 
+addition, the ‘ IOLineSource_Value ‘ register needs to be set to 32 when a GPIO is set as an output. The polarity of the 
+GPIO could be changed by setting the register ‘IOLineInverterAll_Value’ to 1. Note that each of these registers  are 11 bit 
+wide to control each corresponding GPIO.   
+To read the input from a GPIO, please refer to the register ‘IOLineStatusAll_Value’ . To drive the output of a GPIO pin, 
+please refer to register ‘IOUserOutputValueAll_Value’.  Additionally, there is the functionality to connect internal source 
+signals to an IO line . Please refer to registers ‘IOLineSelector_Value ’ and ‘IOLineSource_Value’  for this functionality.  
+
+===== Page 10 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 10 
+ 
+ 
+Figure 8: GPIO interface  (for GPIO0)  and functionality  [IIDC2 Digital Camera Control Specification  
+Version 1.2.0] . 
+On top of this control interface  it is again worth to mention that also  additional  muxes are added to use the same 
+interface for the SPI master (as explained in the previous section ). 
+ 
+8.6 Test Pattern Generator  
+MAG -CXP00002 -NP has an on -chip test pattern generator responsible for generating test images and the required sync 
+signals (FRAME_VALID, DATA_VALID and LINE_VALID) independently of the imager connected to it.  This allows to test 
+the internal functionality  and cable transmission, without connecti ng an actual imager to it.  The images generated from 
+this test pattern generator are defined by the GenICam  standard, in addition to some vendor -specific images. The 
+selection of the image is done through the TestPattern_Value  register (0x101fc). The table below gives an overview of 
+the different supported patterns.   
+
+
+===== Page 11 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 11 
+ 
+Table 2: Overview of test patterns that can be generated.  
+TestPattern_Value  Image type  
+0 No test image, image from the pixel array  
+1 Black test image  
+2 White test image  
+3 Grey55 test image  
+4 GreyAA test image  
+16 GrayHorizontalRamp  
+17 GrayVerticalRamp  
+48 ColorBar  
+49 GreyScaleChart  
+120 VendorSpecific0 test image  
+121 VendorSpecific1 test image  
+122 VendorSpecific2 test image  
+123 VendorSpecific3 test image  
+124 VendorSpecific4 test image  
+125 VendorSpecific5 test image  
+ 
+The test patterns from the standard can be found back in the standard, and their names are in principle self -descriptive.  
+For the VendorSpecificx patterns, an overview can be found below:  
+• VendorSpecific0 : consists of 6 regions. The top starts with white (w) followed with black (b) . This is followed 
+by "wbwb" . 
+• VendorSpecific1 : consists of 6 regions . The top starts with black , followed by "wbwbw" . 
+• VendorSpecific2 : consists of 8 regions. The top starts with black followed by "wbwbwbw".  
+• VendorSpecific3 : consists of 8 regions. The top starts with black followed by 6 gray values with top being most 
+black -like and bottom being most white -like. The bottom most region is white.  
+• VendorSpecific4 : starts with black and switches between black and white every two pixels.  
+• VendorSpecific5 : test image is a running counter. This is a test image which is showing the number of the 
+frame. As such it is a moving image.  
+This test pattern generator supports extra control setting to manipulate the test image. In addition to the selection of 
+the patterns the user can also cho ose between different image sizes, pixel size and other control settings listed in the 
+table below : 
+Table 3: Additional configurations for the test pattern generation.  
+Register  Image type  
+TestPattern_Value  See previous table  
+select_endian  MSB/LSB bit order swap  
+test_pattern_rst_cnt  Reset of the running counter in the test image  
+ReverseX_Value  Image reversing in the X direction.  
+ReverseY_Value  Image reversing in the X direction.  
+
+===== Page 12 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 12 
+ 
+PixelSize_Value  10 or 12 bits pixels  
+ImageSize_Width  Image width register  
+ImageSize_Height  Image width register  
+ 
+8.7 GenICam  compliance  and bootstrap FSM  
+The register map of MAG -CXP00002 implements the main bootstrap registers required from the CXP ( /GenICam ) 
+standard  in addition to  all the other registers needed for analog configuration and trimming . The latter are not accessible 
+by the customer and will be programmed by Magics by means of on -chip OTP eFuses.  Next, t he extra interfaces of the 
+digital blocks  such as the GPIOs  are implemented according to the IIDC 2 standard wherefrom the entry point can be 
+found at the address 0x1C. Section 11.1  gives an overview of all the registers used in the ASIC  which are accessible to 
+the customer .  
+The on -chip bootstrap FSM is responsible for the synchronization of the important settings between the serializer ASIC 
+and any external imager that is compliant with  the GenICam  standard (e.g. MAG -IMG001X1 -NC). This guarantees an 
+alignment between configuration settings such as image size, image format pixel format,  mirroring features, Bayer 
+pattern configuration,  etc. The bootstrap FSM takes care of transferring the right configuration data to the externally 
+connected imager, while also reading back the se ttings to be used in his own register. This is done by means of the 
+dedicated SPI master. It also means that the user seems to be communicating to one device only and is blind for all the 
+action happening in the bootstrap FSM.  Note that GenICam  compliance of the image sensor is mandatory to have the 
+mechanism functioning correctly.  More information on how this copying mechanism works in application when an 
+imager is connected, can be found in section 9.2. 
+8.8 Debug SPI slave interface  
+There is a debug SPI slave interface implemented , which in principle should not be used by the customer , but could be 
+used for debugging . Therefore , for completeness, it is described here. The SPI slave interface is used as a debug interface 
+for accessing the different registers of the regbank of MAG -CXP00002 -NP and is totally independent of the system clock. 
+It is a 96 -bits SPI transaction that is o perating in mode 0, which means: the serial data is captured on the rising edge and 
+launched on the falling e dge of the SPI clock.  
+An SPI frame for the debug interface contains 96 bits, which are according to the table below.  
+Table 4: SPI slave frame format  
+Bits [95:64]  [63:48]  [47:16]  [15:0]  
+Field Name  Address  Force + Read Synchronization  Data  Write Synchronization  
+MOSI  Address[31:0]  Force[15:0]  Write Data[31:0]  RNW[15:0]  
+MISO  0 0 Read Data[31:0]  0 
+ 
+Notes : 
+o In case of a read, the SPI transaction could be aborted after the Data field. Resulting in an SPI frame of only 64 
+bits.  
+o Write Synchronization: Similar to the Force field, only the first bit of the field is evaluated  (bit [15]) . But for 
+simplicity in case of a read , all bits [15:0] could be set to 1, or in case of a write , all bits [15:0] can be set to 0.  
+The reaso n to have 16 RNW  bits is for synchronization purposes.  
+o IMPORTANT: When Debug Slave SPI interface is not used, make sure to connect pins correctly  (see Table 
+1). It is important to a dd a pull-up resistor of 4.7kOhm  to the SLAVE_CSB pin  for correct operation!   
+
+===== Page 13 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 13 
+ 
+9. Typical applications  
+9.1 Application with a generic camera chip  and a frame grabber  
+MAG -CXP00002 -NP is a radiation tolerant camera interface. The following design is an exemplary application of MAG -
+CXP00002 -NP. 
+ 
+Figure 9: Application scenario for the MAG -CXP00002 -NP. 
+ 
+The MAG -CXP00002 -NP provides the connection between the frame grabber and the camera chip. All captured  image 
+data is sent in a parallel bus to the serializer, along with the frame/line/data valid signals required to proper acquisition  
+of individual pixel/line or entire frame data. Along with these signals, the pixel clock used in the camera chip is also se nt 
+to the serializer to provide a means for data sampling. According to the GenICam  standard, both chips are treated as a 
+single device from the point of view of the user and thus both can be programmed through a single uplink channel that 
+shares the same coaxial cable as the downlink communication between the serializer and the frame gr abber. The 
+properties of uplink , downlink , driver  and hybrid circuits  that handle them are set according to the CXP 2.0 standard. 
+Serialized and encoded video data is sent via the coaxial cable to the frame grabber, while  any configuration of either 
+the MAG -CXP00002 -NP serializer or the camera chip is sent by the frame grabber via the same coaxial cable to the 
+serializer chip. When necessary, the device side can also be powered using the same coaxial cable as the one used for 
+up- and downlink.  
+Table 1  lists the requirements for the external components that need to be connected to the pins seen in Figure 9 . The 
+sub-sections below will  provide further details on the connections between the serializer, the camera and the frame 
+grabber.  
+9.1.1 Connection to the power supplies  
+The serializer chip only requires 3.3V supplies, which power internal LDOs which in turn generate the 1.2V core level 
+voltage. The LDO outputs (LDO_DIG_OUT, LDO_ANA_OUT, LDO_PLL_OUT, LDO_BIAS_OUT) are to be connected to 
+external capacitors for stability (f or capacitance values, refer to  Table 1 ). These pins can also be used, if necessary, to 
+override the internally generated 1.2V of the LDOs. Next to a few dedicated ground pins, most of the chip  grounds are 
+
+
+===== Page 14 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 14 
+ 
+connected to the thermal pad of the QFN -64 package that houses MAG -CXP00002 -NP. The LDO_OUT_CAM and 
+VREF_CAM are not required for the internal use  of the serializer but instead serve as power supply and voltage reference 
+for the camera chip, respectively . The OTP power supply VDD2V5_OTP is only needed when burning the OTP fuses and 
+needs to be grounded in normal application . 
+9.1.2 Connection to the camera chip  
+The parallel data from the camera chip is received via the pins VIDEO_DATA  11 to 0. Additionally, the pins 
+PIXEL_CLK_CAM, DATA_VALID_CAM, LINE_VALID_CAM and FRAME_VALID_CAM are also connected to the camera chip. 
+The diagram seen in Figure 6  can serve as an example on the timing of these signals.  
+The master SPI (MASTER_MOSI_CAM, MASTER_MISO_CAM, MASTER_SPI_CLK_CAM, MASTER_CSB_CAM) is the 
+dedicated configuration  interface between the serializer and the camera and can be used to configure the camera chip. 
+More information on how to communicate with the camera device via ProximaV2 according to the GenICam  standard 
+can be found under section 8.7 and in the appendix.  
+In addition to the pin s used for transferring data between the serializer and the camera chip, MAG -CXP00002 -NP also 
+provides a 1.8V  regulated power supply (VDD1V8_CAM) and a 1.2V constant voltage reference (VREF_CAM) to the 
+camera chip it is connected to . However, note that the VDD1V8_CAM supply  can only deliver up to 10mA and is 
+therefore not  suitable for Magics’ imager MAG -IMG001X1 -NC. A pin for externally triggering and resetting the camera 
+chip can also be found at TR IGGER_CAM and RESET_CAM, respectively.  
+9.1.3 Connection to the host  
+The connection between the MAG -CXP00002 -NP and the frame grabber is a coaxial cable with a characteristic resistance 
+of 75 Ω according to the CoaXPress  2.0 standard. This cable is connected to pin TRXN, while TRXP is terminated locally 
+on the PCB using a 75 Ω resistance . In case the P oC option is used , DC voltage sources and P oC filters can be connected 
+at the host and the device side, respectively. More information on this can be found under section 8.3.  
+9.1.4 Connection to the clock  
+The clock reference circuit providing the input to the PLL supports either an external quartz oscillator connected to pins 
+XTALN and XTALP or an external clock directly connected to the pin REF_CLK. The latter option could provide a better 
+1/f noise perfor mance. The connected clock signal can be either a sine or square wave and can have amplitudes between 
+1.2V -3.3V since the signal can be resistively divided. The input divider of the PLL itself can function with frequencies 
+between 10 -40MHz. The default ext ernal clock signal should be at 20MHz.   
+Important note -1: the user can only one of the two options! If the XTAL oscillator functionality is used, the REF_CLK 
+input pins needs to be grounded, to avoid any disturbance. Vice versa if the REF_CLK input pin is used to supply an 
+external reference clock of 20 MHz.  
+Important note -2: the REF_CLK input is internally loaded with a 330 Ohm resistive divider.  
+9.1.5 Optional connections  
+The serializer chip also has 11 GPIO pins in the top row of the package and 4 pins for a slave SPI interface that was 
+implemented for debugging purposes and normally do not need to be used by the customer.  
+9.2 Operating the serializer  together with an image r 
+The MAG -CXP00002 -NP serializer ASIC can in principle be used to interface with any imager which sends out parallel 
+video data, as described in section 8.2. When it is GenICam  compliant, it really integrates seamlessly, because then the 
+chip set can be considered as a single device from a user point of view. The latter is the case when the serializer is 
+interfaced with the Magics Full HD imager product MAG -IMG001X1 -NC. As is already depicted in section 8.2, the 
+functionality to reset and trigger the imager with hardware pins is already foreseen by the serializer. The register maps 
+of both products are built in such a way that they interface perfectly by the use of the bootstrap FSM integrated in the 
+serialize r. 
+At the start -up of the devices, when connected to a CXP host/frame grabber, after a proper  connection  detection  and 
+setup,  a connectionReset  is initiated  (see section 8.1). This means that the imager is reset by the serializer through the 
+RESET_CAM pin. After that, the host will come and read the serializer to identify where all imager configuration registers 
+
+===== Page 15 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 15 
+ 
+can be found. This is done by reading all the ‘IIDC2EntryImager_*’  addresses, starting from address 0x6030 in the 
+register map of the serializer. These register s hold the relative address to IIDC2EntryImager  section (0x6030)  of each 
+corresponding section  of the registers which are implemented . If there is no imager connected to it, it holds the address 
+of the corresponding sections in the serializer itself. If there is an imager connected to it, it holds the addresses of the 
+address space in the serializer register map which holds a copy of the register map of the imager connected to it. This 
+address space starts at address 0x1000_0000.  
+When an imager is detected correctly, the bootstrap FSM goes reading all the required configuration settings from the 
+imager. Examples are the imager size, the bit depth, the color mode, etc. In general: the register map of the imager will 
+be memory mapped  into the address space of the serializer.  This is depicted in Figure 10 .  
+ 
+Figure 10: Memory  mapping between the imager and the serializer.  
+When a register in the address space 0x1000_0000 is addressed  by the user , the serializer knows which corresponding 
+address to access in the imager to write or read the right data in the imager. So a ny access to this address range will 
+initiate an SPI transaction to the imager through the dedicated imager master SPI. When the synchronization block 
+notices that a setting is changed that also the serializer needs to be aware of, the setting is also copi ed to the internal 
+registers of MAG -CXP00002 -NP. This results in the case that the user only needs to know of one register map, i. e. the 
+one from the serializer.   
+When a COTS frame gabber (CXP host) is used which implements the GenICam  standard, all of this is actually invisible 
+to the customer. The frame grabber will come and read the address for each configuration setting  
+(‘IIDC2EntryImager_*’ ) and will from then on use these configuration setting addresses. In the case of a custom  
+implementation, it is however important to understand the mechanism. An example of an address access to the register 
+map is given below.  
+Assume the user want to modify the width of the imager (cfr. ‘ImageSize_Width’ ). This configuration register is present 
+at address 0x7398 in the  MAG -IMG001X1 -NC imager. After start -up, this register is however copied to the serializer  at 
+address  0x1000_1398 , since the address 0x6000 in the imager corresponds to the address 0x1000_0000 in the serializer:  
+ 0x7398 – 0x6000 + 0x1000_0000 = 0x1000_1398  
+So if the user wants to access this register in the imager, he needs to access register 0x1000_1398 in the serializer, and 
+the serializer will take care of the rest.  
+  
+
+
+===== Page 16 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 16 
+ 
+10. Package information  
+10.1 Plastic QFN -64 
+The selected package is a  molded  QFN -64 with a dimen sion of 9x9m. A mechanical drawing of the package can be found 
+below . For the pinout it is referred to section 6. 
+ 
+ 
+Figure 11: Mechanical drawing of the selected QFN -64 package.  
+ 
+  
+
+
+===== Page 17 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 17 
+ 
+11. Register bank  
+The register bank is built in such a way that it supports the GenICam  and IIDC2 standard when assembling the serializer 
+in a camera. When used as a chip set with the imager product MAG -IMG001X1 -NC, a full GenICam  and IIDC2 compliant 
+product can be built. As a result of this is the register map quite elaborate. However, quite some entries are constants 
+and read only.  
+There are different types of registers defined in the map, and they are listed below:  
+- Constant : registers which hold a constant value and are used as information for the user or for the CXP host to 
+understand the configuration of the device.  
+- Configuration : configuration registers which are accessible to the customer.  
+- Configuration_otp : configuration registers which are accessible to the customer, but which are programmed 
+to a default state by Magics for optimal operation of the device.  
+- Input : read -only values which get their input from somewhere else , such as analog status signals.  
+- Trigger : these register values are used to trigger an action (e.g. connectionReset ) 
+- State : type of configuration register which can be controlled by the user, but which can also be overwritten by 
+the digital core .  
+Below the reader can find an overview of the full register map in section 11.1 . For the more detailed register map, we 
+refer to section 11.2  for the register settings which are not of the type constant  and to section 11.3  for the register  bits 
+which are of the type constant . Note that for configurable settings, such as features such as windowing, sub -sampling, 
+exposure time s, etc.,  section 11.2  describes how these settings can be configured. However, typically these settings 
+have a default value, but also a  corresponding  minimum and maximum value. These corresponding minimum and 
+maximum values can be found back in the  overview, but also in the  constants section in section  11.3 . We refer to the 
+register overview in the next section to have a full view of all settings and corresponding constants.  
+11.1 Register overview  
+REG SETTING  REGISTER BIT(S)  
+0x0 XML_Settings_Standard  31 - 0 
+0x4 XML_Settings_Revision  31 - 0 
+0x8 XML_Settings_XmlManifestSize  31 - 0 
+0xc XML_Settings_XmlManifestSelector  31 - 0 
+0x10  XML_Settings_XmlVersion  31 - 0 
+0x14  XML_Settings_XmlSchemaVersion  31 - 0 
+0x18  XML_Settings_XmlUrlAddress  31 - 0 
+0x1c  XML_Settings_IidcAddress  31 - 0 
+0x2000  Device_DeviceVendorName  31 - 0 
+0x2004  Device_DeviceVendorName  31 - 0 
+0x2008  Device_DeviceVendorName  31 - 0 
+0x200c  Device_DeviceVendorName  31 - 0 
+0x2010  Device_DeviceVendorName  31 - 0 
+0x2014  Device_DeviceVendorName  31 - 0 
+0x2018  Device_DeviceVendorName  31 - 0 
+0x201c  Device_DeviceVendorName  31 - 0 
+0x2020  Device_DeviceModelName  31 - 0 
+0x2024  Device_DeviceModelName  31 - 0 
+0x2028  Device_DeviceModelName  31 - 0 
+0x202c  Device_DeviceModelName  31 - 0 
+0x2030  Device_DeviceModelName  31 - 0 
+0x2034  Device_DeviceModelName  31 - 0 
+0x2038  Device_DeviceModelName  31 - 0 
+0x203c  Device_DeviceModelName  31 - 0 
+0x2040  Device_DeviceManufacturerInfo  31 - 0 
+0x2044  Device_DeviceManufacturerInfo  31 - 0 
+0x2048  Device_DeviceManufacturerInfo  31 - 0 
+0x204c  Device_DeviceManufacturerInfo  31 - 0 
+0x2050  Device_DeviceManufacturerInfo  31 - 0 
+0x2054  Device_DeviceManufacturerInfo  31 - 0 
+0x2058  Device_DeviceManufacturerInfo  31 - 0 
+
+===== Page 18 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 18 
+ 
+0x205c  Device_DeviceManufacturerInfo  31 - 0 
+0x2060  Device_DeviceManufacturerInfo  31 - 0 
+0x2064  Device_DeviceManufacturerInfo  31 - 0 
+0x2068  Device_DeviceManufacturerInfo  31 - 0 
+0x206c  Device_DeviceManufacturerInfo  31 - 0 
+0x2070  Device_DeviceVersion  31 - 0 
+0x2074  Device_DeviceVersion  31 - 0 
+0x2078  Device_DeviceVersion  31 - 0 
+0x207c  Device_DeviceVersion  31 - 0 
+0x2080  Device_DeviceVersion  31 - 0 
+0x2084  Device_DeviceVersion  31 - 0 
+0x2088  Device_DeviceVersion  31 - 0 
+0x208c  Device_DeviceVersion  31 - 0 
+0x20b0  Device_DeviceSerialNumber  31 - 0 
+0x20b4  Device_DeviceSerialNumber  31 - 0 
+0x20b8  Device_DeviceSerialNumber  31 - 0 
+0x20bc  Device_DeviceSerialNumber  31 - 0 
+0x20c0  Device_DeviceUserId  31 - 0 
+0x20c4  Device_DeviceUserId  31 - 0 
+0x20c8  Device_DeviceUserId  31 - 0 
+0x20cc  Device_DeviceUserId  31 - 0 
+0x20d0  Device_GenDcPrefetchDescriptorAddress  31 - 0 
+0x20d4  Device_GenDcPrefetchDescriptorSize  31 - 0 
+0x20d8  Device_GenDcFlowTableAddress  31 - 0 
+0x20dc  Device_GenDcFlowTableSize  31 - 0 
+0x20e0  Device_GenDcContainerSize  31 - 0 
+0x3000  SettingAddress_WidthAddress  31 - 0 
+0x3004  SettingAddress_HeightAddress  31 - 0 
+0x3008  SettingAddress_AcquisitionModeAddress  31 - 0 
+0x300c  SettingAddress_AcquistionStartAddress  31 - 0 
+0x3010  SettingAddress_AcquistionStopAddress  31 - 0 
+0x3014  SettingAddress_PixelFormatAddress  31 - 0 
+0x3018  SettingAddress_DeviceTapGeometryAddress  31 - 0 
+0x301c  SettingAddress_Image1StreamIDAddress  31 - 0 
+0x4000  StreamSettings_ConnectionReset  31 - 0 
+0x4004  StreamSettings_DeviceConnectionID  31 - 0 
+0x4008  StreamSettings_MasterHostConnectionID  31 - 0 
+0x400c  StreamSettings_ControlPacketSizeMax  31 - 0 
+0x4010  StreamSettings_StreamPacketSizeMax  31 - 0 
+0x4014  StreamSettings_ConnectionConfig  31 - 0 
+0x4018  StreamSettings_ConnectionConfigDefault  31 - 0 
+0x401c  StreamSettings_TestMode   0 
+0x4020  StreamSettings_TestErrorCountSelector  31 - 0 
+0x4024  StreamSettings_TestErrorCount  31 - 0 
+0x4028  StreamSettings_TestPacketCountTxLsb  31 - 0 
+0x402c  StreamSettings_TestPacketCountTxMsb  31 - 0 
+0x4030  StreamSettings_TestPacketCountRxLsb  31 - 0 
+0x4034  StreamSettings_TestPacketCountRxMsb  31 - 0 
+0x4038  StreamSettings_ElectricalComplianceTest  31 - 0 
+0x403c  StreamSettings_CapabilityRegister  31 - 0 
+0x4040  StreamSettings_FeatureControlRegister  31 - 0 
+0x4044  StreamSettings_VersionsSupported  31 - 0 
+0x4048  StreamSettings_VersionUsed  31 - 0 
+0x404c  StreamSettings_LinkSharingStatus  31 - 0 
+0x4050  StreamSettings_LinkSharingHorizontalStripeCount  31 - 0 
+0x4054  StreamSettings_LinkSharingVerticalStripeCount  31 - 0 
+0x4058  StreamSettings_LinkSharingHorizontalOverlap  31 - 0 
+0x405c  StreamSettings_LinkSharingVerticalOverlap  31 - 0 
+0x4060  StreamSettings_LinkSharingDuplicateStripe  31 - 0 
+0x6000  AcquisitionSettings_AcquisitionMode   3 - 0 
+0x6004  AcquisitionSettings_AcquisitionStart   0 
+0x6008  AcquisitionSettings_AcquisitionStop   0 
+0x600c  AcquisitionSettings_PixelFormat  31 - 0 
+0x6010  AcquisitionSettings_DeviceTapGeometry  31 - 0 
+
+===== Page 19 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 19 
+ 
+0x6014  AcquisitionSettings_Image1StreamID  31 - 0 
+0x6018  AcquisitionSettings_HeartBeatTime  31 - 0 
+0x601c  AcquisitionSettings_HeartBeatTime  31 - 0 
+0x6030  IIDC2EntryImager_Keyword  31 - 0 
+0x6034  IIDC2EntryImager_SubMinorVersionNumber   7 - 0 
+0x6034  IIDC2EntryImager_MinorVersionNumber   15 - 8  
+0x6034  IIDC2EntryImager_MajorVersionNumber   23 - 16  
+0x6038  IIDC2EntryImager_NumberOfCategoryBlocks   15 - 0 
+0x6040  IIDC2EntryImager_OffsetForXmlManifestTable  31 - 0 
+0x6050  IIDC2EntryImager_DeviceControl  31 - 0 
+0x6054  IIDC2EntryImager_TransportLayerControl  31 - 0 
+0x6058  IIDC2EntryImager_ImageFormatControl  31 - 0 
+0x605c  IIDC2EntryImager_AcquisitionControl  31 - 0 
+0x6060  IIDC2EntryImager_LuminanceControl  31 - 0 
+0x6064  IIDC2EntryImager_ChromaControl  31 - 0 
+0x6068  IIDC2EntryImager_LUTControl  31 - 0 
+0x606c  IIDC2EntryImager_TriggerControl  31 - 0 
+0x6070  IIDC2EntryImager_UserSetControl  31 - 0 
+0x6074  IIDC2EntryImager_DigitalIOControl  31 - 0 
+0x6078  IIDC2EntryImager_CounterAndTimerControl  31 - 0 
+0x607c  IIDC2EntryImager_EventControl  31 - 0 
+0x6080  IIDC2EntryImager_ChunkControl  31 - 0 
+0x6084  IIDC2EntryImager_LightControl  31 - 0 
+0x60b0  IIDC2EntryImager_VendorUniqueControl1  31 - 0 
+0x60b4  IIDC2EntryImager_VendorUniqueControl2  31 - 0 
+0x60b8  IIDC2EntryImager_VendorUniqueControl3  31 - 0 
+0x60bc  IIDC2EntryImager_VendorUniqueControl4  31 - 0 
+0x60c0  IIDC2EntryImager_VendorUniqueControl5  31 - 0 
+0x60c4  IIDC2EntryImager_VendorUniqueControl6  31 - 0 
+0x60c8  IIDC2EntryImager_VendorUniqueControl7  31 - 0 
+0x60cc  IIDC2EntryImager_VendorUniqueControl8  31 - 0 
+0x60d0  Analog_SizeOfCategoryBlock   23 - 0 
+0x60d0  Analog_CategoryBlockNumber  31 - 24  
+0x60f0  Analog_NoSpecifyInq   0 
+0x60f0  Analog_ManualInq   1  
+0x60f0  Analog_AutoInq   2  
+0x60f0  Analog_AutoOnceInq   3  
+0x60f0  Analog_DefaultInq   4  
+0x60f0  Analog_ValueType   23 - 16  
+0x60f0  Analog_Readable   24  
+0x60f0  Analog_Writable   25  
+0x60f0  Analog_UserSetLoadable   26  
+0x60f0  Analog_Active   30  
+0x60f0  Analog_Implemented  31  
+0x60f4  Analog_OffsetForExpanded  31 - 0 
+0x60f8  Analog_Control   3 - 0 
+0x60fc  Analog_NumberOfElements   30 - 0 
+0x60fc  Analog_MoreDimension  31  
+0x6100  Analog_chip_id   7 - 0 
+0x6104  Analog_version_reg   7 - 0 
+0x6108  Analog_date_0   7 - 0 
+0x610c  Analog_date_1   7 - 0 
+0x62a8  Analog_ctrl_video_in_sampling   3 - 0 
+0x62d0  Analog_mode_select   1 - 0 
+0x62d4  Analog_black_rows_en   2  
+0xa000  XMLURL  31 - 0 
+0xa004  XMLURL  31 - 0 
+0xa008  XMLURL  31 - 0 
+0xa00c  XMLURL  31 - 0 
+0xa010  XMLURL  31 - 0 
+0xa014  XMLURL  31 - 0 
+0xa018  XMLURL  31 - 0 
+0xa01c  XMLURL  31 - 0 
+0xa020  XMLURL  31 - 0 
+
+===== Page 20 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 20 
+ 
+0xa024  XMLURL  31 - 0 
+0xa028  XMLURL  31 - 0 
+0xa02c  XMLURL  31 - 0 
+0xb000  AcquisitionControl_SizeOfCategoryBlock   23 - 0 
+0xb000  AcquisitionControl_CategoryBlockNumber  31 - 24  
+0xb020  AcquisitionCommand_ValueType   23 - 16  
+0xb020  AcquisitionCommand_Readable   24  
+0xb020  AcquisitionCommand_Writable   25  
+0xb020  AcquisitionCommand_UserSetLoadable   26  
+0xb020  AcquisitionCommand_Active   30  
+0xb020  AcquisitionCommand_Implemented  31  
+0xb024  AcquisitionCommand_OffsetForExpanded  31 - 0 
+0xb028  AcquisitionCommand_Control   3 - 0 
+0xb038  AcquisitionCommand_Abort   0 
+0xb038  AcquisitionCommand_Stop   1  
+0xb038  AcquisitionCommand_Continuous   8  
+0xb038  AcquisitionCommand_MultiFrame   9  
+0xb038  AcquisitionCommand_ImageBufferRead   10  
+0xb038  AcquisitionCommand_Retransmit   16  
+0xb03c  AcquisitionCommand_Value   3 - 0 
+0xb040  AcquisitionFrameCount_ValueType   23 - 16  
+0xb040  AcquisitionFrameCount_Readable   24  
+0xb040  AcquisitionFrameCount_Writable   25  
+0xb040  AcquisitionFrameCount_UserSetLoadable   26  
+0xb040  AcquisitionFrameCount_Active   30  
+0xb040  AcquisitionFrameCount_Implemented  31  
+0xb044  AcquisitionFrameCount_OffsetForExpanded  31 - 0 
+0xb048  AcquisitionFrameCount_Control  31 - 0 
+0xb054  AcquisitionFrameCount_Min  31 - 0 
+0xb058  AcquisitionFrameCount_Max  31 - 0 
+0xb05c  AcquisitionFrameCount_Value   15 - 0 
+0xb060  ImageBufferMode_Implemented  31  
+0xb080  ImageBufferFrameCount_Implemented  31  
+0xb0a0  AcquisitionFrameRate_NoSpecifyInq   0 
+0xb0a0  AcquisitionFrameRate_ManualInq   1  
+0xb0a0  AcquisitionFrameRate_DefaultInq   4  
+0xb0a0  AcquisitionFrameRate_ValueType   23 - 16  
+0xb0a0  AcquisitionFrameRate_Readable   24  
+0xb0a0  AcquisitionFrameRate_Writable   25  
+0xb0a0  AcquisitionFrameRate_UserSetLoadable   26  
+0xb0a0  AcquisitionFrameRate_Active   30  
+0xb0a0  AcquisitionFrameRate_Implemented  31  
+0xb0a4  AcquisitionFrameRate_OffsetForExpanded  31 - 0 
+0xb0a8  AcquisitionFrameRate_Control   3 - 0 
+0xb0ac  AcquisitionFrameRate_Mult  31 - 0 
+0xb0b0  AcquisitionFrameRate_Div  31 - 0 
+0xb0b4  AcquisitionFrameRate_Min  31 - 0 
+0xb0b8  AcquisitionFrameRate_Max  31 - 0 
+0xb0bc  AcquisitionFrameRate_Value   8 - 0 
+0xb0c0  AcquisitionFrameInterval_Implemented  31  
+0xc400  VendorUniqueBootstrapFSM_SizeOfCategoryBlock   23 - 0 
+0xc400  VendorUniqueBootstrapFSM_CategoryBlockNumber  31 - 24  
+0xc420  VendorUniqueBootstrapFSM_NoSpecifyInq   0 
+0xc420  VendorUniqueBootstrapFSM_ManualInq   1  
+0xc420  VendorUniqueBootstrapFSM_AutoInq   2  
+0xc420  VendorUniqueBootstrapFSM_AutoOnceInq   3  
+0xc420  VendorUniqueBootstrapFSM_DefaultInq   4  
+0xc420  VendorUniqueBootstrapFSM_ValueType   23 - 16  
+0xc420  VendorUniqueBootstrapFSM_Readable   24  
+0xc420  VendorUniqueBootstrapFSM_Writable   25  
+0xc420  VendorUniqueBootstrapFSM_UserSetLoadable   26  
+0xc420  VendorUniqueBootstrapFSM_Active   30  
+0xc420  VendorUniqueBootstrapFSM_Implemented  31  
+0xc424  VendorUniqueBootstrapFSM_OffsetForExpanded  31 - 0 
+
+===== Page 21 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 21 
+ 
+0xc428  VendorUniqueBootstrapFSM_Control   3 - 0 
+0xc42c  VendorUniqueBootstrapFSM_NumberOfElements   30 - 0 
+0xc42c  VendorUniqueBootstrapFSM_MoreDimension  31  
+0xc430  VendorUniqueBootstrapFSM_iidc_entry_offset_local  31 - 0 
+0xc440  VendorUniqueBootstrapFSM_spi_master_clock_div   15 - 0 
+0xd400  VendorUniqueSPIGPIO_SizeOfCategoryBlock   23 - 0 
+0xd400  VendorUniqueSPIGPIO_CategoryBlockNumber  31 - 24  
+0xd420  VendorUniqueSPIGPIO_NoSpecifyInq   0 
+0xd420  VendorUniqueSPIGPIO_ManualInq   1  
+0xd420  VendorUniqueSPIGPIO_AutoInq   2  
+0xd420  VendorUniqueSPIGPIO_AutoOnceInq   3  
+0xd420  VendorUniqueSPIGPIO_DefaultInq   4  
+0xd420  VendorUniqueSPIGPIO_ValueType   23 - 16  
+0xd420  VendorUniqueSPIGPIO_Readable   24  
+0xd420  VendorUniqueSPIGPIO_Writable   25  
+0xd420  VendorUniqueSPIGPIO_UserSetLoadable   26  
+0xd420  VendorUniqueSPIGPIO_Active   30  
+0xd420  VendorUniqueSPIGPIO_Implemented  31  
+0xd424  VendorUniqueSPIGPIO_OffsetForExpanded  31 - 0 
+0xd428  VendorUniqueSPIGPIO_Control   3 - 0 
+0xd42c  VendorUniqueSPIGPIO_NumberOfElements   30 - 0 
+0xd42c  VendorUniqueSPIGPIO_MoreDimension  31  
+0xd430  VendorUniqueSPIGPIO_trigger   0 
+0xd430  VendorUniqueSPIGPIO_busy   1  
+0xd434  VendorUniqueSPIGPIO_divider   15 - 0 
+0xd438  VendorUniqueSPIGPIO_transaction_size   5 - 0 
+0xd43c  VendorUniqueSPIGPIO_ssel   3 - 0 
+0xd440  VendorUniqueSPIGPIO_data_mosi  31 - 0 
+0xd448  VendorUniqueSPIGPIO_data_mosi  31 - 0 
+0xd44c  VendorUniqueSPIGPIO_data_miso  31 - 0 
+0xd450  VendorUniqueSPIGPIO_data_miso  31 - 0 
+0xd454  VendorUniqueSPIGPIO_spi_enable   0 
+0xe000  DigitalIOControl_SizeOfCategoryBlock   23 - 0 
+0xe000  DigitalIOControl_CategoryBlockNumber  31 - 24  
+0xe020  IOLineModeAll_NoSpecifyInq   0 
+0xe020  IOLineModeAll_ManualInq   1  
+0xe020  IOLineModeAll_AutoInq   2  
+0xe020  IOLineModeAll_AutoOnceInq   3  
+0xe020  IOLineModeAll_DefaultInq   4  
+0xe020  IOLineModeAll_ValueType   23 - 16  
+0xe020  IOLineModeAll_Readable   24  
+0xe020  IOLineModeAll_Writable   25  
+0xe020  IOLineModeAll_UserSetLoadable   26  
+0xe020  IOLineModeAll_Active   30  
+0xe020  IOLineModeAll_Implemented  31  
+0xe024  IOLineModeAll_OffsetForExpanded  31 - 0 
+0xe028  IOLineModeAll_Control   3 - 0 
+0xe02c  IOLineModeAll_BitWriteable  31 - 0 
+0xe030  IOLineModeAll_Value   10 - 0 
+0xe040  IOLineInverterAll_NoSpecifyInq   0 
+0xe040  IOLineInverterAll_ManualInq   1  
+0xe040  IOLineInverterAll_AutoInq   2  
+0xe040  IOLineInverterAll_AutoOnceInq   3  
+0xe040  IOLineInverterAll_DefaultInq   4  
+0xe040  IOLineInverterAll_ValueType   23 - 16  
+0xe040  IOLineInverterAll_Readable   24  
+0xe040  IOLineInverterAll_Writable   25  
+0xe040  IOLineInverterAll_UserSetLoadable   26  
+0xe040  IOLineInverterAll_Active   30  
+0xe040  IOLineInverterAll_Implemented  31  
+0xe044  IOLineInverterAll_OffsetForExpanded  31 - 0 
+0xe048  IOLineInverterAll_Control   3 - 0 
+0xe04c  IOLineInverterAll_BitWriteable  31 - 0 
+0xe050  IOLineInverterAll_Value   10 - 0 
+
+===== Page 22 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 22 
+ 
+0xe060  IOLineStatusAll_NoSpecifyInq   0 
+0xe060  IOLineStatusAll_ManualInq   1  
+0xe060  IOLineStatusAll_AutoInq   2  
+0xe060  IOLineStatusAll_AutoOnceInq   3  
+0xe060  IOLineStatusAll_DefaultInq   4  
+0xe060  IOLineStatusAll_ValueType   23 - 16  
+0xe060  IOLineStatusAll_Readable   24  
+0xe060  IOLineStatusAll_Writable   25  
+0xe060  IOLineStatusAll_UserSetLoadable   26  
+0xe060  IOLineStatusAll_Active   30  
+0xe060  IOLineStatusAll_Implemented  31  
+0xe064  IOLineStatusAll_OffsetForExpanded  31 - 0 
+0xe068  IOLineStatusAll_Control   3 - 0 
+0xe06c  IOLineStatusAll_BitWriteable  31 - 0 
+0xe070  IOLineStatusAll_Value   10 - 0 
+0xe080  IOUserOutputValueAll_NoSpecifyInq   0 
+0xe080  IOUserOutputValueAll_ManualInq   1  
+0xe080  IOUserOutputValueAll_AutoInq   2  
+0xe080  IOUserOutputValueAll_AutoOnceInq   3  
+0xe080  IOUserOutputValueAll_DefaultInq   4  
+0xe080  IOUserOutputValueAll_ValueType   23 - 16  
+0xe080  IOUserOutputValueAll_Readable   24  
+0xe080  IOUserOutputValueAll_Writable   25  
+0xe080  IOUserOutputValueAll_UserSetLoadable   26  
+0xe080  IOUserOutputValueAll_Active   30  
+0xe080  IOUserOutputValueAll_Implemented  31  
+0xe084  IOUserOutputValueAll_OffsetForExpanded  31 - 0 
+0xe088  IOUserOutputValueAll_Control   3 - 0 
+0xe08c  IOUserOutputValueAll_BitWriteable  31 - 0 
+0xe090  IOUserOutputValueAll_Value   10 - 0 
+0xe0a0  IOLineSelector_NoSpecifyInq   0 
+0xe0a0  IOLineSelector_ManualInq   1  
+0xe0a0  IOLineSelector_AutoInq   2  
+0xe0a0  IOLineSelector_AutoOnceInq   3  
+0xe0a0  IOLineSelector_DefaultInq   4  
+0xe0a0  IOLineSelector_ValueType   23 - 16  
+0xe0a0  IOLineSelector_Readable   24  
+0xe0a0  IOLineSelector_Writable   25  
+0xe0a0  IOLineSelector_UserSetLoadable   26  
+0xe0a0  IOLineSelector_Active   30  
+0xe0a0  IOLineSelector_Implemented  31  
+0xe0a4  IOLineSelector_OffsetForExpanded  31 - 0 
+0xe0a8  IOLineSelector_Control   3 - 0 
+0xe0ac  IOLineSelector_ListOfElements  31 - 0 
+0xe0bc  IOLineSelector_Value   6 - 0 
+0xe0c0  IOLineSource_NoSpecifyInq   0 
+0xe0c0  IOLineSource_ManualInq   1  
+0xe0c0  IOLineSource_AutoInq   2  
+0xe0c0  IOLineSource_AutoOnceInq   3  
+0xe0c0  IOLineSource_DefaultInq   4  
+0xe0c0  IOLineSource_ValueType   23 - 16  
+0xe0c0  IOLineSource_Readable   24  
+0xe0c0  IOLineSource_Writable   25  
+0xe0c0  IOLineSource_UserSetLoadable   26  
+0xe0c0  IOLineSource_Active   30  
+0xe0c0  IOLineSource_Implemented  31  
+0xe0c4  IOLineSource_OffsetForExpanded  31 - 0 
+0xe0c8  IOLineSource_Control   3 - 0 
+0xe0cc  IOLineSource_ListOfElements  31 - 0 
+0xe0dc  IOLineSource_Value   6 - 0 
+0xf800  TriggerControl_SizeOfCategoryBlock   23 - 0 
+0xf800  TriggerControl_CategoryBlockNumber  31 - 24  
+0xf820  TriggerMode_ManualInq   1  
+0xf820  TriggerMode_DefaultInq   4  
+
+===== Page 23 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 23 
+ 
+0xf820  TriggerMode_ValueType   23 - 16  
+0xf820  TriggerMode_Readable   24  
+0xf820  TriggerMode_Writable   25  
+0xf820  TriggerMode_UserSetLoadable   26  
+0xf820  TriggerMode_Active   30  
+0xf820  TriggerMode_Implemented  31  
+0xf824  TriggerMode_OffsetForExpanded  31 - 0 
+0xf828  TriggerMode_Control   3 - 0 
+0xf82c  TriggerMode_VendorSpecific0   24  
+0xf82c  TriggerMode_VendorSpecific1   25  
+0xf82c  TriggerMode_VendorSpecific2   26  
+0xf82c  TriggerMode_VendorSpecific3   27  
+0xf82c  TriggerMode_VendorSpecific4   28  
+0xf82c  TriggerMode_VendorSpecific5   29  
+0xf82c  TriggerMode_VendorSpecific6   30  
+0xf82c  TriggerMode_VendorSpecific7  31  
+0xf838  TriggerMode_Off   0 
+0xf838  TriggerMode_On   1  
+0xf83c  TriggerMode_Value   0 
+0xf860  TriggerSource_ManualInq   1  
+0xf860  TriggerSource_DefaultInq   4  
+0xf860  TriggerSource_ValueType   23 - 16  
+0xf860  TriggerSource_Readable   24  
+0xf860  TriggerSource_Writable   25  
+0xf860  TriggerSource_UserSetLoadable   26  
+0xf860  TriggerSource_Active   30  
+0xf860  TriggerSource_Implemented  31  
+0xf864  TriggerSource_OffsetForExpanded  31 - 0 
+0xf868  TriggerSource_Control   3 - 0 
+0xf86c  TriggerSource_VendorSpecific0   24  
+0xf870  TriggerSource_SoftwareTrigger   0 
+0xf87c  TriggerSource_Value   6 - 0 
+0xf8c0  SoftwareTrigger_ManualInq   1  
+0xf8c0  SoftwareTrigger_DefaultInq   4  
+0xf8c0  SoftwareTrigger_ValueType   23 - 16  
+0xf8c0  SoftwareTrigger_Readable   24  
+0xf8c0  SoftwareTrigger_Writable   25  
+0xf8c0  SoftwareTrigger_UserSetLoadable   26  
+0xf8c0  SoftwareTrigger_Active   30  
+0xf8c0  SoftwareTrigger_Implemented  31  
+0xf8c4  SoftwareTrigger_OffsetForExpanded  31 - 0 
+0xf8c8  SoftwareTrigger_Control   3 - 0 
+0xf8d8  SoftwareTrigger_Inactive   0 
+0xf8d8  SoftwareTrigger_Activetable   1  
+0xf8dc  SoftwareTrigger_Value   0 
+0x10000  ImageFormatControl_SizeOfCategoryBlock   23 - 0 
+0x10000  ImageFormatControl_CategoryBlockNumber  31 - 24  
+0x10020  ImageFormatSelector_Implemented  31  
+0x10040  ApplyImageFormat_Implemented  31  
+0x10060  ImageSize_NoSpecifyInq   0 
+0x10060  ImageSize_ManualInq   1  
+0x10060  ImageSize_AutoInq   2  
+0x10060  ImageSize_AutoOnceInq   3  
+0x10060  ImageSize_DefaultInq   4  
+0x10060  ImageSize_ValueType   23 - 16  
+0x10060  ImageSize_Readable   24  
+0x10060  ImageSize_Writable   25  
+0x10060  ImageSize_UserSetLoadable   26  
+0x10060  ImageSize_Active   30  
+0x10060  ImageSize_Implemented  31  
+0x10064  ImageSize_OffsetForExpanded  31 - 0 
+0x10068  ImageSize_Control   3 - 0 
+0x1006c  ImageSize_MinOffsetX  31 - 0 
+0x10070  ImageSize_IncOffsetX  31 - 0 
+
+===== Page 24 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 24 
+ 
+0x10074  ImageSize_MinWidth  31 - 0 
+0x10078  ImageSize_IncWidth  31 - 0 
+0x1007c  ImageSize_TotalSizeX  31 - 0 
+0x10080  ImageSize_MinOffsetY  31 - 0 
+0x10084  ImageSize_IncOffsetY  31 - 0 
+0x10088  ImageSize_MinHeight  31 - 0 
+0x1008c  ImageSize_IncHeight  31 - 0 
+0x10090  ImageSize_TotalSizeY  31 - 0 
+0x10094  ImageSize_OffsetX   15 - 0 
+0x10098  ImageSize_Width   15 - 0 
+0x1009c  ImageSize_OffsetY   15 - 0 
+0x100a0  ImageSize_Height   15 - 0 
+0x100c0  PixelCoding_NoSpecifyInq   0 
+0x100c0  PixelCoding_ManualInq   1  
+0x100c0  PixelCoding_AutoInq   2  
+0x100c0  PixelCoding_AutoOnceInq   3  
+0x100c0  PixelCoding_DefaultInq   4  
+0x100c0  PixelCoding_ValueType   23 - 16  
+0x100c0  PixelCoding_Readable   24  
+0x100c0  PixelCoding_Writable   25  
+0x100c0  PixelCoding_UserSetLoadable   26  
+0x100c0  PixelCoding_Active   30  
+0x100c0  PixelCoding_Implemented  31  
+0x100c4  PixelCoding_OffsetForExpanded  31 - 0 
+0x100c8  PixelCoding_Control   3 - 0 
+0x100cc  PixelCoding_BayerGR   1  
+0x100cc  PixelCoding_BayerGRPacked   3  
+0x100cc  PixelCoding_BayerRG   4  
+0x100cc  PixelCoding_BayerRGPacked   6  
+0x100cc  PixelCoding_BayerGB   7  
+0x100cc  PixelCoding_BayerGBPacked   9  
+0x100cc  PixelCoding_BayerBG   10  
+0x100cc  PixelCoding_BayerBGPacked   12  
+0x100d0  PixelCoding_YUV411Packed   4  
+0x100d0  PixelCoding_YUV422Packed   12  
+0x100d0  PixelCoding_YUV444Packed   20  
+0x100d4  PixelCoding_RGBPacked   2  
+0x100d4  PixelCoding_BGRPacked   10  
+0x100d8  PixelCoding_Mono   0 
+0x100d8  PixelCoding_MonoSigned   1  
+0x100d8  PixelCoding_MonoPacked   2  
+0x100dc  PixelCoding_Value  31 - 0 
+0x100e0  PixelSize_NoSpecifyInq   0 
+0x100e0  PixelSize_ManualInq   1  
+0x100e0  PixelSize_AutoInq   2  
+0x100e0  PixelSize_AutoOnceInq   3  
+0x100e0  PixelSize_DefaultInq   4  
+0x100e0  PixelSize_ValueType   23 - 16  
+0x100e0  PixelSize_Readable   24  
+0x100e0  PixelSize_Writable   25  
+0x100e0  PixelSize_UserSetLoadable   26  
+0x100e0  PixelSize_Active   30  
+0x100e0  PixelSize_Implemented  31  
+0x100e4  PixelSize_OffsetForExpanded  31 - 0 
+0x100e8  PixelSize_Control   3 - 0 
+0x100f4  PixelSize_Bpp48   16  
+0x100f8  PixelSize_Bpp8   8  
+0x100f8  PixelSize_Bpp10   10  
+0x100f8  PixelSize_Bpp12   12  
+0x100f8  PixelSize_Bpp14   14  
+0x100f8  PixelSize_Bpp16   16  
+0x100f8  PixelSize_Bpp24   24  
+0x100fc  PixelSize_Value   3 - 0 
+0x10100  PixelEndian_Implemented  31  
+
+===== Page 25 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 25 
+ 
+0x10120  BinningHorizontal_Implemented  31  
+0x10140  BinningVertical_Implemented  31  
+0x10160  DecimationHorizontal_NoSpecifyInq   0 
+0x10160  DecimationHorizontal_ManualInq   1  
+0x10160  DecimationHorizontal_AutoInq   2  
+0x10160  DecimationHorizontal_AutoOnceInq   3  
+0x10160  DecimationHorizontal_DefaultInq   4  
+0x10160  DecimationHorizontal_ValueType   23 - 16  
+0x10160  DecimationHorizontal_Readable   24  
+0x10160  DecimationHorizontal_Writable   25  
+0x10160  DecimationHorizontal_UserSetLoadable   26  
+0x10160  DecimationHorizontal_Active   30  
+0x10160  DecimationHorizontal_Implemented  31  
+0x10164  DecimationHorizontal_OffsetForExpanded  31 - 0 
+0x10168  DecimationHorizontal_Control   3 - 0 
+0x1016c  DecimationHorizontal_Mult  31 - 0 
+0x10170  DecimationHorizontal_Div  31 - 0 
+0x10174  DecimationHorizontal_Min  31 - 0 
+0x10178  DecimationHorizontal_Max  31 - 0 
+0x1017c  DecimationHorizontal_Value   1 - 0 
+0x10180  DecimationVertical_NoSpecifyInq   0 
+0x10180  DecimationVertical_ManualInq   1  
+0x10180  DecimationVertical_AutoInq   2  
+0x10180  DecimationVertical_AutoOnceInq   3  
+0x10180  DecimationVertical_DefaultInq   4  
+0x10180  DecimationVertical_ValueType   23 - 16  
+0x10180  DecimationVertical_Readable   24  
+0x10180  DecimationVertical_Writable   25  
+0x10180  DecimationVertical_UserSetLoadable   26  
+0x10180  DecimationVertical_Active   30  
+0x10180  DecimationVertical_Implemented  31  
+0x10184  DecimationVertical_OffsetForExpanded  31 - 0 
+0x10188  DecimationVertical_Control   3 - 0 
+0x1018c  DecimationVertical_Mult  31 - 0 
+0x10190  DecimationVertical_Div  31 - 0 
+0x10194  DecimationVertical_Min  31 - 0 
+0x10198  DecimationVertical_Max  31 - 0 
+0x1019c  DecimationVertical_Value   1 - 0 
+0x101a0  ReverseX_NoSpecifyInq   0 
+0x101a0  ReverseX_ManualInq   1  
+0x101a0  ReverseX_AutoInq   2  
+0x101a0  ReverseX_AutoOnceInq   3  
+0x101a0  ReverseX_DefaultInq   4  
+0x101a0  ReverseX_ValueType   23 - 16  
+0x101a0  ReverseX_Readable   24  
+0x101a0  ReverseX_Writable   25  
+0x101a0  ReverseX_UserSetLoadable   26  
+0x101a0  ReverseX_Active   30  
+0x101a0  ReverseX_Implemented  31  
+0x101a4  ReverseX_OffsetForExpanded  31 - 0 
+0x101a8  ReverseX_Control   3 - 0 
+0x101ac  ReverseX_BitWritable   0 
+0x101b0  ReverseX_Value   0 
+0x101c0  ReverseY_NoSpecifyInq   0 
+0x101c0  ReverseY_ManualInq   1  
+0x101c0  ReverseY_AutoInq   2  
+0x101c0  ReverseY_AutoOnceInq   3  
+0x101c0  ReverseY_DefaultInq   4  
+0x101c0  ReverseY_ValueType   23 - 16  
+0x101c0  ReverseY_Readable   24  
+0x101c0  ReverseY_Writable   25  
+0x101c0  ReverseY_UserSetLoadable   26  
+0x101c0  ReverseY_Active   30  
+0x101c0  ReverseY_Implemented  31  
+
+===== Page 26 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04-rev2. 2 
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 26 
+ 
+0x101c4  ReverseY_OffsetForExpanded  31 - 0 
+0x101c8  ReverseY_Control   3 - 0 
+0x101cc  ReverseY_BitWritable   0 
+0x101d0  ReverseY_Value   0 
+0x101e0  TestPattern_NoSpecifyInq   0 
+0x101e0  TestPattern_ManualInq   1  
+0x101e0  TestPattern_AutoInq   2  
+0x101e0  TestPattern_AutoOnceInq   3  
+0x101e0  TestPattern_DefaultInq   4  
+0x101e0  TestPattern_ValueType   23 - 16  
+0x101e0  TestPattern_Readable   24  
+0x101e0  TestPattern_Writable   25  
+0x101e0  TestPattern_UserSetLoadable   26  
+0x101e0  TestPattern_Active   30  
+0x101e0  TestPattern_Implemented  31  
+0x101e4  TestPattern_OffsetForExpanded  31 - 0 
+0x101e8  TestPattern_Control   3 - 0 
+0x101ec  TestPattern_VendorSpecific0   24  
+0x101ec  TestPattern_VendorSpecific1   25  
+0x101ec  TestPattern_VendorSpecific2   26  
+0x101ec  TestPattern_VendorSpecific3   27  
+0x101ec  TestPattern_VendorSpecific4   28  
+0x101ec  TestPattern_VendorSpecific5   29  
+0x101ec  TestPattern_VendorSpecific6   30  
+0x101ec  TestPattern_VendorSpecific7  31  
+0x101f4  TestPattern_GreyHorizontalRampMoving   0 
+0x101f4  TestPattern_GreyVerticalRampMoving   1  
+0x101f4  TestPattern_HorizontalMoving   8  
+0x101f4  TestPattern_VerticalLineMoving   9  
+0x101f4  TestPattern_ColorBar   16  
+0x101f4  TestPattern_GreyScaleChart   17  
+0x101f8  TestPattern_Off   0 
+0x101f8  TestPattern_Black   1  
+0x101f8  TestPattern_White   2  
+0x101f8  TestPattern_Grey55   3  
+0x101f8  TestPattern_GreyAA   4  
+0x101f8  TestPattern_GreyHorizontalRamp   16  
+0x101f8  TestPattern_GreyVerticalRamp   17  
+0x101f8  TestPattern_StraightCounter   24  
+0x101fc  TestPattern_Value  31 - 0 
+ 
+
+===== Page 27 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 27 
+ 
+11.2 Detailed register map: configuration registers  
+11.2.1  Register (Address 0x4) type: Input  
+# Setting  Register 32bit  
+0 XML_Settings_Revision  31 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   The version of the CoaXPress  standard implemented by this Device  
+11.2.2  Register (Address 0x3000) type: Input  
+# Setting  Register 32bit  
+0 SettingAddress_WidthAddress  31 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   This register shall provide the address in the manufacturer -specific register space of Width  
+11.2.3  Register (Address 0x3004) type: Input  
+# Setting  Register 32bit  
+0 SettingAddress_HeightAddress  31 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   This register shall provide the address in the manufacturer -specific register space of Height  
+11.2.4  Register (Address 0x4000) type: Trigger  
+# Setting  Register 32bit  
+0 StreamSettings_ConnectionReset  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   Writing the value 0x00000001 to this register shall provide Device connection reset. The Device shall also execute a connecti on reset 
+after power -up. 
+11.2.5  Register (Address 0x4008) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_MasterHostConnectionID  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   This register shall hold the Host Connection ID of the Host connection connected to the Device Master connection.  
+The value 0x00000000 is reserved to indicate an unknown Host ID.  
+This register is set by the Host to (Host) unique 32 bit ID number as part of the Device discovery process. A connection rese t sets the 
+value 0x00000000.  
+
+===== Page 28 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 28 
+ 
+11.2.6  Register (Address 0x4010) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_StreamPacketSizeMax  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   This register shall hold the maximum stream packet size the Host can accept. The size is defined in bytes, and shall be a mul tiple of 4 
+bytes.  
+The Device can use any packet size it wants to up to this size. The defined size is that of the entire packet, not just the p ayload.  
+Comment: This register is set by the Host as part of the Device discovery process.  
+11.2.7  Register (Address 0x4014) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_ConnectionConfig  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000010000000000101000   Not all theoretical combinations of connection speed and number of connections may be usable.  
+One register is used to ensure that the two variables are set simultaneously.  
+The XML file and product documentation give valid combinations for the Device.  
+A connection that is not activated shall not send IDLE words.  
+11.2.8  Register (Address 0x401c) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_TestMode   0 
+# Default Value  Logic  Info  
+0 0b0  Writing the value 0x00000001 to this register shall enable test packets transmission from Device to Host.  
+The value 0x00000000 shall allow normal operation. When the value is changed from 0x00000001 to 0x00000000  
+the Device shall complete the packet of 1024 test words currently being transmitted  
+11.2.9  Register (Address 0x4020) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_TestErrorCountSelector  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   This register shall select the required test count [TestErrorCountSelector] register.  
+It shall hold a valid Device Connection ID 0 .. n -1, or n for the optional high speed upconnection.  
+11.2.10  Register (Address 0x4024) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_TestErrorCount  31 - 0 
+# Default Value  Logic  Info  
+
+===== Page 29 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 29 
+ 
+0 0b00000000000000000000000000000000   This register shall provide the current connection error count for the connection referred to by register TestErrorCountSelec tor. 
+Writing 0x00000000 to this register shall reset to zero the connection error count for the connection referred to by register  
+TestErrorCountSelector  
+11.2.11  Register (Address 0x4028) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_TestPacketCountTxLsb  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   This register shall provide the current transmitted connection test packet count for the connection referred to by register 
+TestErrorCountSelector.  
+Writing 0x00000000 to this register shall reset to zero the transmitted connection packet count for the connection referred t o by 
+register TestErrorCountSelector  
+11.2.12  Register (Address 0x402c) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_TestPacketCountTxMsb  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   This register shall provide the current transmitted connection test packet count for the connection referred to by register 
+TestErrorCountSelector.  
+Writing 0x00000000 to this register shall reset to zero the transmitted connection packet count for the connection referred t o by 
+register TestErrorCountSelector  
+11.2.13  Register (Address 0x4030) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_TestPacketCountRxLsb  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   This register shall provide the current received connection test packet count for the connection referred to by register 
+TestErrorCountSelector.  
+Writing 0x00000000 to this register shall reset to zero the received connection packet count for the connection referred to b y register 
+TestErrorCountSelector  
+11.2.14  Register (Address 0x4034) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_TestPacketCountRxMsb  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   This register shall provide the current received connection test packet count for the connection referred to by register 
+TestErrorCountSelector.  
+
+===== Page 30 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 30 
+ 
+Writing 0x00000000 to this register shall reset to zero the received connection packet count for the connection referred to b y register 
+TestErrorCountSelector  
+11.2.15  Register (Address 0x4044) type: Input  
+# Setting  Register 32bit  
+0 StreamSettings_VersionsSupported  31 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   This register shall provide the version(s) of the CoaXPress  standard supported by the Device  
+11.2.16  Register (Address 0x4048) type: State  
+# Setting  Register 32bit  
+0 StreamSettings_VersionUsed  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000010000000000000001   This register shall provide the version of the CoaXPress  standard used to communicate between the Device and Host. The register is set 
+during Discovery  
+11.2.17  Register (Address 0x6000) type: Configuration  
+# Setting  Register 32bit  
+0 AcquisitionSettings_AcquisitionMode   3 - 0 
+# Default Value  Logic  Info  
+0 0b0000    
+11.2.18  Register (Address 0x6004) type: Trigger  
+# Setting  Register 32bit  
+0 AcquisitionSettings_AcquisitionStart   0 
+# Default Value  Logic  Info  
+0 0b0   
+11.2.19  Register (Address 0x6008) type: Trigger  
+# Setting  Register 32bit  
+0 AcquisitionSettings_AcquisitionStop   0 
+# Default Value  Logic  Info  
+0 0b0   
+11.2.20  Register (Address 0x600c) type: State  
+# Setting  Register 32bit  
+
+===== Page 31 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 31 
+ 
+0 AcquisitionSettings_PixelFormat  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000001000100000000000000000011   Default is HD 10b mono ( GenICam format, and not CXP format)  
+11.2.21  Register (Address 0x6018) type: Input  
+# Setting  Register 32bit  
+0 AcquisitionSettings_HeartBeatTime  31 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only    
+11.2.22  Register (Address 0x601c) type: Input  
+# Setting  Register 32bit  
+0 AcquisitionSettings_HeartBeatTime  31 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only    
+11.2.23  Register (Address 0x6050) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_DeviceControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.24  Register (Address 0x6054) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_TransportLayerControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.25  Register (Address 0x6058) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_ImageFormatControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000001001111111010000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.26  Register (Address 0x605c) type: Configuration  
+# Setting  Register 32bit  
+
+===== Page 32 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 32 
+ 
+0 IIDC2EntryImager_AcquisitionControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000100111111010000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.27  Register (Address 0x6060) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_LuminanceControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.28  Register (Address 0x6064) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_ChromaControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.29  Register (Address 0x6068) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_LUTControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.30  Register (Address 0x606c) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_TriggerControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000001001011111010000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.31  Register (Address 0x6070) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_UserSetControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.32  Register (Address 0x6074) type: Configuration  
+# Setting  Register 32bit  
+
+===== Page 33 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 33 
+ 
+0 IIDC2EntryImager_DigitalIOControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000111111111010000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.33  Register (Address 0x6078) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_CounterAndTimerControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.34  Register (Address 0x607c) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_EventControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.35  Register (Address 0x6080) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_ChunkControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.36  Register (Address 0x6084) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_LightControl  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.37  Register (Address 0x60b0) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_VendorUniqueControl1  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.38  Register (Address 0x60b4) type: Configuration  
+# Setting  Register 32bit  
+
+===== Page 34 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 34 
+ 
+0 IIDC2EntryImager_VendorUniqueControl2  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.39  Register (Address 0x60b8) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_VendorUniqueControl3  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.40  Register (Address 0x60bc) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_VendorUniqueControl4  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.41  Register (Address 0x60c0) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_VendorUniqueControl5  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.42  Register (Address 0x60c4) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_VendorUniqueControl6  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000111001111010000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.43  Register (Address 0x60c8) type: Configuration  
+# Setting  Register 32bit  
+0 IIDC2EntryImager_VendorUniqueControl7  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000110001111010000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.44  Register (Address 0x60cc) type: Configuration  
+# Setting  Register 32bit  
+
+===== Page 35 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 35 
+ 
+0 IIDC2EntryImager_VendorUniqueControl8  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000010100000  Active_High  CategoryBlockN (N=0 -31) starts at IIDC2Entry address + OffsetForCategoryBlockN value  
+11.2.45  Register (Address 0x6100) type: Input  
+# Setting  Register 32bit  
+0 Analog_chip_id   7 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   Contains the chip ID 0x 62 
+11.2.46  Register (Address 0x6104) type: Input  
+# Setting  Register 32bit  
+0 Analog_version_reg   7 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   - [3:0]( version_metal) : Reports the metal version  
+0x0: First metal version (No metal fix)  
+0x1: First metal fix version.  
+-[7:4] (version_full) : Reports the chip version.  
+11.2.47  Register (Address 0x6108) type: Input  
+# Setting  Register 32bit  
+0 Analog_date_0   7 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   Reports the tapeOut Date as 0b0010,10100,0010100  
+11.2.48  Register (Address 0x610c) type: Input  
+# Setting  Register 32bit  
+0 Analog_date_1   7 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   Reports the tapeOut Date as 0b0010,10100,0010100  
+11.2.49  Register (Address 0x62a8) type: Configuration_otp  
+# Setting  Register 32bit  
+0 Analog_ctrl_video_in_sampling   3 - 0 
+# Default Value  Logic  Info  
+
+===== Page 36 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 36 
+ 
+0 0b0000  active high  video in control samplig sensitivity  
+0 : 0 data in  sampling on posedge     ; 1: data in  sampling on negedge  
+1:   0 lvalid sampling on posedge    ; 1: lvalid sampling on negedge  
+2:  0 dvalid sampling on posedge  ; 1: dvalid sampling on negedge  
+3:  0 fval  
+11.2.50  Register (Address 0x62d0) type: Configuration_otp  
+# Setting  Register 32bit  
+0 Analog_mode_select   1 - 0 
+# Default Value  Logic  Info  
+0 0b00  active high  selection of the resolution mode.  
+0: resolution from registers.  
+1:VGA resolution  
+2:HD resolution  
+3: FHD resolution  
+11.2.51  Register (Address 0x62d4) type: Configuration  
+# Setting  Register 32bit  
+0 Analog_black_rows_en   2  
+# Default Value  Logic  Info  
+0 0b0 active high  enable for use if black pixels in case it is enabled 64 is added to the image header in height config  
+11.2.52  Register (Address 0xb03c) type: Configuration  
+# Setting  Register 32bit  
+0 AcquisitionCommand_Value   3 - 0 
+# Default Value  Logic  Info  
+0 0b0001   What will be the default at start up? According to CXP there should be no images transmited at start up  
+1: Stop  
+8: Continuous  
+9: MultiFrame  
+11.2.53  Register (Address 0xb05c) type: Configuration  
+# Setting  Register 32bit  
+0 AcquisitionFrameCount_Value   15 - 0 
+# Default Value  Logic  Info  
+0 0b0000000000000001   Default number of frames in MultiFrame (burst) mode  
+
+===== Page 37 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 37 
+ 
+11.2.54  Register (Address 0xb0bc) type: Configuration  
+# Setting  Register 32bit  
+0 AcquisitionFrameRate_Value   8 - 0 
+# Default Value  Logic  Info  
+0 0b000000101   Default frame rate at start up? Depending on the default resolution?  
+11.2.55  Register (Address 0xc430) type: Configuration  
+# Setting  Register 32bit  
+0 VendorUniqueBootstrapFSM_iidc_entry_offset_local  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000110000000110000   Local address where the iidc entry can be found  
+11.2.56  Register (Address 0xc440) type: Configuration  
+# Setting  Register 32bit  
+0 VendorUniqueBootstrapFSM_spi_master_clock_divider   15 - 0 
+# Default Value  Logic  Info  
+0 0b0000000000000010   Clock divider for the spi master connected to the imager  
+F_spi=125MHz/(2*(spi_master_clock_divider+1))  
+Default: 2 --> 20.83MHz  
+11.2.57  Register (Address 0xd430) type: - 
+# Setting  Register 32bit  
+0 VendorUniqueSPIGPIO_trigger   0 
+1 VendorUniqueSPIGPIO_busy   1  
+# Default Value  Logic  Info  
+0 0b0  Trigger for the spi transaction, write 1 to start a transaction, field automatically resets to 0  
+1 Input: Read -Only   Status of the spi transaction, 1: transaction busy, 0 transaction complete  
+11.2.58  Register (Address 0xd434) type: Configuration  
+# Setting  Register 32bit  
+0 VendorUniqueSPIGPIO_divider   15 - 0 
+# Default Value  Logic  Info  
+0 0b0000000000000010   Clock divider for the spi clock. f_spi = 125MHz/2*(divider+1)  
+11.2.59  Register (Address 0xd438) type: Configuration  
+# Setting  Register 32bit  
+
+===== Page 38 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 38 
+ 
+0 VendorUniqueSPIGPIO_transaction_size   5 - 0 
+# Default Value  Logic  Info  
+0 0b111111   Amount of bits -1 for the spi transaction  
+11.2.60  Register (Address 0xd43c) type: Configuration  
+# Setting  Register 32bit  
+0 VendorUniqueSPIGPIO_ssel   3 - 0 
+# Default Value  Logic  Info  
+0 0b0000   Slave select to be used in the spi transaction, coded in decimal  
+11.2.61  Register (Address 0xd440) type: Configuration  
+# Setting  Register 32bit  
+0 VendorUniqueSPIGPIO_data_mosi  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   Data to be send to the spi slave through mosi, bits [63:32]  
+11.2.62  Register (Address 0xd448) type: Configuration  
+# Setting  Register 32bit  
+0 VendorUniqueSPIGPIO_data_mosi  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   Data to be send to the spi slave through mosi, bits [31:0]  
+11.2.63  Register (Address 0xd44c) type: Input  
+# Setting  Register 32bit  
+0 VendorUniqueSPIGPIO_data_miso  31 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   Data to be received from the spi slave through miso, bits [63:32]  
+11.2.64  Register (Address 0xd450) type: Input  
+# Setting  Register 32bit  
+0 VendorUniqueSPIGPIO_data_miso  31 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   Data to be received from the spi slave through miso, bits [31:0]  
+11.2.65  Register (Address 0xd454) type: Configuration  
+# Setting  Register 32bit  
+
+===== Page 39 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 39 
+ 
+0 VendorUniqueSPIGPIO_spi_enable   0 
+# Default Value  Logic  Info  
+0 0b0  enable for the SPI Master through GPIOs  
+11.2.66  Register (Address 0xe030) type: Configuration  
+# Setting  Register 32bit  
+0 IOLineModeAll_Value   10 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000   Handles direction of I/O lines.  
+0 : Input  
+1 : Output  
+11.2.67  Register (Address 0xe050) type: Configuration  
+# Setting  Register 32bit  
+0 IOLineInverterAll_Value   10 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000   Handles the inversion of I/O lines.  
+0 : Not inverted  
+1 : Inverted  
+11.2.68  Register (Address 0xe070) type: Input  
+# Setting  Register 32bit  
+0 IOLineStatusAll_Value   10 - 0 
+# Default Value  Logic  Info  
+0 Input: Read -Only   Indicates the current status of all I/O lines.  
+0 :Low  
+1 : High  
+11.2.69  Register (Address 0xe090) type: Configuration  
+# Setting  Register 32bit  
+0 IOUserOutputValueAll_Value   10 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000   Sets the internal register of all user outputs.  
+0 : Low  
+1 : High  
+
+===== Page 40 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 40 
+ 
+11.2.70  Register (Address 0xe0bc) type: Configuration  
+# Setting  Register 32bit  
+0 IOLineSelector_Value   6 - 0 
+# Default Value  Logic  Info  
+0 0b0000000   Selects the I/O line to handle. It is reflected to IOLineSource.  
+11.2.71  Register (Address 0xe0dc) type: State  
+# Setting  Register 32bit  
+0 IOLineSource_Value   6 - 0 
+# Default Value  Logic  Info  
+0 0b0000000   Selects which source signals to connect I/O line. The number of I/O line is selected by IOLineSelector.  
+Off : Output is disabled.  
+UserOutput : Current user output value which is handled by UserOutputValueAll (bit position is same as  
+IOLine number).  
+Timer0Active, Timer1Active1,...:Current TimerValue which is handled by FeatureCSRs in  
+CounterAndTimerControl  
+AcquisitionActive : Device is processing Continuous, MultiFrame, ImageBufferRead or Retransmit  
+command of AcquisitionCommand.  
+FrameTriggerWait : Device is  currently waiting a frame trigger..  
+FrameActive: Device is currently capturing a image.  
+FrameTransferActive : Device is transmitting the image data.  
+ExposureActive : Device is exposing  
+11.2.72  Register (Address 0xf83c) type: Configuration  
+# Setting  Register 32bit  
+0 TriggerMode_Value   0 
+# Default Value  Logic  Info  
+0 0b0 Active_High  Default "0": off, "1" trigger enabled  
+11.2.73  Register (Address 0xf87c) type: Configuration  
+# Setting  Register 32bit  
+0 TriggerSource_Value   6 - 0 
+# Default Value  Logic  Info  
+0 0b1111000  Active_High  64: Software trigger  
+120: External pin as trigger  
+
+===== Page 41 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 41 
+ 
+11.2.74  Register (Address 0xf8dc) type: Trigger_registered  
+# Setting  Register 32bit  
+0 SoftwareTrigger_Value   0 
+# Default Value  Logic  Info  
+0 0b0 Active_High  0: Software trigger inactive  
+1: Software trigger active  
+11.2.75  Register (Address 0x10098) type: Configuration  
+# Setting  Register 32bit  
+0 ImageSize_Width   15 - 0 
+# Default Value  Logic  Info  
+0 0b0000010100000000  Active_High   
+11.2.76  Register (Address 0x100a0) type: Configuration  
+# Setting  Register 32bit  
+0 ImageSize_Height   15 - 0 
+# Default Value  Logic  Info  
+0 0b0000001011010000  Active_High   
+11.2.77  Register (Address 0x100dc) type: State  
+# Setting  Register 32bit  
+0 PixelCoding_Value  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000  Active_High  Depeding on "ReverseX_Value", "ReverseY_Value", "col_mono pad", these can change the color pattern  
+11.2.78  Register (Address 0x100fc) type: State  
+# Setting  Register 32bit  
+0 PixelSize_Value   3 - 0 
+# Default Value  Logic  Info  
+0 0b1010  Active_High  8: represents that the imager is outputting 8 -bit 
+10: represents that the imager is outputting 10 -bit 
+12: represents that the imager is outputting 12 -bit 
+11.2.79  Register (Address 0x1017c) type: Configuration  
+# Setting  Register 32bit  
+0 DecimationHorizontal_Value   1 - 0 
+
+===== Page 42 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 42 
+ 
+# Default Value  Logic  Info  
+0 0b00   Current sub sampling rate, default "0" --> Subsampling off  
+11.2.80  Register (Address 0x1019c) type: Configuration  
+# Setting  Register 32bit  
+0 DecimationVertical_Value   1 - 0 
+# Default Value  Logic  Info  
+0 0b00   Current sub sampling rate, default "0" --> Subsampling off  
+11.2.81  Register (Address 0x101b0) type: Configuration  
+# Setting  Register 32bit  
+0 ReverseX_Value   0 
+# Default Value  Logic  Info  
+0 0b0  0: No reverse in X direction (default)  
+1: Reverse in X direction  
+11.2.82  Register (Address 0x101d0) type: Configuration  
+# Setting  Register 32bit  
+0 ReverseY_Value   0 
+# Default Value  Logic  Info  
+0 0b0  0: No reverse in Y direction (default)  
+1: Reverse in Y direction  
+11.2.83  Register (Address 0x101f4) type: Input  
+# Setting  Register 32bit  
+0 TestPattern_ColorBar   16  
+# Default Value  Logic  Info  
+0 Input: Read -Only   The default of this register should 1 incase it is a color imager, incase of B/W this should be 0!  
+11.2.84  Register (Address 0x101fc) type: Configuration  
+# Setting  Register 32bit  
+0 TestPattern_Value  31 - 0 
+# Default Value  Logic  Info  
+0 0b00000000000000000000000000000000   0: Image from the pixel array (default)  
+1: Black test image  
+2: White test image  
+
+===== Page 43 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 43 
+ 
+3: Grey55 test image  
+4: GreyAA test image  
+16: GrayHorizontalRamp  
+17: GrayVerticalRamp  
+48: ColorBar  
+49: GreyScaleChart  
+120: VendorSpecific0 test image  
+121: VendorSpecific1 test image  
+122: VendorSpecific2 test image  
+123: VendorSpecific3 test image  
+124: VendorSpecific4 test image  
+125: VendorSpecific5 test image  
+ 
+  
+
+===== Page 44 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 44 
+ 
+11.3 Detailed register map: constant registers  
+0x0 XML_Settings_Standard  31 - 0 0b11000000101001111001101011100101   Magic number (constant) indicating the Device implements the CoaXPress  
+standard  
+0x8 XML_Settings_XmlManifestSize  31 - 0 0b00000000000000000000000000000001   This register shall provide the number of XML manifests available. At least one 
+manifest shall be available.  
+0xc XML_Settings_XmlManifestSelector  31 - 0 0b00000000000000000000000000000000   This register shall select the required XML manifest registers. It shall hold a 
+number between 0 and XmlManifestSize – 1. 
+0x10  XML_Settings_XmlVersion  31 - 0 0b00000000000000010000000000000100   This register shall provide the version number for the XML file given in the 
+manifest referenced by register XmlManifestSelector.  
+0x14  XML_Settings_XmlSchemaVersion  31 - 0 0b00000000000000010000000000000001   This register shall provide the GenICam  schema version for the XML file given in 
+the manifest referenced by register XmlManifestSelector  
+0x18  XML_Settings_XmlUrlAddress  31 - 0 0b00000000000000001010000000000000   This register shall provide the address (manufacturer -specific range) of the start of 
+the URL string referenced by register XmlManifestSelector.  
+0x1c  XML_Settings_IidcAddress  31 - 0 0b00000000000000000110000000110000   For Devices that support the IIDC2 protocol, this register shall provide the address 
+of the start of the IIDC2 register space.  
+For Devices that do not support IIDC2, this register shall be set to the value 
+0x00000000  
+0x2000  Device_DeviceVendorName  31 - 0 0b01001101011000010110011101101001   This register shall provide the name of the manufacturer of the Device as a string - 
+Magics Technologies  
+0x2004  Device_DeviceVendorName  31 - 0 0b01100011011100110010000001010100   This register shall provide the name of the manufacturer of the Device as a string  
+0x2008  Device_DeviceVendorName  31 - 0 0b01100101011000110110100001101110   This register shall provide the name of the manufacturer of the Device as a string  
+0x200c  Device_DeviceVendorName  31 - 0 0b01101111011011000110111101100111   This register shall provide the name of the manufacturer of the Device as a string  
+0x2010  Device_DeviceVendorName  31 - 0 0b01101001011001010111001100000000   This register shall provide the name of the manufacturer of the Device as a string  
+0x2014  Device_DeviceVendorName  31 - 0 0b00000000000000000000000000000000   This register shall provide the name of the manufacturer of the Device as a string  
+0x2018  Device_DeviceVendorName  31 - 0 0b00000000000000000000000000000000   This register shall provide the name of the manufacturer of the Device as a string  
+0x201c  Device_DeviceVendorName  31 - 0 0b00000000000000000000000000000000   This register shall provide the name of the manufacturer of the Device as a string  
+0x2020  Device_DeviceModelName  31 - 0 0b01001101010000010100011100101101   This register shall provide the model name of the Device as a string. - To decide 
+which text to add  
+0x2024  Device_DeviceModelName  31 - 0 0b01000011010110000101000000110000   This register shall provide the model name of the Device as a string.  
+0x2028  Device_DeviceModelName  31 - 0 0b00110000001100000011000000110010   This register shall provide the model name of the Device as a string.  
+0x202c  Device_DeviceModelName  31 - 0 0b00000000000000000000000000000000   This register shall provide the model name of the Device as a string.  
+0x2030  Device_DeviceModelName  31 - 0 0b00000000000000000000000000000000   This register shall provide the model name of the Device as a string.  
+0x2034  Device_DeviceModelName  31 - 0 0b00000000000000000000000000000000   This register shall provide the model name of the Device as a string.  
+0x2038  Device_DeviceModelName  31 - 0 0b00000000000000000000000000000000   This register shall provide the model name of the Device as a string.  
+0x203c  Device_DeviceModelName  31 - 0 0b00000000000000000000000000000000   This register shall provide the model name of the Device as a string.  
+0x2040  Device_DeviceManufacturerInfo  31 - 0 0b01001101011000010110011101101001   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2044  Device_DeviceManufacturerInfo  31 - 0 0b01100011011100110010000001010100   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2048  Device_DeviceManufacturerInfo  31 - 0 0b01100101011000110110100001101110   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+
+===== Page 45 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 45 
+ 
+0x204c  Device_DeviceManufacturerInfo  31 - 0 0b01101111011011000110111101100111   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2050  Device_DeviceManufacturerInfo  31 - 0 0b01101001011001010111001100100000   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2054  Device_DeviceManufacturerInfo  31 - 0 0b01001101010000010100011100101101   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2058  Device_DeviceManufacturerInfo  31 - 0 0b01000011010110000101000000000000   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x205c  Device_DeviceManufacturerInfo  31 - 0 0b00000000000000000000000000000000   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2060  Device_DeviceManufacturerInfo  31 - 0 0b00000000000000000000000000000000   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2064  Device_DeviceManufacturerInfo  31 - 0 0b00000000000000000000000000000000   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2068  Device_DeviceManufacturerInfo  31 - 0 0b00000000000000000000000000000000   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x206c  Device_DeviceManufacturerInfo  31 - 0 0b00000000000000000000000000000000   This register shall provide extended manufacturer -specific information about the 
+Device as a string  
+0x2070  Device_DeviceVersion  31 - 0 0b00110010001011100011000000000000   This register shall provide the version of the Device as a string.  
+0x2074  Device_DeviceVersion  31 - 0 0b00000000000000000000000000000000   This register shall provide the version of the Device as a string.  
+0x2078  Device_DeviceVersion  31 - 0 0b00000000000000000000000000000000   This register shall provide the version of the Device as a string.  
+0x207c  Device_DeviceVersion  31 - 0 0b00000000000000000000000000000000   This register shall provide the version of the Device as a string.  
+0x2080  Device_DeviceVersion  31 - 0 0b00000000000000000000000000000000   This register shall provide the version of the Device as a string.  
+0x2084  Device_DeviceVersion  31 - 0 0b00000000000000000000000000000000   This register shall provide the version of the Device as a string.  
+0x2088  Device_DeviceVersion  31 - 0 0b00000000000000000000000000000000   This register shall provide the version of the Device as a string.  
+0x208c  Device_DeviceVersion  31 - 0 0b00000000000000000000000000000000   This register shall provide the version of the Device as a string.  
+0x20b0  Device_DeviceSerialNumber  31 - 0 0b01001101010000010100011100101101   This register shall provide the serial number for the Device as a NULL -terminated 
+string.  
+0x20b4  Device_DeviceSerialNumber  31 - 0 0b01000011010110000101000000110000   This register shall provide the serial number for the Device as a NULL -terminated 
+string.  
+0x20b8  Device_DeviceSerialNumber  31 - 0 0b00110000001100000011000000110010   This register shall provide the serial number for the Device as a NULL -terminated 
+string.  
+0x20bc  Device_DeviceSerialNumber  31 - 0 0b00000000000000000000000000000000   This register shall provide the serial number for the Device as a NULL -terminated 
+string.  
+0x20c0  Device_DeviceUserId  31 - 0 0b00110001001000000010000000100000   This register shall provide a user -programmable identifier for the Device as a 
+string. The Device shall  
+provide persistent storage for this register so the value is maintained when power 
+is switched off.  
+0x20c4  Device_DeviceUserId  31 - 0 0b00100000001000000010000000100000   This register shall provide a user -programmable identifier for the Device as a 
+string. The Device shall  
+provide persistent storage for this register so the value is maintained when power 
+is switched off.  
+
+===== Page 46 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 46 
+ 
+0x20c8  Device_DeviceUserId  31 - 0 0b00100000001000000010000000100000   This register shall provide a user -programmable identifier for the Device as a 
+string. The Device shall  
+provide persistent storage for this register so the value is maintained when power 
+is switched off.  
+0x20cc  Device_DeviceUserId  31 - 0 0b00000000000000000000000000000000   This register shall provide a user -programmable identifier for the Device as a 
+string. The Device shall  
+provide persistent storage for this register so the value is maintained when power 
+is switched off.  
+0x20d0  Device_GenDcPrefetchDescriptorAddress  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if GenDC is supported, as indicated by 
+CapabilityRegister bit GenDcSupported --> Remove  
+0x20d4  Device_GenDcPrefetchDescriptorSize  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if GenDC is supported, as indicated by 
+CapabilityRegister bit GenDcSupported --> Remove  
+0x20d8  Device_GenDcFlowTableAddress  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if GenDC is supported, as indicated by 
+CapabilityRegister bit GenDcSupported --> Remove  
+0x20dc  Device_GenDcFlowTableSize  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if GenDC is supported, as indicated by 
+CapabilityRegister bit GenDcSupported --> Remove  
+0x20e0  Device_GenDcContainerSize  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if GenDC is supported, as indicated by 
+CapabilityRegister bit GenDcSupported --> Remove  
+0x3008  SettingAddress_AcquisitionModeAddress  31 - 0 0b00000000000000000110000000000000   This register shall provide the address in the manufacturer -specific register space 
+of AcquisitionMode  
+0x300c  SettingAddress_AcquistionStartAddress  31 - 0 0b00000000000000000110000000000100   This register shall provide the address in the manufacturer -specific register space 
+of AcquisitionStart  
+0x3010  SettingAddress_AcquistionStopAddress  31 - 0 0b00000000000000000110000000001000   This register shall provide the address in the manufacturer -specific register space 
+of AcquisitionStop  
+0x3014  SettingAddress_PixelFormatAddress  31 - 0 0b00000000000000000110000000001100   This register shall provide the address in the manufacturer -specific register space 
+of PixelFormat  
+0x3018  SettingAddress_DeviceTapGeometryAddress  31 - 0 0b00000000000000000110000000010000   This register shall provide the address in the manufacturer -specific register space 
+of DeviceTapGeometry  
+0x301c  SettingAddress_Image1StreamIDAddress  31 - 0 0b00000000000000000110000000010100   This register shall provide the address in the manufacturer -specific register space 
+of Image<n>StreamID  
+Image<n>StreamIDAddress shall be set to 0 for stream numbers that are not 
+supported by the Device  
+0x4004  StreamSettings_DeviceConnectionID  31 - 0 0b00000000000000000000000000000000   Proxima has only one connect (a master connection) , Connection ID of 0 means 
+that the connection is a Master connection  
+0x400c  StreamSettings_ControlPacketSizeMax  31 - 0 0b00000000000000000000000100000000   This register shall provide the maximum control packet size the Host can read from 
+the Device, or write to the Device.  
+The size is defined in bytes, and shall be a multiple of 4 bytes. The defined size is 
+that of the entire packet, not just the payload.  
+Comment: The control packet size is at least 132 bytes for version 2.x Devices.  
+Have chosen 256 bytes, the same as Proxima v1  
+0x4018  StreamSettings_ConnectionConfigDefault  31 - 0 0b00000000000000010000000000101000   This register shall provide the value of the ConnectionConfig register that allows 
+the Device to operate in its recommended mode.  
+
+===== Page 47 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 47 
+ 
+0x4038  StreamSettings_ElectricalComplianceTest  31 - 0 0b00000000000000000000000000000000   Used during electrical compliance testing only  
+0x403c  StreamSettings_CapabilityRegister  31 - 0 0b00000000000000000000000000000000   Proxima will not support "GenDc", "ExtraLsTrigger", "LinkSharing" and 
+HsUpConnection"  
+0x4040  StreamSettings_FeatureControlRegister  31 - 0 0b00000000000000000000000000000000   This register shall be used to enable or disable optional Device features ("GenDc", 
+"ExtraLsTrigger", "LinkSharing" and HsUpConnection")  
+0x404c  StreamSettings_LinkSharingStatus  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if LinkSharing is supported, as indicated by 
+CapabilityRegister bit LinkSharingSupported --> Remove  
+0x4050  StreamSettings_LinkSharingHorizontalStripeCount  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if LinkSharing is supported, as indicated by 
+CapabilityRegister bit LinkSharingSupported --> Remove  
+0x4054  StreamSettings_LinkSharingVerticalStripeCount  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if LinkSharing is supported, as indicated by 
+CapabilityRegister bit LinkSharingSupported --> Remove  
+0x4058  StreamSettings_LinkSharingHorizontalOverlap  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if LinkSharing is supported, as indicated by 
+CapabilityRegister bit LinkSharingSupported --> Remove  
+0x405c  StreamSettings_LinkSharingVerticalOverlap  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if LinkSharing is supported, as indicated by 
+CapabilityRegister bit LinkSharingSupported --> Remove  
+0x4060  StreamSettings_LinkSharingDuplicateStripe  31 - 0 0b00000000000000000000000000000000   This register shall only be supported if LinkSharing is supported, as indicated by 
+CapabilityRegister bit LinkSharingSupported --> Remove  
+0x6010  AcquisitionSettings_DeviceTapGeometry  31 - 0 0b00000000000000000000000000000000   Default tap geometry 1X1Y  
+0x6014  AcquisitionSettings_Image1StreamID  31 - 0 0b00000000000000000000000000000000   First and only image stream has id 0  
+0x6030  IIDC2EntryImager_Keyword  31 - 0 0b01001001010010010100010001000011  Active_High  This indicates the start of the IIDC2Entry with the keyword ("IIDC") in ASCI  
+0x6034  IIDC2EntryImager_SubMinorVersionNumber  7 - 0 0b00000000  Active_High  Indicates the version of IIDC specification  
+0x6034  IIDC2EntryImager_MinorVersionNumber  15 - 8 0b00000010  Active_High  Indicates the version of IIDC specification  
+0x6034  IIDC2EntryImager_MajorVersionNumber  23 - 16 0b00010000  Active_High  Indicates the version of IIDC specification  
+0x6038  IIDC2EntryImager_NumberOfCategoryBlocks  15 - 0 0b0000000001000001  Active_High  Indicates the number of CategoryBlock a device has. It includes reserved space  
+0x6040  IIDC2EntryImager_OffsetForXmlManifestTable  31 - 0 0b00000000000000000000000000000000  Active_High  Indicates offset address of XML Manifest table, if transport layer has no XML. (CxP 
+does)  
+0x60d0  Analog_SizeOfCategoryBlock  23 - 0 0b000000000000000000110100  Active_High  Indicates the total size of the Category including the header  
+0x60d0  Analog_CategoryBlockNumber  31 - 24 0b00011010  Active_High  Indicates the CategoryNumber  
+0x60f0  Analog_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0x60f0  Analog_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0x60f0  Analog_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0x60f0  Analog_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0x60f0  Analog_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0x60f0  Analog_ValueType  23 - 16 0b10110001  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0x60f0  Analog_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0x60f0  Analog_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0x60f0  Analog_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0x60f0  Analog_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0x60f0  Analog_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x60f4  Analog_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0x60f8  Analog_Control  3 - 0 0b0001  Active_High  Always manual mode  
+
+===== Page 48 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 48 
+ 
+0x60fc  Analog_NumberOfElements  30 - 0 0b0000000000000000000000000000001  Active_High  Equal to the number of 32 -bit values that need to be set in this control  
+0x60fc  Analog_MoreDimension  31 - 31 0b0 Active_High  To indicate it is only a 1D array  
+0xa000  XMLURL  31 - 0 0b01010111011001010110001000111010   XML URL as a string  
+0xa004  XMLURL  31 - 0 0b01101000011101000111010001110000   XML URL as a string  
+0xa008  XMLURL  31 - 0 0b00111010001011110010111101110111   XML URL as a string  
+0xa00c  XMLURL  31 - 0 0b01110111011101110010111001101101   XML URL as a string  
+0xa010  XMLURL  31 - 0 0b01100001011001110110100101100011   XML URL as a string  
+0xa014  XMLURL  31 - 0 0b01110011001011100111010001100101   XML URL as a string  
+0xa018  XMLURL  31 - 0 0b01100011011010000010111101111000   XML URL as a string  
+0xa01c  XMLURL  31 - 0 0b01101101011011000010111101101101   XML URL as a string  
+0xa020  XMLURL  31 - 0 0b01100001011001110110100101100011   XML URL as a string  
+0xa024  XMLURL  31 - 0 0b01110011010111110110001101111000   XML URL as a string  
+0xa028  XMLURL  31 - 0 0b01110000011101100011001000101110   XML URL as a string  
+0xa02c  XMLURL  31 - 0 0b01111000011011010110110000000000   XML URL as a string  
+0xb000  AcquisitionControl_SizeOfCategoryBlock  23 - 0 0b000000000000000011100000   Indicates the total size of the Category including the header  
+0xb000  AcquisitionControl_CategoryBlockNumber  31 - 24 0b00000011   Indicates the CategoryNumber  
+0xb020  AcquisitionCommand_ValueType  23 - 16 0b00000011   ValueType is an Enumeration  
+0xb020  AcquisitionCommand_Readable  24 - 24 0b1  BasicCSR is readable  
+0xb020  AcquisitionCommand_Writable  25 - 25 0b1  BasicCSR is writable  
+0xb020  AcquisitionCommand_UserSetLoadable  26 - 26 0b0  - 
+0xb020  AcquisitionCommand_Active  30 - 30 0b1  Feature is active  
+0xb020  AcquisitionCommand_Implemented  31 - 31 0b1  BasicCSR is implemented  
+0xb024  AcquisitionCommand_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000   - 
+0xb028  AcquisitionCommand_Control  3 - 0 0b0001   Manual control is selected  
+0xb038  AcquisitionCommand_Abort  0 - 0 0b0  Isn't supported  
+0xb038  AcquisitionCommand_Stop  1 - 1 0b1  Stop capturing and transferring data after current transmitting frame is finished  
+0xb038  AcquisitionCommand_Continuous  8 - 8 0b1  Start capturing and transferring data continuously  
+0xb038  AcquisitionCommand_MultiFrame  9 - 9 0b1  Start capturing and transferring multiple frames. The number of capturing / 
+transferring frames are defined  
+by AcquisitionFrameCount. After transmission is finished, this field turns to Stop  
+0xb038  AcquisitionCommand_ImageBufferRead  10 - 10 0b0  Isn't supported  
+0xb038  AcquisitionCommand_Retransmit  16 - 16 0b0  Isn't supported  
+0xb040  AcquisitionFrameCount_ValueType  23 - 16 0b00110000   Integer32  
+0xb040  AcquisitionFrameCount_Readable  24 - 24 0b1  BasicCSR is readable  
+0xb040  AcquisitionFrameCount_Writable  25 - 25 0b1  BasicCSR is writable  
+0xb040  AcquisitionFrameCount_UserSetLoadable  26 - 26 0b0  - 
+0xb040  AcquisitionFrameCount_Active  30 - 30 0b1  Feature is active  
+0xb040  AcquisitionFrameCount_Implemented  31 - 31 0b1  BasicCSR is implemented  
+0xb044  AcquisitionFrameCount_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000   - 
+0xb048  AcquisitionFrameCount_Control  31 - 0 0b00000000000000000000000000000001   Manual control is selected  
+0xb054  AcquisitionFrameCount_Min  31 - 0 0b00000000000000000000000000000001   Imager needs to capture atleast one frame  
+
+===== Page 49 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 49 
+ 
+0xb058  AcquisitionFrameCount_Max  31 - 0 0b00000000000000001111111111111111   Max burst is x frames (Digital team?)  
+0xb060  ImageBufferMode_Implemented  31 - 31 0b0  BasicCSR is not implemented  
+0xb080  ImageBufferFrameCount_Implemented  31 - 31 0b0  BasicCSR is not implemented  
+0xb0a0  AcquisitionFrameRate_NoSpecifyInq  0 - 0 0b0  Device can't set the value to device specific values  
+0xb0a0  AcquisitionFrameRate_ManualInq  1 - 1 0b1  Manual control is supported  
+0xb0a0  AcquisitionFrameRate_DefaultInq  4 - 4 0b0  Loading the default value in the register again isn't possible  
+0xb0a0  AcquisitionFrameRate_ValueType  23 - 16 0b00110000   Integer32  
+0xb0a0  AcquisitionFrameRate_Readable  24 - 24 0b1  BasicCSR is readable  
+0xb0a0  AcquisitionFrameRate_Writable  25 - 25 0b1  BasicCSR is writable  
+0xb0a0  AcquisitionFrameRate_UserSetLoadable  26 - 26 0b0  - 
+0xb0a0  AcquisitionFrameRate_Active  30 - 30 0b1  Feature is active  
+0xb0a0  AcquisitionFrameRate_Implemented  31 - 31 0b1  BasicCSR is implemented  
+0xb0a4  AcquisitionFrameRate_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000   - 
+0xb0a8  AcquisitionFrameRate_Control  3 - 0 0b0001   Manual control is selected  
+0xb0ac  AcquisitionFrameRate_Mult  31 - 0 0b00000000000000000000000000000001   In what steps will we make the fps programmable?  
+0xb0b0  AcquisitionFrameRate_Div  31 - 0 0b00000000000000000000000000000001   In what steps will we make the fps programmable?  
+0xb0b4  AcquisitionFrameRate_Min  31 - 0 0b00000000000000000000000000000101   Minimum frame rate depending on the resolution? (VGA)  
+0xb0b8  AcquisitionFrameRate_Max  31 - 0 0b00000000000000000000000100101100   Will use datasheet to inform customer for max FPS per resolution.  
+0xb0c0  AcquisitionFrameInterval_Implemented  31 - 31 0b0  Active_High  
+0xc400  VendorUniqueBootstrapFSM_SizeOfCategoryBlock  23 - 0 0b000000000000000000110100  Active_High  Indicates the total size of the Category including the header  
+0xc400  VendorUniqueBootstrapFSM_CategoryBlockNumber  31 - 24 0b00011010  Active_High  Indicates the CategoryNumber  
+0xc420  VendorUniqueBootstrapFSM_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0xc420  VendorUniqueBootstrapFSM_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xc420  VendorUniqueBootstrapFSM_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xc420  VendorUniqueBootstrapFSM_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xc420  VendorUniqueBootstrapFSM_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xc420  VendorUniqueBootstrapFSM_ValueType  23 - 16 0b10110001  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0xc420  VendorUniqueBootstrapFSM_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xc420  VendorUniqueBootstrapFSM_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xc420  VendorUniqueBootstrapFSM_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xc420  VendorUniqueBootstrapFSM_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0xc420  VendorUniqueBootstrapFSM_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xc424  VendorUniqueBootstrapFSM_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xc428  VendorUniqueBootstrapFSM_Control  3 - 0 0b0001  Active_High  Always manual mode  
+0xc42c  VendorUniqueBootstrapFSM_NumberOfElements  30 - 0 0b0000000000000000000000000000001  Active_High  Equal to the number of 32 -bit values that need to be set in this control  
+0xc42c  VendorUniqueBootstrapFSM_MoreDimension  31 - 31 0b0 Active_High  To indicate it is only a 1D array  
+0xd400  VendorUniqueSPIGPIO_SizeOfCategoryBlock  23 - 0 0b000000000000000000110100  Active_High  Indicates the total size of the Category including the header  
+0xd400  VendorUniqueSPIGPIO_CategoryBlockNumber  31 - 24 0b00011010  Active_High  Indicates the CategoryNumber  
+0xd420  VendorUniqueSPIGPIO_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0xd420  VendorUniqueSPIGPIO_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xd420  VendorUniqueSPIGPIO_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+
+===== Page 50 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 50 
+ 
+0xd420  VendorUniqueSPIGPIO_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xd420  VendorUniqueSPIGPIO_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xd420  VendorUniqueSPIGPIO_ValueType  23 - 16 0b10110001  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0xd420  VendorUniqueSPIGPIO_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xd420  VendorUniqueSPIGPIO_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xd420  VendorUniqueSPIGPIO_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xd420  VendorUniqueSPIGPIO_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0xd420  VendorUniqueSPIGPIO_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xd424  VendorUniqueSPIGPIO_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xd428  VendorUniqueSPIGPIO_Control  3 - 0 0b0001  Active_High  Always manual mode  
+0xd42c  VendorUniqueSPIGPIO_NumberOfElements  30 - 0 0b0000000000000000000000000000001  Active_High  Equal to the number of 32 -bit values that need to be set in this control  
+0xd42c  VendorUniqueSPIGPIO_MoreDimension  31 - 31 0b0 Active_High  To indicate it is only a 1D array  
+0xe000  DigitalIOControl_SizeOfCategoryBlock  23 - 0 0b000000000000000011100000  Active_High  Indicates the total size of the Category including the header  
+0xe000  DigitalIOControl_CategoryBlockNumber  31 - 24 0b00001001  Active_High  Indicates the CategoryNumber  
+0xe020  IOLineModeAll_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0xe020  IOLineModeAll_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xe020  IOLineModeAll_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe020  IOLineModeAll_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe020  IOLineModeAll_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xe020  IOLineModeAll_ValueType  23 - 16 0b00110100  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0xe020  IOLineModeAll_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xe020  IOLineModeAll_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xe020  IOLineModeAll_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xe020  IOLineModeAll_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0xe020  IOLineModeAll_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xe024  IOLineModeAll_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xe028  IOLineModeAll_Control  3 - 0 0b0001  Active_High  Always manual mode  
+0xe02c  IOLineModeAll_BitWriteable  31 - 0 0b00000000000000001111111111111111  Active_High  To indicate it is only a 1D array  
+0xe040  IOLineInverterAll_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0xe040  IOLineInverterAll_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xe040  IOLineInverterAll_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe040  IOLineInverterAll_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe040  IOLineInverterAll_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xe040  IOLineInverterAll_ValueType  23 - 16 0b00110100  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0xe040  IOLineInverterAll_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xe040  IOLineInverterAll_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xe040  IOLineInverterAll_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xe040  IOLineInverterAll_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0xe040  IOLineInverterAll_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xe044  IOLineInverterAll_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xe048  IOLineInverterAll_Control  3 - 0 0b0001  Active_High  Always manual mode  
+
+===== Page 51 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 51 
+ 
+0xe04c  IOLineInverterAll_BitWriteable  31 - 0 0b00000000000000001111111111111111  Active_High  To indicate it is only a 1D array  
+0xe060  IOLineStatusAll_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0xe060  IOLineStatusAll_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xe060  IOLineStatusAll_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe060  IOLineStatusAll_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe060  IOLineStatusAll_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xe060  IOLineStatusAll_ValueType  23 - 16 0b00110100  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0xe060  IOLineStatusAll_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xe060  IOLineStatusAll_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xe060  IOLineStatusAll_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xe060  IOLineStatusAll_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0xe060  IOLineStatusAll_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xe064  IOLineStatusAll_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xe068  IOLineStatusAll_Control  3 - 0 0b0001  Active_High  Always manual mode  
+0xe06c  IOLineStatusAll_BitWriteable  31 - 0 0b00000000000000001111111111111111  Active_High  To indicate it is only a 1D array  
+0xe080  IOUserOutputValueAll_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0xe080  IOUserOutputValueAll_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xe080  IOUserOutputValueAll_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe080  IOUserOutputValueAll_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe080  IOUserOutputValueAll_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xe080  IOUserOutputValueAll_ValueType  23 - 16 0b00110100  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0xe080  IOUserOutputValueAll_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xe080  IOUserOutputValueAll_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xe080  IOUserOutputValueAll_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xe080  IOUserOutputValueAll_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0xe080  IOUserOutputValueAll_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xe084  IOUserOutputValueAll_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xe088  IOUserOutputValueAll_Control  3 - 0 0b0001  Active_High  Always manual mode  
+0xe08c  IOUserOutputValueAll_BitWriteable  31 - 0 0b00000000000000001111111111111111  Active_High  To indicate it is only a 1D array  
+0xe0a0  IOLineSelector_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0xe0a0  IOLineSelector_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xe0a0  IOLineSelector_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe0a0  IOLineSelector_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe0a0  IOLineSelector_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xe0a0  IOLineSelector_ValueType  23 - 16 0b00110100  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0xe0a0  IOLineSelector_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xe0a0  IOLineSelector_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xe0a0  IOLineSelector_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xe0a0  IOLineSelector_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0xe0a0  IOLineSelector_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xe0a4  IOLineSelector_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+
+===== Page 52 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 52 
+ 
+0xe0a8  IOLineSelector_Control  3 - 0 0b0001  Active_High  Always manual mode  
+0xe0ac  IOLineSelector_ListOfElements  31 - 0 0b00000000000000000000000000000000  Active_High  To indicate it is only a 1D array  
+0xe0c0  IOLineSource_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0xe0c0  IOLineSource_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xe0c0  IOLineSource_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe0c0  IOLineSource_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0xe0c0  IOLineSource_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xe0c0  IOLineSource_ValueType  23 - 16 0b00110100  Active_High  Array type is variable type + 0x80 so in this case: 0x31 + 0x80 = B1  
+0xe0c0  IOLineSource_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xe0c0  IOLineSource_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xe0c0  IOLineSource_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xe0c0  IOLineSource_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0xe0c0  IOLineSource_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xe0c4  IOLineSource_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xe0c8  IOLineSource_Control  3 - 0 0b0001  Active_High  Always manual mode  
+0xe0cc  IOLineSource_ListOfElements  31 - 0 0b00000000000000000000000000000000  Active_High  To indicate it is only a 1D array  
+0xf800  TriggerControl_SizeOfCategoryBlock  23 - 0 0b000000000000000011100000  Active_High  Indicates the total size of the Category including the header  
+0xf800  TriggerControl_CategoryBlockNumber  31 - 24 0b00000111  Active_High  Indicates the CategoryNumber  
+0xf820  TriggerMode_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xf820  TriggerMode_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xf820  TriggerMode_ValueType  23 - 16 0b00000011  Active_High  ValueType is an Enumeration  
+0xf820  TriggerMode_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xf820  TriggerMode_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xf820  TriggerMode_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xf820  TriggerMode_Active  30 - 30 0b1 Active_High  Feature is active  
+0xf820  TriggerMode_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0xf824  TriggerMode_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xf828  TriggerMode_Control  3 - 0 0b0001  Active_High  Manual control is selected  
+0xf82c  TriggerMode_VendorSpecific0  24 - 24 0b0 Active_High  Not supported  
+0xf82c  TriggerMode_VendorSpecific1  25 - 25 0b0 Active_High  Not supported  
+0xf82c  TriggerMode_VendorSpecific2  26 - 26 0b0 Active_High  Not supported  
+0xf82c  TriggerMode_VendorSpecific3  27 - 27 0b0 Active_High  Not supported  
+0xf82c  TriggerMode_VendorSpecific4  28 - 28 0b0 Active_High  Not supported  
+0xf82c  TriggerMode_VendorSpecific5  29 - 29 0b0 Active_High  Not supported  
+0xf82c  TriggerMode_VendorSpecific6  30 - 30 0b0 Active_High  Not supported  
+0xf82c  TriggerMode_VendorSpecific7  31 - 31 0b0 Active_High  Not supported  
+0xf838  TriggerMode_Off  0 - 0 0b1 Active_High  Supported  
+0xf838  TriggerMode_On  1 - 1 0b1 Active_High  Supported  
+0xf860  TriggerSource_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xf860  TriggerSource_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xf860  TriggerSource_ValueType  23 - 16 0b00000011  Active_High  Enumeration  
+
+===== Page 53 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 53 
+ 
+0xf860  TriggerSource_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xf860  TriggerSource_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xf860  TriggerSource_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xf860  TriggerSource_Active  30 - 30 0b1 Active_High  Feature is active  
+0xf860  TriggerSource_Implemented  31 - 31 0b1 Active_High  BasicCSR isn't implemented  
+0xf864  TriggerSource_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xf868  TriggerSource_Control  3 - 0 0b0001  Active_High  Manual control is selected  
+0xf86c  TriggerSource_VendorSpecific0  24 - 24 0b1 Active_High  External pin as trigger is supported  
+0xf870  TriggerSource_SoftwareTrigger  0 - 0 0b1 Active_High  Software trigger is supported  
+0xf8c0  SoftwareTrigger_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0xf8c0  SoftwareTrigger_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0xf8c0  SoftwareTrigger_ValueType  23 - 16 0b00000011  Active_High  Enumeration  
+0xf8c0  SoftwareTrigger_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0xf8c0  SoftwareTrigger_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0xf8c0  SoftwareTrigger_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0xf8c0  SoftwareTrigger_Active  30 - 30 0b1 Active_High  Feature is active  
+0xf8c0  SoftwareTrigger_Implemented  31 - 31 0b1 Active_High  BasicCSR isn't implemented  
+0xf8c4  SoftwareTrigger_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0xf8c8  SoftwareTrigger_Control  3 - 0 0b0001  Active_High  Manual control is selected  
+0xf8d8  SoftwareTrigger_Inactive  0 - 0 0b1 Active_High  Is supported  
+0xf8d8  SoftwareTrigger_Activetable  1 - 1 0b1 Active_High  Is supported  
+0x10000  ImageFormatControl_SizeOfCategoryBlock  23 - 0 0b000000000000001000000000  Active_High  Indicates the total size of the Category including the header  
+0x10000  ImageFormatControl_CategoryBlockNumber  31 - 24 0b00000010  Active_High  Indicates the CategoryNumber  
+0x10020  ImageFormatSelector_Implemented  31 - 31 0b0 Active_High  BasicCSR is not implemented  
+0x10040  ApplyImageFormat_Implemented  31 - 31 0b0 Active_High  BasicCSR is not implemented  
+0x10060  ImageSize_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0x10060  ImageSize_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0x10060  ImageSize_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device isn't possible  
+0x10060  ImageSize_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0x10060  ImageSize_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0x10060  ImageSize_ValueType  23 - 16 0b00110101  Active_High  ValueType is an Rectangle32  
+0x10060  ImageSize_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0x10060  ImageSize_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0x10060  ImageSize_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0x10060  ImageSize_Active  30 - 30 0b1 Active_High  Feature is active  
+0x10060  ImageSize_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x10064  ImageSize_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0x10068  ImageSize_Control  3 - 0 0b0001  Active_High  Manual control is selected  
+0x1006c  ImageSize_MinOffsetX  31 - 0 0b00000000000000000000000000000000  Active_High  The minimum offset is 0  
+0x10070  ImageSize_IncOffsetX  31 - 0 0b00000000000000000000000000000010  Active_High  This is always 2, inheretant to the design of the ASIC  
+0x10074  ImageSize_MinWidth  31 - 0 0b00000000000000000000001010000000  Active_High   
+
+===== Page 54 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 54 
+ 
+0x10078  ImageSize_IncWidth  31 - 0 0b00000000000000000000000000000010  Active_High  This is always 2, inheretant to the design of the ASIC  
+0x1007c  ImageSize_TotalSizeX  31 - 0 0b00000000000000000000010100000000  Active_High  The max size in X direction / width is 1920  
+0x10080  ImageSize_MinOffsetY  31 - 0 0b00000000000000000000000000000000  Active_High  The minimum offset is 0  
+0x10084  ImageSize_IncOffsetY  31 - 0 0b00000000000000000000000000000010  Active_High  this value is depending on the col_mono pad  
+0x10088  ImageSize_MinHeight  31 - 0 0b00000000000000000000000111100000  Active_High   
+0x1008c  ImageSize_IncHeight  31 - 0 0b00000000000000000000000000000010  Active_High  this value is depending on the col_mono pad  
+0x10090  ImageSize_TotalSizeY  31 - 0 0b00000000000000000000000000000000  Active_High  Total Y / Height is normal pixels + black pixels: 1080 + 32 + 32 = 1144  
+0x10094  ImageSize_OffsetX  15 - 0 0b0000001011010000  Active_High   
+0x1009c  ImageSize_OffsetY  15 - 0 0b0000000000000000  Active_High   
+0x100c0  PixelCoding_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0x100c0  PixelCoding_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0x100c0  PixelCoding_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device isn't possible  
+0x100c0  PixelCoding_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0x100c0  PixelCoding_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0x100c0  PixelCoding_ValueType  23 - 16 0b00000011  Active_High  ValueType is an Enumeration  
+0x100c0  PixelCoding_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0x100c0  PixelCoding_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0x100c0  PixelCoding_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0x100c0  PixelCoding_Active  30 - 30 0b1 Active_High  BasicCSR is active  
+0x100c0  PixelCoding_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x100c4  PixelCoding_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0x100c8  PixelCoding_Control  3 - 0 0b0001  Active_High  Manual control is selected  
+0x100cc  PixelCoding_BayerGR  1 - 1 0b1 Active_High  The default value is depending on the col_mono pad  
+0x100cc  PixelCoding_BayerGRPacked  3 - 3 0b0 Active_High  Isn't supported  
+0x100cc  PixelCoding_BayerRG  4 - 4 0b1 Active_High  The default value is depending on the col_mono pad  
+0x100cc  PixelCoding_BayerRGPacked  6 - 6 0b0 Active_High  Isn't supported  
+0x100cc  PixelCoding_BayerGB  7 - 7 0b1 Active_High  The default value is depending on the col_mono pad  
+0x100cc  PixelCoding_BayerGBPacked  9 - 9 0b0 Active_High  Isn't supported  
+0x100cc  PixelCoding_BayerBG  10 - 10 0b1 Active_High  The default value is depending on the col_mono pad  
+0x100cc  PixelCoding_BayerBGPacked  12 - 12 0b0 Active_High  Isn't supported  
+0x100d0  PixelCoding_YUV411Packed  4 - 4 0b0 Active_High  Isn't supported  
+0x100d0  PixelCoding_YUV422Packed  12 - 12 0b0 Active_High  Isn't supported  
+0x100d0  PixelCoding_YUV444Packed  20 - 20 0b0 Active_High  Isn't supported  
+0x100d4  PixelCoding_RGBPacked  2 - 2 0b0 Active_High  Isn't supported  
+0x100d4  PixelCoding_BGRPacked  10 - 10 0b0 Active_High  Isn't supported  
+0x100d8  PixelCoding_Mono  0 - 0 0b1 Active_High  Is supported  
+0x100d8  PixelCoding_MonoSigned  1 - 1 0b0 Active_High  Isn't supported  
+0x100d8  PixelCoding_MonoPacked  2 - 2 0b0 Active_High  Isn't supported  
+0x100e0  PixelSize_NoSpecifyInq  0 - 0 0b0 Active_High  Device can't set the value to device specific values  
+0x100e0  PixelSize_ManualInq  1 - 1 0b1 Active_High  Manual control is supported  
+0x100e0  PixelSize_AutoInq  2 - 2 0b0 Active_High  Auto adjustment by the device isn't possible  
+
+===== Page 55 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 55 
+ 
+0x100e0  PixelSize_AutoOnceInq  3 - 3 0b0 Active_High  Auto adjustment by the device only once isn't possible  
+0x100e0  PixelSize_DefaultInq  4 - 4 0b0 Active_High  Loading the default value in the register again isn't possible  
+0x100e0  PixelSize_ValueType  23 - 16 0b00000011  Active_High  ValueType is an Enumeration  
+0x100e0  PixelSize_Readable  24 - 24 0b1 Active_High  BasicCSR is readable  
+0x100e0  PixelSize_Writable  25 - 25 0b1 Active_High  BasicCSR is writable  
+0x100e0  PixelSize_UserSetLoadable  26 - 26 0b0 Active_High  - 
+0x100e0  PixelSize_Active  30 - 30 0b1 Active_High  Feature is active  
+0x100e0  PixelSize_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x100e4  PixelSize_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000  Active_High  - 
+0x100e8  PixelSize_Control  3 - 0 0b0001  Active_High  Manual control is selected  
+0x100f4  PixelSize_Bpp48  16 - 16 0b0 Active_High  48-bit output isn't supported  
+0x100f8  PixelSize_Bpp8  8 - 8 0b1 Active_High  8-bit output is supported  
+0x100f8  PixelSize_Bpp10  10 - 10 0b1 Active_High  10-bit output is supported  
+0x100f8  PixelSize_Bpp12  12 - 12 0b1 Active_High  12-bit output is supported  
+0x100f8  PixelSize_Bpp14  14 - 14 0b0 Active_High  14-bit output isn't supported  
+0x100f8  PixelSize_Bpp16  16 - 16 0b0 Active_High  16-bit output isn't supported  
+0x100f8  PixelSize_Bpp24  24 - 24 0b0 Active_High  24-bit output isn't supported  
+0x10100  PixelEndian_Implemented  31 - 31 0b0 Active_High  BasicCSR is not implemented  
+0x10120  BinningHorizontal_Implemented  31 - 31 0b0 Active_High  BasicCSR is not implemented  
+0x10140  BinningVertical_Implemented  31 - 31 0b0 Active_High  BasicCSR is not implemented  
+0x10160  DecimationHorizontal_NoSpecifyInq  0 - 0 0b0  Device can't set the value to device specific values  
+0x10160  DecimationHorizontal_ManualInq  1 - 1 0b1  Manual control is supported  
+0x10160  DecimationHorizontal_AutoInq  2 - 2 0b0  Auto adjustment by the device isn't possible  
+0x10160  DecimationHorizontal_AutoOnceInq  3 - 3 0b0  Auto adjustment by the device only once isn't possible  
+0x10160  DecimationHorizontal_DefaultInq  4 - 4 0b0  Loading the default value in the register again isn't possible  
+0x10160  DecimationHorizontal_ValueType  23 - 16 0b00110000   Integer32  
+0x10160  DecimationHorizontal_Readable  24 - 24 0b1  BasicCSR is readable  
+0x10160  DecimationHorizontal_Writable  25 - 25 0b1  BasicCSR is writable  
+0x10160  DecimationHorizontal_UserSetLoadable  26 - 26 0b0  - 
+0x10160  DecimationHorizontal_Active  30 - 30 0b1  Feature is active  
+0x10160  DecimationHorizontal_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x10164  DecimationHorizontal_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000   - 
+0x10168  DecimationHorizontal_Control  3 - 0 0b0001   Manual control is selected  
+0x1016c  DecimationHorizontal_Mult  31 - 0 0b00000000000000000000000000000010   In steps of x pixels at a time  
+0x10170  DecimationHorizontal_Div  31 - 0 0b00000000000000000000000000000010   In steps of x pixels at a time  
+0x10174  DecimationHorizontal_Min  31 - 0 0b00000000000000000000000000000000   Minimum subsampling rate, 0 (sub sampling off)  
+0x10178  DecimationHorizontal_Max  31 - 0 0b00000000000000000000000000001000   Maximum sub sampling rate that will be supported is 8 (2 bits)  
+0x10180  DecimationVertical_NoSpecifyInq  0 - 0 0b0  Device can't set the value to device specific values  
+0x10180  DecimationVertical_ManualInq  1 - 1 0b1  Manual control is supported  
+0x10180  DecimationVertical_AutoInq  2 - 2 0b0  Auto adjustment by the device isn't possible  
+0x10180  DecimationVertical_AutoOnceInq  3 - 3 0b0  Auto adjustment by the device only once isn't possible  
+
+===== Page 56 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 56 
+ 
+0x10180  DecimationVertical_DefaultInq  4 - 4 0b0  Loading the default value in the register again isn't possible  
+0x10180  DecimationVertical_ValueType  23 - 16 0b00110000   Integer32  
+0x10180  DecimationVertical_Readable  24 - 24 0b1  BasicCSR is readable  
+0x10180  DecimationVertical_Writable  25 - 25 0b1  BasicCSR is writable  
+0x10180  DecimationVertical_UserSetLoadable  26 - 26 0b0  - 
+0x10180  DecimationVertical_Active  30 - 30 0b1  Feature is active  
+0x10180  DecimationVertical_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x10184  DecimationVertical_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000   - 
+0x10188  DecimationVertical_Control  3 - 0 0b0001   Manual control is selected  
+0x1018c  DecimationVertical_Mult  31 - 0 0b00000000000000000000000000000010   In steps of x pixels at a time  
+0x10190  DecimationVertical_Div  31 - 0 0b00000000000000000000000000000010   In steps of x pixels at a time  
+0x10194  DecimationVertical_Min  31 - 0 0b00000000000000000000000000000000   Minimum subsampling rate, 0 (sub sampling off)  
+0x10198  DecimationVertical_Max  31 - 0 0b00000000000000000000000000001000   Maximum sub sampling rate that will be supported is 8 (2 bits)  
+0x101a0  ReverseX_NoSpecifyInq  0 - 0 0b0  Device can't set the value to device specific values  
+0x101a0  ReverseX_ManualInq  1 - 1 0b1  Manual control is supported  
+0x101a0  ReverseX_AutoInq  2 - 2 0b0  Auto adjustment by the device isn't possible  
+0x101a0  ReverseX_AutoOnceInq  3 - 3 0b0  Auto adjustment by the device only once isn't possible  
+0x101a0  ReverseX_DefaultInq  4 - 4 0b0  Loading the default value in the register again isn't possible  
+0x101a0  ReverseX_ValueType  23 - 16 0b00110100   BulkBoolean32  
+0x101a0  ReverseX_Readable  24 - 24 0b1  BasicCSR is readable  
+0x101a0  ReverseX_Writable  25 - 25 0b1  BasicCSR is writable  
+0x101a0  ReverseX_UserSetLoadable  26 - 26 0b0  - 
+0x101a0  ReverseX_Active  30 - 30 0b1  Feature is active  
+0x101a0  ReverseX_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x101a4  ReverseX_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000   - 
+0x101a8  ReverseX_Control  3 - 0 0b0001   Manual control is selected  
+0x101ac  ReverseX_BitWritable  0 - 0 0b1  Indicates that ReverseX is writable  
+0x101c0  ReverseY_NoSpecifyInq  0 - 0 0b0  Device can't set the value to device specific values  
+0x101c0  ReverseY_ManualInq  1 - 1 0b1  Manual control is supported  
+0x101c0  ReverseY_AutoInq  2 - 2 0b0  Auto adjustment by the device isn't possible  
+0x101c0  ReverseY_AutoOnceInq  3 - 3 0b0  Auto adjustment by the device only once isn't possible  
+0x101c0  ReverseY_DefaultInq  4 - 4 0b0  Loading the default value in the register again isn't possible  
+0x101c0  ReverseY_ValueType  23 - 16 0b00110100   BulkBoolean32  
+0x101c0  ReverseY_Readable  24 - 24 0b1  BasicCSR is readable  
+0x101c0  ReverseY_Writable  25 - 25 0b1  BasicCSR is writable  
+0x101c0  ReverseY_UserSetLoadable  26 - 26 0b0  - 
+0x101c0  ReverseY_Active  30 - 30 0b1  Feature is active  
+0x101c0  ReverseY_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x101c4  ReverseY_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000   - 
+0x101c8  ReverseY_Control  3 - 0 0b0001   Manual control is selected  
+0x101cc  ReverseY_BitWritable  0 - 0 0b1  Indicates that ReverseY is writable  
+
+===== Page 57 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV / Confidential information   | 57 
+ 
+0x101e0  TestPattern_NoSpecifyInq  0 - 0 0b0  Device can't set the value to device specific values  
+0x101e0  TestPattern_ManualInq  1 - 1 0b1  Manual control is supported  
+0x101e0  TestPattern_AutoInq  2 - 2 0b0  Auto adjustment by the device isn't possible  
+0x101e0  TestPattern_AutoOnceInq  3 - 3 0b0  Auto adjustment by the device only once isn't possible  
+0x101e0  TestPattern_DefaultInq  4 - 4 0b0  Loading the default value in the register again isn't possible  
+0x101e0  TestPattern_ValueType  23 - 16 0b00000011   ValueType is an Enumeration  
+0x101e0  TestPattern_Readable  24 - 24 0b1  BasicCSR is readable  
+0x101e0  TestPattern_Writable  25 - 25 0b1  BasicCSR is writable  
+0x101e0  TestPattern_UserSetLoadable  26 - 26 0b0  - 
+0x101e0  TestPattern_Active  30 - 30 0b1  Feature is active  
+0x101e0  TestPattern_Implemented  31 - 31 0b1 Active_High  BasicCSR is implemented  
+0x101e4  TestPattern_OffsetForExpanded  31 - 0 0b00000000000000000000000000000000   - 
+0x101e8  TestPattern_Control  3 - 0 0b0001   Manual control is selected  
+0x101ec  TestPattern_VendorSpecific0  24 - 24 0b1   
+0x101ec  TestPattern_VendorSpecific1  25 - 25 0b1   
+0x101ec  TestPattern_VendorSpecific2  26 - 26 0b1   
+0x101ec  TestPattern_VendorSpecific3  27 - 27 0b1   
+0x101ec  TestPattern_VendorSpecific4  28 - 28 0b1   
+0x101ec  TestPattern_VendorSpecific5  29 - 29 0b1  Implemented /supported  
+0x101ec  TestPattern_VendorSpecific6  30 - 30 0b0  Isn't supported  
+0x101ec  TestPattern_VendorSpecific7  31 - 31 0b0  Isn't supported  
+0x101f4  TestPattern_GreyHorizontalRampMoving  0 - 0 0b0  Isn't supported  
+0x101f4  TestPattern_GreyVerticalRampMoving  1 - 1 0b0  Isn't supported  
+0x101f4  TestPattern_HorizontalMoving  8 - 8 0b0  Isn't supported  
+0x101f4  TestPattern_VerticalLineMoving  9 - 9 0b0  Isn't supported  
+0x101f4  TestPattern_GreyScaleChart  17 - 17 0b1  Indicates that the imager can send a GreyScaleChart test image  
+0x101f8  TestPattern_Off  0 - 0 0b1  Indicates that the imager can send real life images  
+0x101f8  TestPattern_Black  1 - 1 0b1  Indicates that the imager can send a Black test image  
+0x101f8  TestPattern_White  2 - 2 0b1  Indicates that the imager can send a White test image  
+0x101f8  TestPattern_Grey55  3 - 3 0b1  Indicates that the imager can send a Grey55 test image  
+0x101f8  TestPattern_GreyAA  4 - 4 0b1  Indicates that the imager can send a GreyAA test image  
+0x101f8  TestPattern_GreyHorizontalRamp  16 - 16 0b1  Indicates that the imager can send a GreyHorizontalRamp test image  
+0x101f8  TestPattern_GreyVerticalRamp  17 - 17 0b1  Indicates that the imager can send a GreyVerticalRamp test image  
+0x101f8  TestPattern_StraightCounter  24 - 24 0b0  Isn't supported  
+
+===== Page 58 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 58 
+ 
+12. Product maturity levels  
+Magics uses the following product maturity levels : 
+Maturity  Description  
+PROTO  Functionality tested in typical voltage and  temperature; no commitment on specification performance. Package 
+may differ depending on availabilities.  
+EM Characterization performed in typical voltage and temperature conditions. No commitment on specification 
+performance.  
+EQM  Characterization performed over full voltage and temperature range.  
+PROD  Qualified parts, no screening  for space use  
+FM Qualified parts , screen ed for space use  
+ 
+13. Product versions  
+Product code   Maturity level availability   Description  
+MAG -CXP00002 -NP  EM, EQM , PROD  Serializer ASIC  in a plastic QFN -64 package.  
+13.1 Errata  
+Below a table can be found with some additional notes/errata.  
+Product code  Serial number   Errata  
+MAG -CXP00002 -NP ALL - Test packet counter register mapping is incorrect for CXP standard : 
+* Register address of TestPacketCountTxLsb  is swapped with register address of 
+TestPacketCountTxMsb  in the register  map . While TestPacketCountTxLsb  will contain the 
+correct value of the Lsb, it is at the wrong CXP -compliant address.  
+*Register address of TestPacketCountRxLsb is swapped with register address of 
+TestPacketCountRxMsb in the register map. While TestPacketCountRxLsb will contain the 
+correct value of the Lsb, it is at the wrong CXP -compliant address.  
+ 
+  
+
+===== Page 59 =====
+ Datasheet - MAG -CXP00002 -NP 
+2026/04 -rev2.2  
+MAG -CXP00002 -NP- CoaXPress Serializer ASIC  
+Copyright © Magics Technologies  NV  | 59 
+ 
+14. Revision information  
+Version number  Date   Change description  
+2023/ 10-rev1.0 2023 -10-27 First release  
+2025/05 -rev2.0  2025 -05-06 - EM and EQM models available . 
+- added VDD3V3_ANA pin to the application diagram . 
+- updated packaging information . 
+- added additional explanation to section 8.5.  “In addition, the ‘IOLineSource_Value‘ register 
+needs to be set to 32 when a GPIO is set as an output. ” 
+- Analog_chip_id  is updated from 0x21 to 0x62 . 
+- added in section 9.1.4 an Important note.  
+- added section with Errata (13.1) . 
+- added errata on TestPacketCount* registers . 
+- added additional explanation for RNW bit in section 8.8 Debug SPI slave interface . Also added 
+an important note on the physical connections to the interface.   
+- for SE L/SEU robustness: added * by design – not validated  
+2025/11 -rev2.1  2025 -11-14 - updated description of PROD and FM maturity levels  
+- updated disclaimer  
+- added note on REF_CLK input: Note: internal 330 Ohm load!  
+- added in section 9.1.4 an additional Important note  (-2). 
+- decreased the maximum junction temperature from 125 to 85 degrees C – to match the Vision 
+System temperature requirements.  
+2026/04-rev2. 2 2026-04-24 - removed watermark.  
+- update  of Figure 1. with an actual picture of the product.  
+- added PROD models to availability of product.  
+ 
+Disclaimer  
+Magics Technologies’ products are sold by description only. Magics Technologies reserves the right to make changes in circuit  design, software and/or 
+specifications at any time without notice  for products in PROTO or EM maturity status . Accordingly, the reader is cautioned to verify that datasheets 
+are current before placing orders. Information furnished by Magics Technologies is believed to be accurate and reliable. Howe ver, no responsibility 
+is assumed by Magics Technologies for its u se; nor for any infri ngements of patents or other rights of third parties which may result from its use. No 
+license is granted by implication or otherwise under any patent or patent rights of Magics Technologies.  
+This development is co -funded in collaboration with Fusion For Energy.  
+For information regarding Magics Technologies and its products, see www.magics.tech  
