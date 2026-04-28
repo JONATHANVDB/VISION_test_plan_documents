@@ -6,7 +6,7 @@
 | 1.1 | 2026-04-13 | Updated diagrams and test stage descriptions | Jonathan Vanden Berk |
 | 1.2 | 2026-04-15 | Added product specifications and acceptance criteria | Jonathan Vanden Berk |
 | 1.3 | 2026-04-22 | Tightened USLs for MAG-IMG002x1-NC bad-row/bad-column (T0035) and PRNU global outliers (T0038), and added PROD/EM/reject bin classification to the pixel-array defect and hot-pixel/DSNU/PRNU outlier parameter descriptions | Jonathan Vanden Berk |
-| 1.4 | 2026-04-24 | Aligned MAG-IMG002x1-NC datasheet specifications with new datasheet rev 2.0 (April 2026): updated electro-optical typical values (conversion gain, SNR_MAX, DSNU, PRNU, DC, DCNU, read noise, saturation limit), added system gain (K) and column FPN (CFPN) rows, switched current-consumption test condition reference from FHD10 to FHD25, added the new datasheet pixel-array defect specifications table (section 7.5), removed the internal T0035/T0038 detailed parameter tables, refreshed all datasheet references in chapter 6, and extended the References chapter with traceability tables for the per-product test-plan documents and the GIT repositories holding each product's test-system software and Product specification and test Limits-file (pinned by repo, branch and last-touching commit on the Limits-file) | Jonathan Vanden Berk |
+| 1.4 | 2026-04-28 | Aligned MAG-IMG002x1-NC datasheet specifications with new datasheet rev 2.0 (April 2026): updated electro-optical typical values (conversion gain, SNR_MAX, DSNU, PRNU, DC, DCNU, read noise, saturation limit), added system gain (K) and column FPN (CFPN) rows, switched current-consumption test condition reference from FHD10 to FHD25, added the new datasheet pixel-array defect specifications table (section 7.5), removed the internal T0035/T0038 detailed parameter tables, refreshed all datasheet references in chapter 6, and extended the References chapter with traceability tables for the per-product test-plan documents and the GIT repositories holding each product's test-system software and Product specification and test Limits-file (pinned by repo, branch and last-touching commit on the Limits-file) | Jonathan Vanden Berk |
 
 ## Introduction & Scope
 
@@ -483,7 +483,7 @@ The key specifications for the Vision Series products are extracted from their r
 
 The table below lists the pixel-array defect specifications published in the MAG-IMG002x1-NC datasheet (rev 2.0, section 7.5). These limits are applicable to pre-irradiation conditions and are the datasheet acceptance criteria used during production testing in test T0035 (Optical defect map). Magics also collects a broader set of internal pixel-defect parameters (e.g. cluster counts, bright/dead row & column counts) for process monitoring; those are not listed here as they are not part of the datasheet acceptance criteria.
 
-*Table: MAG-IMG002x1-NC Pixel-Array Defect Specifications (Datasheet rev 2.0 section 7.5)*
+*Table: MAG-IMG002x1-NC Pixel-Array Defect Specifications*
 
 | Parameter | Unit | LSL | USL | Description |
 | :--- | :--- | :--- | :--- | :--- |
