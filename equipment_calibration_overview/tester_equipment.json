@@ -1,0 +1,70 @@
+{
+  "_comment": [
+    "Equipment used per product tester (product test system).",
+    "'label' must match the 'Label' column of the Equipment sheet in List_Of_Equipment.xlsm.",
+    "Matching is case-insensitive and ignores spaces/underscores ('Scope 6' == 'SCOPE6').",
+    "Set 'calibration_required': false for items that are not calibrated equipment",
+    "(dev boards, adapters, ...). They are listed but never coloured red/orange.",
+    "Add or remove equipment here - the script needs no changes."
+  ],
+  "warn_days": 30,
+  "testers": [
+    {
+      "tester": "PSU00001 test system",
+      "product": "MAG-PSU00001-NP",
+      "equipment": [
+        { "name": "Power Supply Unit", "label": "PSU15", "type": "R&S NGM202" },
+        { "name": "Electronic load", "label": "EL1", "type": "Keysight EL34143A" },
+        { "name": "Source and Measurement Unit", "label": "SMU4", "type": "Keysight B2901BL" },
+        { "name": "Multimeter", "label": "MULTI9", "type": "Keysight 34461A" },
+        { "name": "Oscilloscope", "label": "SCOPE3", "type": "Keysight DSOX1204G" },
+        {
+          "name": "Micro-controller dev board",
+          "label": "N.A.",
+          "type": "STM NUCLEO - H723ZG",
+          "calibration_required": false
+        },
+        { "name": "Thermostreamer", "label": "TEMP3", "type": "Temptronic ECO-710E-M" }
+      ]
+    },
+    {
+      "tester": "CXP00002 test system",
+      "product": "MAG-CXP00002-NP",
+      "equipment": [
+        { "name": "Power Supply Unit", "label": "PSU19", "type": "NGL202" },
+        { "name": "Power Supply Unit", "label": "PSU20", "type": "NGL202" },
+        { "name": "Source and Measurement Unit", "label": "SMU6", "type": "Keysight B2901BL" },
+        { "name": "Multimeter", "label": "MULTI6", "type": "Keysight 34465A" },
+        { "name": "Oscilloscope", "label": "Scope 6", "type": "Keysight DSOX1204G" },
+        { "name": "Function generator", "label": "FGEN6", "type": "Keysight 33622A" },
+        {
+          "name": "Thermostreamer",
+          "label": "TEMP3",
+          "type": "Temptronic ECO-710E-M",
+          "note": "Shared with the PSU00001 test system"
+        }
+      ]
+    },
+    {
+      "tester": "IMG002x1 test system",
+      "product": "MAG-IMG002x1-NC",
+      "equipment": [
+        { "name": "Power Supply Unit", "label": "PSU21", "type": "NGL202" },
+        { "name": "Power Supply Unit", "label": "PSU18", "type": "NGL202" },
+        { "name": "Power Supply Unit", "label": "PSU9", "type": "NGE-103B" },
+        { "name": "Source and Measurement Unit", "label": "SMU5", "type": "Keysight B2962B" },
+        { "name": "Multimeter", "label": "MULTI4", "type": "Keysight 34465A" },
+        { "name": "Oscilloscope", "label": "Scope8", "type": "Keysight DSOX1204G" },
+        {
+          "name": "Thermostreamer",
+          "label": "TEMP3",
+          "type": "Temptronic ECO-710E-M",
+          "note": "Shared with the PSU00001 and CXP00002 test systems"
+        }
+      ]
+    }
+  ],
+  "label_aliases": {
+    "_comment": "Maps the label used in the test plan / tester documentation -> label used in List_Of_Equipment.xlsm. Example: \"THERMO1\": \"TEMP3\"."
+  }
+}
